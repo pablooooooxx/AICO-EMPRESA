@@ -1,0 +1,126 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-title class="ion-text-center">AICO</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding auth-content">
+  <div class="auth-wrapper">
+    
+    <!-- Logo y Encabezado -->
+    <div class="auth-header">
+      <div class="logo-container">
+        <ion-icon name="game-controller-outline" class="brand-icon"></ion-icon>
+      </div>
+      <h1 class="brand-title">Bienvenido</h1>
+      <p class="brand-subtitle">Inicia sesión en tu cuenta AICO</p>
+    </div>
+
+    <!-- Tarjeta de Formulario -->
+    <ion-card class="auth-card">
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+          
+          <!-- Correo Electrónico -->
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+              <ion-input
+                type="email"
+                formControlName="email"
+                placeholder="correo@ejemplo.com"
+                label="Correo Electrónico"
+                labelPlacement="stacked"
+                autocomplete="email"
+                inputmode="email">
+              </ion-input>
+            </ion-item>
+            <div class="error-container" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+              <span *ngIf="email?.errors?.['required']">
+                <ion-icon name="alert-circle-outline"></ion-icon> El correo es obligatorio.
+              </span>
+              <span *ngIf="email?.errors?.['email']">
+                <ion-icon name="alert-circle-outline"></ion-icon> Ingresa un correo electrónico válido.
+              </span>
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+              <ion-input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Mínimo 6 caracteres"
+                label="Contraseña"
+                labelPlacement="stacked"
+                autocomplete="current-password">
+              </ion-input>
+              <ion-button
+                fill="clear"
+                slot="end"
+                class="password-toggle-btn"
+                (click)="togglePasswordVisibility()"
+                type="button">
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  slot="icon-only">
+                </ion-icon>
+              </ion-button>
+            </ion-item>
+            <div class="error-container" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+              <span *ngIf="password?.errors?.['required']">
+                <ion-icon name="alert-circle-outline"></ion-icon> La contraseña es obligatoria.
+              </span>
+              <span *ngIf="password?.errors?.['minlength']">
+                <ion-icon name="alert-circle-outline"></ion-icon> Debe tener al menos 6 caracteres.
+              </span>
+            </div>
+          </div>
+
+          <!-- Botón Iniciar Sesión -->
+          <ion-button
+            type="submit"
+            expand="block"
+            color="primary"
+            class="submit-button ion-margin-top"
+            [disabled]="isSubmitting">
+            <ion-icon name="log-in-outline" slot="start" *ngIf="!isSubmitting"></ion-icon>
+            <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
+            <span *ngIf="!isSubmitting">Iniciar Sesión</span>
+          </ion-button>
+
+        </form>
+
+        <!-- Botón de prueba rápida (Demo) -->
+        <div class="demo-login-box">
+          <ion-button
+            fill="clear"
+            size="small"
+            color="medium"
+            (click)="fillDemoCredentials()">
+            <ion-icon name="key-outline" slot="start"></ion-icon>
+            Llenar con cuenta de prueba
+          </ion-button>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Enlace a Registro -->
+    <div class="auth-footer">
+      <p>¿No tienes una cuenta aún?</p>
+      <ion-button
+        fill="outline"
+        color="dark"
+        routerLink="/register"
+        expand="block"
+        class="secondary-button">
+        <ion-icon name="person-add-outline" slot="start"></ion-icon>
+        Crear cuenta nueva
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>
