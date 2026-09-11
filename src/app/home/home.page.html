@@ -1,26 +1,65 @@
 <ion-menu contentId="main-content">
   <ion-header>
-    <ion-toolbar color="dark">
+    <ion-toolbar class="blue-toolbar">
       <ion-title>Menú AICO</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
-    
-    <!-- Perfil de Usuario en el Menú -->
-    <div class="user-profile-box" *ngIf="currentUser" style="padding: 12px 4px 18px; border-bottom: 1px solid #e0e0e0; margin-bottom: 12px;">
-      <ion-icon name="person-circle-outline" style="font-size: 48px; color: #3880ff;"></ion-icon>
-      <div style="font-weight: 700; font-size: 16px; margin-top: 4px;">{{ currentUser.name }}</div>
-      <div style="font-size: 13px; color: #666;">{{ currentUser.email }}</div>
+    <div class="user-profile-box" *ngIf="currentUser">
+      <div class="avatar-circle-lg">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <div class="user-name">{{ currentUser.name }}</div>
+      <div class="user-email">{{ currentUser.email }}</div>
     </div>
 
-    <ion-list>
-      <ion-item button><ion-icon name="home-outline" slot="start"></ion-icon> Inicio</ion-item>
-      <ion-item button><ion-icon name="people" slot="start"></ion-icon> Empleados</ion-item>
-      <ion-item button><ion-icon name="calculator" slot="start"></ion-icon> Finanzas</ion-item>
-      <ion-item button><ion-icon name="briefcase" slot="start"></ion-icon> Proyectos</ion-item>
-      <ion-item button><ion-icon name="heart" slot="start"></ion-icon> Contacto</ion-item>
+    <ion-list lines="none" class="menu-nav-list">
+      <ion-item button (click)="selectTab('estudiante')" [class.active-item]="activeTab === 'estudiante'">
+        <ion-icon name="school-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>Vista Estudiante (dos)</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('profesor')" [class.active-item]="activeTab === 'profesor'">
+        <ion-icon name="person-outline" slot="start" color="secondary"></ion-icon>
+        <ion-label>Vista Profesor (tres)</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('crear-juego')" [class.active-item]="activeTab === 'crear-juego'">
+        <ion-icon name="game-controller-outline" slot="start" color="tertiary"></ion-icon>
+        <ion-label>Crear Juego (cuatro)</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('clases')" [class.active-item]="activeTab === 'clases'">
+        <ion-icon name="storefront-outline" slot="start" color="success"></ion-icon>
+        <ion-label>Mis Clases (cinco)</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('closet')" [class.active-item]="activeTab === 'closet'">
+        <ion-icon name="shirt-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>Closet / Editar Avatar</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('tienda')" [class.active-item]="activeTab === 'tienda'">
+        <ion-icon name="pricetags-outline" slot="start" color="danger"></ion-icon>
+        <ion-label>Tienda de Avatar</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('logros')" [class.active-item]="activeTab === 'logros'">
+        <ion-icon name="trophy-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>Logros</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('estadisticas')" [class.active-item]="activeTab === 'estadisticas'">
+        <ion-icon name="bar-chart-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>Estadísticas</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('configuracion')" [class.active-item]="activeTab === 'configuracion'">
+        <ion-icon name="settings-outline" slot="start" color="medium"></ion-icon>
+        <ion-label>Configuración</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('opciones-adicionales')" [class.active-item]="activeTab === 'opciones-adicionales'">
+        <ion-icon name="options-outline" slot="start" color="secondary"></ion-icon>
+        <ion-label>Opciones Adicionales</ion-label>
+      </ion-item>
+      <ion-item button (click)="selectTab('quiz-lobby')" [class.active-item]="activeTab.startsWith('quiz-')">
+        <ion-icon name="help-circle-outline" slot="start" color="tertiary"></ion-icon>
+        <ion-label>Quiz de Funciones</ion-label>
+      </ion-item>
       
-      <ion-item button (click)="confirmLogout()" color="danger" class="ion-margin-top" lines="none">
+      <ion-item button (click)="confirmLogout()" color="danger" class="ion-margin-top logout-item">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
         <b>Cerrar Sesión</b>
       </ion-item>
@@ -28,80 +67,1144 @@
   </ion-content>
 </ion-menu>
 
-
 <div class="ion-page" id="main-content">
-  <ion-header>
-    <ion-toolbar color="dark">
+  <!-- Cabecera Azul Fiel al Mockup -->
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="blue-toolbar">
       <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
+        <ion-menu-button autoHide="false"></ion-menu-button>
       </ion-buttons>
-      <ion-title>
-        AICO
+      <ion-title class="header-title">
+        {{ currentTabTitle }}
       </ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="confirmLogout()" title="Cerrar Sesión">
-          <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+        <ion-button (click)="presentHeaderMenu()" title="Opciones">
+          <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
-  <ion-content class="ion-padding">
-    <h1>¡Bienvenido a AICO<span *ngIf="currentUser">, {{ currentUser.name }}</span>!</h1>
-    <img src="assets/img/empresa.jpg" alt="Imagen de empresa" style="width: 300px; height: auto; margin-bottom: 10px; border-radius: 28px;">
+  <ion-content class="main-screen-content">
 
-    <p>
-      Esta aplicación está diseñada para ayudarte en la creacion de juegos, quizzes, actividades de manera facil, rapida y divertida.
-    </p>
+    <!-- ============================================== -->
+    <!-- VISTA 1: "dos" (HOME ESTUDIANTE) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-estudiante" *ngIf="activeTab === 'estudiante'">
+      
+      <!-- Fila de Perfil Estudiante -->
+      <div class="profile-header-row">
+        <div class="avatar-circle">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="profile-meta">
+          <div class="user-fullname">{{ currentUser?.name || 'Nombre de usuario' }} (estudiante)</div>
+          <div class="user-level">Nivel {{ estudianteNivel }}</div>
+        </div>
+      </div>
 
-    <h2>Características principales:</h2>
-    <ul>
-      <li>Creacion de quizzes</li>
-      <li>Participar en juegos</li>
-      <li>Crear Avatares</li>
-    </ul>
+      <!-- Banner Motivacional Morado con Trofeo -->
+      <div class="purple-motivation-card">
+        <div class="banner-text">
+          <h2 class="banner-title">¡Sigue así!</h2>
+          <p class="banner-sub">Cada pregunta correcta te acerca a tus metas</p>
+        </div>
+        <div class="banner-trophy">
+          <span class="trophy-emoji">🏆</span>
+        </div>
+      </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Creacion de quizzes</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Crea juego y activiidades de manera facil con diferentes modos de juego como verdadero o falso, ruleta aleatoria.
-      </ion-card-content>
-    </ion-card>
+      <!-- Sección Continuar -->
+      <div class="section-container">
+        <h3 class="section-title">Continuar</h3>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Participar en juegos</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Participa en los juegos creados por maestros u otros estudiantes.
-      </ion-card-content>
-    </ion-card>
+        <!-- Tarjeta de Actividad en Curso -->
+        <div class="activity-card" (click)="continuarPrueba()">
+          <div class="activity-thumb">
+            <ion-icon name="newspaper-outline"></ion-icon>
+          </div>
+          <div class="activity-details">
+            <h4 class="activity-title">{{ pruebaActual.titulo }}</h4>
+            <p class="activity-subject">{{ pruebaActual.materia }}</p>
+            <div class="progress-wrap">
+              <span class="progress-text">Progreso : {{ pruebaActual.progreso }}%</span>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" [style.width.%]="pruebaActual.progreso"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <!-- Fila de Avatar -> Conduce a Closet -->
+        <div class="avatar-action-row" (click)="selectTab('closet')">
+          <div class="avatar-circle-sm">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <span class="avatar-label">Avatar</span>
+        </div>
+      </div>
 
-    <h3>Contacto</h3>
-    <p>
-      Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos a través de nuestro correo electrónico:
-      <a href="mailto:info@empresaapp.com">
-        AICOCOLAPPD@AICO.com
-      </a>
-    </p>
+    </div>
 
-    <ion-button expand="block" color="primary">
-      <ion-icon name="logo-facebook"></ion-icon>
-      Facebook
-    </ion-button>
-    <ion-button expand="block" color="danger">
-      <ion-icon name="logo-instagram"></ion-icon>
-      Instagram
-    </ion-button>
+    <!-- ============================================== -->
+    <!-- VISTA 2: "tres" (HOME PROFESOR) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-profesor" *ngIf="activeTab === 'profesor'">
+      
+      <!-- Fila de Perfil Profesor -->
+      <div class="profile-header-row">
+        <div class="avatar-circle">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="profile-meta">
+          <div class="user-fullname">{{ currentUser?.name || 'Nombre de usuario' }} (profesor)</div>
+          <div class="user-welcome">¡Bienvenido de nuevo!</div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Morada de Racha Diaria con Fuego -->
+      <div class="purple-streak-card">
+        <div class="streak-header-line">
+          <span class="streak-title">Tu racha diaria: <b>{{ rachaDias }} días de racha</b></span>
+          <span class="streak-flame">🔥</span>
+        </div>
+        <div class="streak-bar-container">
+          <div class="streak-bar-fill" [style.width.%]="progresoRacha * 100"></div>
+        </div>
+      </div>
+
+      <!-- Fila de 3 Métricas Clave -->
+      <div class="metrics-card">
+        <div class="metric-col">
+          <span class="metric-lbl">Clases hoy</span>
+          <span class="metric-val">{{ statsDocente.clasesHoy }}</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-col">
+          <span class="metric-lbl">Juegos creados</span>
+          <span class="metric-val">{{ statsDocente.juegosCreados }}</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-col">
+          <span class="metric-lbl">Estudiantes</span>
+          <span class="metric-val">{{ statsDocente.estudiantes }}</span>
+        </div>
+      </div>
+
+      <!-- Sección Tus Logros Recientes -->
+      <div class="section-container">
+        <h3 class="section-title">Tus logros recientes:</h3>
+        <div class="badges-row">
+          <div class="badge-item" *ngFor="let logro of logrosDocente" [title]="logro.title">
+            <div class="badge-circle" [style.background-color]="logro.bgLight" [style.border-color]="logro.color">
+              <ion-icon [name]="logro.icon" [style.color]="logro.color"></ion-icon>
+            </div>
+            <span class="badge-label">{{ logro.title }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila Puntos y Nivel Docente -->
+      <div class="teacher-level-row">
+        <div class="level-box">
+          <span class="level-lbl">Puntos docentes</span>
+          <div class="level-val-row">
+            <span class="star-icon">⭐</span>
+            <span class="level-val">{{ statsDocente.puntos }} pts</span>
+          </div>
+        </div>
+        <div class="level-box">
+          <span class="level-lbl">Nivel docente</span>
+          <div class="level-val-row">
+            <span class="crown-icon">👑</span>
+            <span class="level-val">{{ statsDocente.nivel }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 3: "cuatro" (CREAR JUEGO) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-crear-juego" *ngIf="activeTab === 'crear-juego'">
+      
+      <!-- Subcabecera Crear Juego -->
+      <div class="sub-header-bar">
+        <button class="back-link-btn" (click)="selectTab('profesor')">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <h2 class="sub-header-title">Crear Juego</h2>
+      </div>
+
+      <p class="create-prompt">¿Qué tipo de juego quieres crear?</p>
+
+      <!-- Cuadrícula Circular 2x3 de Modos de Juego -->
+      <div class="game-modes-grid">
+        <div 
+          class="game-mode-card" 
+          *ngFor="let game of gameTypes"
+          [class.selected]="selectedGameType === game.id"
+          (click)="selectGameType(game.id)">
+          <div class="game-mode-circle" [style.background-color]="game.color">
+            <ion-icon [name]="game.icon"></ion-icon>
+          </div>
+          <span class="game-mode-name">{{ game.name }}</span>
+          <ion-icon name="checkmark-circle" class="check-indicator" *ngIf="selectedGameType === game.id"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Botón Principal Morado Crear Juego -->
+      <div class="create-action-box">
+        <button class="btn-purple-create" (click)="crearJuego()">
+          Crear juego
+        </button>
+        
+        <!-- Botón Secundario Mis Juegos Guardados -->
+        <button class="btn-saved-games" (click)="abrirJuegosGuardados()">
+          Mis juegos guardados ({{ totalJuegosGuardados }})
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 4: "cinco" (MIS CLASES) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-clases" *ngIf="activeTab === 'clases'">
+      
+      <!-- Fila Título Mis Clases y Botón Nueva Clase -->
+      <div class="classes-top-bar">
+        <h2 class="classes-screen-title">Mis clases</h2>
+        <button class="btn-new-class" (click)="nuevaClase()">
+          + Nueva clase
+        </button>
+      </div>
+
+      <!-- Buscador de Clases -->
+      <div class="search-classes-box">
+        <ion-icon name="search-outline" class="search-icon"></ion-icon>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Buscar clases..." 
+          [(ngModel)]="searchQuery" />
+        <button class="clear-search-btn" *ngIf="searchQuery" (click)="searchQuery = ''">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Lista de Clases -->
+      <div class="classes-list">
+        <div class="class-item-card" *ngFor="let clase of clasesFiltradas">
+          <div class="class-subject-icon" [style.background-color]="clase.color">
+            <ion-icon [name]="clase.icon"></ion-icon>
+          </div>
+          <div class="class-info">
+            <h4 class="class-name">{{ clase.name }}</h4>
+            <span class="class-students">{{ clase.studentsCount }} estudiantes</span>
+            <button class="class-info-link" (click)="verDetalleClase(clase)">
+              Más información
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-classes" *ngIf="clasesFiltradas.length === 0">
+          <ion-icon name="search-outline"></ion-icon>
+          <p>No se encontraron clases con "{{ searchQuery }}"</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 5: "Closet" (EDITAR AVATAR) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-closet" *ngIf="activeTab === 'closet'">
+      
+      <!-- Subcabecera Morada Editar Avatar -->
+      <div class="purple-sub-header">
+        <button class="back-link-btn-white" (click)="selectTab('estudiante')">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <h2 class="sub-header-title-white">Editar Avatar</h2>
+      </div>
+
+      <!-- Selector de Tonos de Piel -->
+      <div class="skin-tone-bar">
+        <div class="skin-tone-scroll">
+          <div 
+            class="skin-circle" 
+            *ngFor="let tono of tonosPiel" 
+            [style.background-color]="tono"
+            [class.selected-tone]="tonoPielActual === tono"
+            (click)="cambiarTonoPiel(tono)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Escenario del Avatar con Columna Izquierda de Prendas -->
+      <div class="wardrobe-stage-container">
+        
+        <!-- Columna Izquierda: Prendas/Categorías -->
+        <div class="wardrobe-left-rail">
+          <div 
+            class="wardrobe-item-box" 
+            *ngFor="let prenda of avatarPrendas"
+            [class.active-box]="prendaSeleccionadaId === prenda.id"
+            (click)="seleccionarPrenda(prenda)">
+            <ion-icon [name]="prenda.icon" class="rail-icon"></ion-icon>
+            <span class="equipped-badge" *ngIf="prenda.equipped">✓</span>
+          </div>
+          <div class="rail-arrow-down">
+            <ion-icon name="arrow-down-outline"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Centro: Vestidor 3D y Avatar -->
+        <div class="avatar-room-center">
+          <div class="room-background">
+            <div class="closet-shelves-left"></div>
+            <div class="closet-shelves-right"></div>
+            
+            <!-- Personaje Avatar Ilustrado -->
+            <div class="avatar-character">
+              <div class="avatar-head" [style.background-color]="tonoPielActual">
+                <div class="avatar-hair"></div>
+                <div class="avatar-eyes">
+                  <div class="eye left-eye"></div>
+                  <div class="eye right-eye"></div>
+                </div>
+                <div class="avatar-smile"></div>
+                <div class="avatar-cheeks"></div>
+              </div>
+              
+              <div class="avatar-body" [style.background-color]="avatarOutfits[avatarOutfitIndex].color">
+                <div class="avatar-collar"></div>
+                <div class="avatar-coat-lapel"></div>
+              </div>
+              
+              <div class="avatar-legs">
+                <div class="leg left-leg"></div>
+                <div class="leg right-leg"></div>
+              </div>
+              
+              <div class="avatar-shoes">
+                <div class="shoe left-shoe"></div>
+                <div class="shoe right-shoe"></div>
+              </div>
+            </div>
+
+            <!-- Controles flotantes de personalización -->
+            <div class="avatar-stage-controls">
+              <button class="stage-ctrl-btn purple-ctrl" (click)="prevAvatarOutfit()" title="Anterior outfit">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+              </button>
+              <button class="stage-ctrl-btn purple-ctrl" (click)="nextAvatarOutfit()" title="Siguiente outfit">
+                <ion-icon name="arrow-forward-outline"></ion-icon>
+              </button>
+              <button class="stage-ctrl-btn red-ctrl" (click)="resetAvatarChanges()" title="Cancelar cambios">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+              <button class="stage-ctrl-btn green-ctrl" (click)="toggleEquiparPrenda(avatarPrendas[0])" title="Confirmar">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botón Guardar Cambios -->
+      <div class="save-avatar-box">
+        <button class="btn-guardar-avatar" (click)="guardarCambiosAvatar()">
+          Guardar cambios
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 6: "Tienda" (TIENDA DE AVATAR) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-tienda" *ngIf="activeTab === 'tienda'">
+      
+      <!-- Subcabecera Morada Tienda de Avatar -->
+      <div class="purple-sub-header text-center">
+        <h2 class="sub-header-title-white">Tienda de Avatar</h2>
+      </div>
+
+      <!-- Barra de Monedas y Enlace a Vestuario -->
+      <div class="shop-balance-bar">
+        <div class="coins-pill">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-amount">{{ userCoins }}$</span>
+        </div>
+        <button class="btn-goto-wardrobe" (click)="irAlVestuario()">
+          Ir al vestuario &gt;
+        </button>
+      </div>
+
+      <!-- Vitrina Superior de la Tienda -->
+      <div class="shop-showcase-container">
+        <div class="showcase-room">
+          <div class="avatar-character mini">
+            <div class="avatar-head" [style.background-color]="tonoPielActual">
+              <div class="avatar-hair"></div>
+              <div class="avatar-eyes">
+                <div class="eye left-eye"></div>
+                <div class="eye right-eye"></div>
+              </div>
+              <div class="avatar-smile"></div>
+            </div>
+            <div class="avatar-body yellow-hoodie">
+              <div class="hoodie-pocket"></div>
+            </div>
+            <div class="avatar-legs">
+              <div class="leg left-leg"></div>
+              <div class="leg right-leg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catálogo de Prendas en Tienda (2 columnas) -->
+      <div class="shop-items-grid">
+        <div class="shop-item-card" *ngFor="let item of tiendaItems" (click)="comprarItem(item)">
+          <div class="shop-item-preview" [style.border-color]="item.color">
+            <ion-icon [name]="item.icon" [style.color]="item.color"></ion-icon>
+          </div>
+          <div class="shop-item-action">
+            <span class="owned-tag" *ngIf="item.owned">
+              <ion-icon name="checkmark-circle"></ion-icon> Comprado
+            </span>
+            <button class="buy-pill-btn" *ngIf="!item.owned">
+              <span class="coin-mini">🪙</span> {{ item.price }}$
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 7: "Logros" -->
+    <!-- ============================================== -->
+    <div class="screen-view view-logros" *ngIf="activeTab === 'logros'">
+      
+      <!-- Banner Morado Estadísticas y Logros -->
+      <div class="purple-sub-header text-center">
+        <h2 class="sub-header-title-white">Estadisticas y Logros</h2>
+      </div>
+
+      <!-- Segmento / Toggle de dos opciones -->
+      <div class="segmented-control-container">
+        <button class="seg-btn" (click)="switchStatsTab('estadisticas')">
+          Estadisticas
+        </button>
+        <button class="seg-btn active-seg">
+          Logros
+        </button>
+      </div>
+
+      <div class="logros-content-container">
+        <h3 class="logros-count-title">Logros Completados 3/22</h3>
+
+        <!-- Tarjeta Morada con Logros Desbloqueados -->
+        <div class="purple-logros-card">
+          <div class="logro-row" *ngFor="let logro of logrosDesafios.slice(0, 3)">
+            <div class="logro-medal-badge" [class]="logro.medal">
+              <ion-icon name="ribbon" *ngIf="logro.medal === 'bronze'"></ion-icon>
+              <ion-icon name="flame" *ngIf="logro.medal === 'silver'"></ion-icon>
+              <ion-icon name="trophy" *ngIf="logro.medal === 'gold'"></ion-icon>
+            </div>
+            <div class="logro-info-box">
+              <span class="logro-desc">{{ logro.title }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Logro Diamante en Progreso -->
+        <div class="diamond-logro-card">
+          <div class="logro-medal-badge diamond">
+            <ion-icon name="diamond"></ion-icon>
+          </div>
+          <div class="logro-info-box purple-box">
+            <span class="logro-desc white-text">{{ logrosDesafios[3].title }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 8: "Estadísticas" -->
+    <!-- ============================================== -->
+    <div class="screen-view view-estadisticas" *ngIf="activeTab === 'estadisticas'">
+      
+      <!-- Banner Morado Estadísticas y Logros -->
+      <div class="purple-sub-header text-center">
+        <h2 class="sub-header-title-white">Estadisticas y Logros</h2>
+      </div>
+
+      <!-- Segmento / Toggle de dos opciones -->
+      <div class="segmented-control-container">
+        <button class="seg-btn active-seg">
+          Estadisticas
+        </button>
+        <button class="seg-btn" (click)="switchStatsTab('logros')">
+          Logros
+        </button>
+      </div>
+
+      <!-- Grilla 2x2 de Métricas Moradas -->
+      <div class="stats-metrics-grid">
+        <div class="stat-purple-card">
+          <span class="stat-card-title">Clases Asistidas</span>
+          <span class="stat-card-number">{{ statsEstudiante.clasesAsistidas }}</span>
+        </div>
+        <div class="stat-purple-card">
+          <span class="stat-card-title">Porcentaje Promedio</span>
+          <span class="stat-card-number">{{ statsEstudiante.porcentajePromedio }}%</span>
+        </div>
+        <div class="stat-purple-card">
+          <span class="stat-card-title">Juegos Fallados</span>
+          <span class="stat-card-number">{{ statsEstudiante.juegosFallados }}</span>
+        </div>
+        <div class="stat-purple-card">
+          <span class="stat-card-title">Juegos Completados</span>
+          <span class="stat-card-number">{{ statsEstudiante.juegosCompletados }}</span>
+        </div>
+      </div>
+
+      <!-- Sección Tu Progreso -->
+      <div class="progress-section-container">
+        <div class="progress-section-header">
+          <span>Tu Progreso</span>
+        </div>
+
+        <!-- Gráfica Interactiva de Tendencia SVG -->
+        <div class="progress-chart-card">
+          <div class="chart-title-tag">Progreso General</div>
+          <svg class="progress-svg-chart" viewBox="0 0 320 180">
+            <!-- Líneas de rejilla -->
+            <line x1="20" y1="20" x2="310" y2="20" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="20" y1="60" x2="310" y2="60" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="20" y1="100" x2="310" y2="100" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="20" y1="140" x2="310" y2="140" stroke="#f0f0f0" stroke-width="1" />
+            
+            <!-- Ejes -->
+            <line x1="20" y1="160" x2="310" y2="160" stroke="#8e24aa" stroke-width="1.5" />
+            <line x1="20" y1="10" x2="20" y2="160" stroke="#8e24aa" stroke-width="1.5" />
+            
+            <!-- Área bajo la curva -->
+            <path [attr.d]="svgAreaPath" fill="rgba(142, 36, 170, 0.08)" />
+            
+            <!-- Línea de datos -->
+            <path [attr.d]="svgLinePath" fill="none" stroke="#8e24aa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- Puntos de datos -->
+            <circle *ngFor="let p of chartPoints" [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="#ffffff" stroke="#8e24aa" stroke-width="2.5" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 9: "Configuracion" (AJUSTES PRINCIPALES) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-configuracion" *ngIf="activeTab === 'configuracion'">
+      
+      <!-- Subcabecera Morada -->
+      <div class="purple-sub-header">
+        <button class="back-link-btn-white" (click)="selectTab('estudiante')">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <h2 class="sub-header-title-white">Configuracion</h2>
+      </div>
+
+      <div class="config-content-container">
+        
+        <!-- Tarjeta Perfil -->
+        <div class="config-card-group">
+          <div class="config-tab-pill">Perfil</div>
+          <div class="config-card-body profile-card-body">
+            <div class="config-avatar-circle">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="profile-text-col">
+              <span class="profile-name-text">Nombre: {{ currentUser?.name || nombreUsuarioConfig }}</span>
+              <span class="profile-user-text">Usuario: {{ handleUsuarioConfig }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Privacidad y Preferencias -->
+        <div class="config-card-group">
+          <div class="config-tab-pill">Privacidad y Preferencias</div>
+          <div class="config-card-body">
+            <div class="config-row-item">
+              <span class="config-item-lbl">Informacion</span>
+              <div class="pill-toggle-group">
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configPrivacidad.info === 'privado'"
+                  (click)="setPrivacidadInfo('privado')">
+                  Privado
+                </button>
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configPrivacidad.info === 'publico'"
+                  (click)="setPrivacidadInfo('publico')">
+                  Público
+                </button>
+              </div>
+            </div>
+
+            <div class="config-row-item">
+              <span class="config-item-lbl">Compartir Clase</span>
+              <div class="pill-toggle-group">
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configPrivacidad.compartirClase === 'amigos'"
+                  (click)="setCompartirClase('amigos')">
+                  Solo amigos
+                </button>
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configPrivacidad.compartirClase === 'todos'"
+                  (click)="setCompartirClase('todos')">
+                  Todos
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Idioma y Tema -->
+        <div class="config-card-group">
+          <div class="config-card-body">
+            <div class="config-row-item">
+              <span class="config-item-lbl">Idioma y lenguaje</span>
+              <button class="dropdown-pill-btn" (click)="cambiarIdioma()">
+                {{ configIdioma }} ↓
+              </button>
+            </div>
+
+            <div class="config-row-item">
+              <span class="config-item-lbl">Tema</span>
+              <div class="pill-toggle-group">
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configTema === 'oscuro'"
+                  (click)="setTema('oscuro')">
+                  Oscuro
+                </button>
+                <button 
+                  class="toggle-pill-btn" 
+                  [class.active-pill]="configTema === 'claro'"
+                  (click)="setTema('claro')">
+                  Claro
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón Opciones Adicionales -->
+        <div class="additional-options-box">
+          <button class="btn-opciones-adicionales" (click)="irAOpcionesAdicionales()">
+            Opciones Adicionales
+          </button>
+        </div>
+
+        <!-- Botón Cerrar Sesión -->
+        <div class="logout-btn-box">
+          <button class="btn-cerrar-sesion-red" (click)="confirmLogout()">
+            Cerrar Sesion
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTA 10: "Opciones Adicionales" (ACCESIBILIDAD E IA) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-opciones-adicionales" *ngIf="activeTab === 'opciones-adicionales'">
+      
+      <!-- Subcabecera Morada -->
+      <div class="purple-sub-header">
+        <button class="back-link-btn-white" (click)="selectTab('configuracion')">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <h2 class="sub-header-title-white">Configuracion</h2>
+      </div>
+
+      <div class="options-content-container">
+        
+        <!-- Módulo 1: Corrección de color (Daltonismo) -->
+        <div class="access-card-group">
+          <div class="access-tab-pill">Corrección de color (Daltonismo)</div>
+          <div class="access-card-body">
+            <div class="access-detail-row">
+              <div class="access-icon-box eye-icon-box">
+                <span class="eye-emoji">👁️</span>
+              </div>
+              <div class="access-desc-text">
+                <b>Descripción:</b> Ajusta los colores de la aplicación para facilitar la visualización a personas con daltonismo.
+              </div>
+            </div>
+            <div class="access-toggle-row">
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="accesibilidad.daltonismo"
+                (click)="toggleDaltonismo(true)">
+                Activado
+              </button>
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="!accesibilidad.daltonismo"
+                (click)="toggleDaltonismo(false)">
+                Desactivado
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Módulo 2: Letras resaltadas -->
+        <div class="access-card-group">
+          <div class="access-tab-pill">Letras resaltadas</div>
+          <div class="access-card-body">
+            <div class="access-detail-row">
+              <div class="access-icon-box letter-icon-box">
+                <span class="letter-emoji">🅰️</span>
+              </div>
+              <div class="access-desc-text">
+                Aumenta el contraste y destaca el texto para mejorar la lectura.
+              </div>
+            </div>
+            <div class="access-toggle-row">
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="accesibilidad.letrasResaltadas"
+                (click)="toggleLetrasResaltadas(true)">
+                Activado
+              </button>
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="!accesibilidad.letrasResaltadas"
+                (click)="toggleLetrasResaltadas(false)">
+                Desactivado
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Módulo 3: Lectura en voz alta -->
+        <div class="access-card-group">
+          <div class="access-tab-pill">Lectura en voz alta</div>
+          <div class="access-card-body">
+            <div class="access-detail-row">
+              <div class="access-icon-box speaker-icon-box">
+                <span class="speaker-emoji">📢</span>
+              </div>
+              <div class="access-desc-text">
+                Lee preguntas, respuestas y contenidos mediante voz automática.
+              </div>
+            </div>
+            <div class="access-toggle-row">
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="accesibilidad.lecturaVozAlta"
+                (click)="toggleLecturaVoz(true)">
+                Activado
+              </button>
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="!accesibilidad.lecturaVozAlta"
+                (click)="toggleLecturaVoz(false)">
+                Desactivado
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Módulo 4: Corrección de simplificador de elementos IA -->
+        <div class="access-card-group">
+          <div class="access-tab-pill">Corrección de simplificador de elementos IA</div>
+          <div class="access-card-body">
+            <div class="access-detail-row">
+              <div class="access-icon-box ai-icon-box">
+                <span class="ai-emoji">🤖</span>
+              </div>
+              <div class="access-desc-text">
+                Reduce la complejidad visual y organiza la información de manera asistida.
+              </div>
+            </div>
+            <div class="access-toggle-row">
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="accesibilidad.simplificadorIA"
+                (click)="toggleSimplificadorIA(true)">
+                Activado
+              </button>
+              <button 
+                class="access-pill-btn" 
+                [class.active-pill]="!accesibilidad.simplificadorIA"
+                (click)="toggleSimplificadorIA(false)">
+                Desactivado
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VISTAS FLUJO DE QUIZ: MATEMÁTICAS / FUNCIONES -->
+    <!-- ============================================== -->
+
+    <!-- VISTA QUIZ 1: LOBBY ("Quiz de Funciones") -->
+    <div class="screen-view view-quiz-lobby" *ngIf="activeTab === 'quiz-lobby'">
+      <div class="quiz-strip-banner">
+        Quiz de Funciones
+      </div>
+
+      <div class="quiz-lobby-content">
+        <!-- Tarjeta Central de Juego con Ilustración -->
+        <div class="quiz-game-badge">
+          <div class="badge-title-tag">JUEGO DE FUNCIONES</div>
+          <div class="badge-illustration-container">
+            <div class="badge-characters-row">
+              <div class="character-circle char-girl">
+                <span class="char-emoji">👩‍🎓</span>
+                <span class="char-sub">Sofía</span>
+              </div>
+              <div class="character-circle char-center">
+                <span class="char-emoji">🧑‍💼</span>
+                <span class="char-sub">AICO</span>
+              </div>
+              <div class="character-circle char-boy">
+                <span class="char-emoji">👨‍💻</span>
+                <span class="char-sub">Mateo</span>
+              </div>
+            </div>
+            <div class="badge-backdrop-shapes">
+              <span class="shape s1">f(x)</span>
+              <span class="shape s2">y = mx+b</span>
+              <span class="shape s3">√x</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="quiz-action-buttons">
+          <button type="button" class="quiz-solid-btn btn-grupo" (click)="iniciarQuiz()">
+            JUGAR EN GRUPO
+          </button>
+          <button type="button" class="quiz-solid-btn btn-prueba" (click)="iniciarQuiz()">
+            REALIZAR PRUEBA
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón flotante para el armario/closet -->
+      <button type="button" class="floating-wardrobe-btn" (click)="selectTab('closet')" title="Editar Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- VISTA QUIZ 2: PREGUNTA OPCIÓN MÚLTIPLE ("13/15 Preguntas") -->
+    <div class="screen-view view-quiz-opcion" *ngIf="activeTab === 'quiz-opcion'">
+      <div class="quiz-strip-banner">
+        13/15 Preguntas
+      </div>
+
+      <div class="quiz-play-body">
+        <!-- Fila de Estado: Temporizador y Jugadores -->
+        <div class="quiz-stats-bar">
+          <div class="quiz-stat-pill pill-timer">
+            <ion-icon name="timer-outline"></ion-icon>
+            <span>{{ quizTimer }}s</span>
+          </div>
+          <div class="quiz-stat-pill pill-players">
+            <ion-icon name="people-outline"></ion-icon>
+            <span>{{ quizJugadores }} Jugadores</span>
+          </div>
+        </div>
+
+        <!-- Ilustración Avatar Pensando -->
+        <div class="quiz-avatar-scene">
+          <div class="avatar-quiz-circle">
+            <span class="scene-emoji">🤔</span>
+            <div class="math-cloud">?</div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Pregunta Morada -->
+        <div class="quiz-question-box">
+          <p class="quiz-question-txt">¿Cuál es el dominio de la función f(x) = 1/x-3?</p>
+        </div>
+
+        <!-- Cuadrícula 2x2 de Opciones -->
+        <div class="quiz-options-2x2">
+          <button 
+            type="button" 
+            class="quiz-opt-btn" 
+            [class.opt-selected]="quizOpcionSeleccionada === 'A'"
+            (click)="seleccionarOpcionQuiz('A')">
+            <span class="opt-id">A)</span>
+            <span class="opt-val">x = 3</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quiz-opt-btn" 
+            [class.opt-selected]="quizOpcionSeleccionada === 'B'"
+            (click)="seleccionarOpcionQuiz('B')">
+            <span class="opt-id">B)</span>
+            <span class="opt-val">X no igual a 3</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quiz-opt-btn" 
+            [class.opt-selected]="quizOpcionSeleccionada === 'C'"
+            (click)="seleccionarOpcionQuiz('C')">
+            <span class="opt-id">C)</span>
+            <span class="opt-val">Todos los reales</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="quiz-opt-btn" 
+            [class.opt-selected]="quizOpcionSeleccionada === 'D'"
+            (click)="seleccionarOpcionQuiz('D')">
+            <span class="opt-id">D)</span>
+            <span class="opt-val">x &gt; 3</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón flotante para el armario/closet -->
+      <button type="button" class="floating-wardrobe-btn" (click)="selectTab('closet')" title="Editar Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- VISTA QUIZ 3: PREGUNTA VERDADERO / FALSO ("13/15 Preguntas") -->
+    <div class="screen-view view-quiz-vf" *ngIf="activeTab === 'quiz-vf'">
+      <div class="quiz-strip-banner">
+        13/15 Preguntas
+      </div>
+
+      <div class="quiz-play-body">
+        <!-- Fila de Estado: Temporizador y Jugadores -->
+        <div class="quiz-stats-bar">
+          <div class="quiz-stat-pill pill-timer">
+            <ion-icon name="timer-outline"></ion-icon>
+            <span>{{ quizTimer }}s</span>
+          </div>
+          <div class="quiz-stat-pill pill-players">
+            <ion-icon name="people-outline"></ion-icon>
+            <span>{{ quizJugadores }} Jugadores</span>
+          </div>
+        </div>
+
+        <!-- Ilustración Avatar Enfocado -->
+        <div class="quiz-avatar-scene">
+          <div class="avatar-quiz-circle">
+            <span class="scene-emoji">🧐</span>
+            <div class="math-cloud">⚖️</div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Pregunta Morada -->
+        <div class="quiz-question-box">
+          <p class="quiz-question-txt">¿Toda función lineal tiene una gráfica en forma de recta?</p>
+        </div>
+
+        <!-- Botones Verticales Verdadero / Falso -->
+        <div class="quiz-vf-buttons-col">
+          <button 
+            type="button" 
+            class="quiz-vf-btn vf-verdadero" 
+            [class.vf-active]="quizVFSeleccionado === 'Verdadero'"
+            (click)="seleccionarVF('Verdadero')">
+            Verdadero
+          </button>
+
+          <button 
+            type="button" 
+            class="quiz-vf-btn vf-falso" 
+            [class.vf-active]="quizVFSeleccionado === 'Falso'"
+            (click)="seleccionarVF('Falso')">
+            Falso
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón flotante para el armario/closet -->
+      <button type="button" class="floating-wardrobe-btn" (click)="selectTab('closet')" title="Editar Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- VISTA QUIZ 4: PREGUNTA ABIERTA COLABORATIVA -->
+    <div class="screen-view view-quiz-abierta" *ngIf="activeTab === 'quiz-abierta'">
+      <div class="quiz-strip-banner">
+        Pregunta Abierta
+      </div>
+
+      <div class="quiz-play-body">
+        <!-- Fila de Estado: Temporizador y Jugadores -->
+        <div class="quiz-stats-bar">
+          <div class="quiz-stat-pill pill-timer">
+            <ion-icon name="timer-outline"></ion-icon>
+            <span>{{ quizTimer }}s</span>
+          </div>
+          <div class="quiz-stat-pill pill-players">
+            <ion-icon name="people-outline"></ion-icon>
+            <span>{{ quizJugadores }} Jugadores</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Consigna Morada -->
+        <div class="quiz-question-box">
+          <p class="quiz-question-txt">Explica con tus palabras qué es una función</p>
+        </div>
+
+        <!-- Feed de Respuestas de los Participantes -->
+        <div class="quiz-feed-container">
+          <div class="quiz-feed-item" *ngFor="let item of quizRespuestasFeed">
+            <div class="feed-content">
+              <span class="feed-author" [class.is-profesor]="item.rol === 'profesor'">{{ item.autor }}</span>
+              <p class="feed-text">{{ item.texto }}</p>
+            </div>
+            <div class="feed-stamp" [class.stamp-ok]="item.correcta" [class.stamp-err]="!item.correcta">
+              <ion-icon [name]="item.correcta ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entrada de Respuesta del Usuario -->
+        <div class="quiz-input-bottom-panel">
+          <div class="input-panel-label">Escribe una Respuesta (0/1)</div>
+          <div class="input-form-row">
+            <input 
+              type="text" 
+              class="custom-answer-input"
+              [(ngModel)]="quizMiRespuestaAbierta"
+              (keyup.enter)="enviarRespuestaAbierta()"
+              placeholder="Escribe tu definición aquí...">
+            <button 
+              type="button" 
+              class="send-answer-btn" 
+              (click)="enviarRespuestaAbierta()"
+              title="Enviar respuesta">
+              <ion-icon name="send-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón flotante para el armario/closet -->
+      <button type="button" class="floating-wardrobe-btn" (click)="selectTab('closet')" title="Editar Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- VISTA QUIZ 5: PANTALLA VICTORIA / RESULTADOS ("GANAR") -->
+    <div class="screen-view view-quiz-ganar" *ngIf="activeTab === 'quiz-ganar'">
+      <div class="quiz-strip-banner">
+        Quiz de Funciones
+      </div>
+
+      <div class="quiz-win-content">
+        <!-- Tarjeta de Victoria -->
+        <div class="quiz-win-card">
+          <div class="trophy-badge-circle">
+            <span class="trophy-win-emoji">🏆</span>
+          </div>
+          <h2 class="win-card-title">Completado</h2>
+          <p class="win-card-score">14/15 Correctas</p>
+
+          <div class="win-check-circle">
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </div>
+
+          <button type="button" class="quiz-solid-btn win-action-btn" (click)="reclamarYTerminarQuiz()">
+            Ir Inicio
+          </button>
+        </div>
+
+        <!-- Recompensa de Monedas -->
+        <div class="quiz-reward-pill">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-val">100$</span>
+        </div>
+      </div>
+
+      <!-- Botón flotante para el armario/closet -->
+      <button type="button" class="floating-wardrobe-btn" (click)="selectTab('closet')" title="Editar Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+    </div>
+
   </ion-content>
 
-  <ion-footer>
-    <ion-toolbar color="dark">
-      <ion-title>&copy; 2026 Empresa App. Todos los derechos reservados.</ion-title>
-    </ion-toolbar>
-  </ion-footer>
+  <!-- ============================================== -->
+  <!-- BARRA DE NAVEGACIÓN INFERIOR DE 4 BOTONES MORADOS -->
+  <!-- ============================================== -->
+  <ion-footer class="ion-no-border purple-tabs-footer">
+    <div class="purple-tabs-container">
+      
+      <!-- Botón 1: Vista Estudiante ("dos") -->
+      <button 
+        type="button"
+        class="tab-purple-circle" 
+        [class.tab-active]="activeTab === 'estudiante'"
+        (click)="selectTab('estudiante')"
+        title="Estudiante (dos)">
+        <ion-icon name="school-outline"></ion-icon>
+      </button>
 
+      <!-- Botón 2: Tienda / Avatar -->
+      <button 
+        type="button"
+        class="tab-purple-circle" 
+        [class.tab-active]="activeTab === 'tienda' || activeTab === 'closet'"
+        (click)="selectTab('tienda')"
+        title="Tienda de Avatar">
+        <ion-icon name="shirt-outline"></ion-icon>
+      </button>
+
+      <!-- Botón 3: Estadísticas y Logros -->
+      <button 
+        type="button"
+        class="tab-purple-circle" 
+        [class.tab-active]="activeTab === 'estadisticas' || activeTab === 'logros'"
+        (click)="selectTab('estadisticas')"
+        title="Estadísticas y Logros">
+        <ion-icon name="stats-chart-outline"></ion-icon>
+      </button>
+
+      <!-- Botón 4: Mis Clases ("cinco") -->
+      <button 
+        type="button"
+        class="tab-purple-circle" 
+        [class.tab-active]="activeTab === 'clases'"
+        (click)="selectTab('clases')"
+        title="Mis Clases (cinco)">
+        <ion-icon name="storefront-outline"></ion-icon>
+      </button>
+
+    </div>
+  </ion-footer>
 </div>
+
