@@ -32,6 +32,7 @@ export interface LogroItem {
 export interface TiendaItem {
   id: string;
   name: string;
+  subtitle?: string;
   price: number;
   icon: string;
   owned: boolean;
@@ -202,12 +203,12 @@ export class HomePage implements OnInit {
   // ==========================================
   userCoins: number = 250;
   tiendaItems: TiendaItem[] = [
-    { id: 'suit', name: 'Traje Elegante', price: 300, icon: 'shirt-outline', owned: false, color: '#303f9f' },
-    { id: 'skirt', name: 'Falda Rosa', price: 230, icon: 'sparkles-outline', owned: false, color: '#e91e63' },
-    { id: 'sneakers', name: 'Zapatillas Urbanas', price: 180, icon: 'footsteps-outline', owned: true, color: '#9c27b0' },
-    { id: 'hair', name: 'Corte Moderno', price: 150, icon: 'cut-outline', owned: false, color: '#795548' },
-    { id: 'pet', name: 'Robot Mascota', price: 200, icon: 'paw-outline', owned: false, color: '#00bcd4' },
-    { id: 'hoodie', name: 'Buzo Amarillo', price: 210, icon: 'accessibility-outline', owned: true, color: '#ffb300' }
+    { id: 'ropa', name: 'Ropa', subtitle: '¡Viste a tu avatar como más te guste! ♡', price: 300, icon: 'shirt-outline', owned: false, color: '#a855f7' },
+    { id: 'accesorios', name: 'Accesorios', subtitle: 'Pequeños detalles, grandes cambios. ♡', price: 230, icon: 'star-outline', owned: false, color: '#8b5cf6' },
+    { id: 'cabello', name: 'Cabello', subtitle: 'Elige tu estilo favorito. ♡', price: 180, icon: 'sparkles-outline', owned: true, color: '#3b82f6' },
+    { id: 'cara', name: 'Cara', subtitle: 'Haz que tu avatar tenga más personalidad. ♡', price: 150, icon: 'glasses-outline', owned: false, color: '#60a5fa' },
+    { id: 'emotes', name: 'Emotes', subtitle: 'Exprésate sin palabras. ♡', price: 200, icon: 'paw-outline', owned: false, color: '#38bdf8' },
+    { id: 'poses', name: 'Poses', subtitle: 'Muévete, disfruta, ¡sé tú! ♡', price: 210, icon: 'body-outline', owned: true, color: '#818cf8' }
   ];
 
   // ==========================================
@@ -261,6 +262,10 @@ export class HomePage implements OnInit {
     }
   }
 
+  isTabActive(tab: string): boolean {
+    return (this.activeTab as string) === tab;
+  }
+
   get currentTabTitle(): string {
     switch (this.activeTab) {
       case 'estudiante': return 'dos';
@@ -280,6 +285,10 @@ export class HomePage implements OnInit {
       case 'quiz-ganar': return 'GANAR';
       default: return 'AICO';
     }
+  }
+
+  preguntaGemini() {
+    this.mostrarToast('✨ Pregunta a Gemini: ¿En qué te puedo ayudar con tus tareas hoy?');
   }
 
   // ==========================================
@@ -562,7 +571,7 @@ export class HomePage implements OnInit {
         },
         {
           text: 'Mis Clases (cinco)',
-          icon: 'storefront-outline',
+          icon: 'book-outline',
           handler: () => { this.selectTab('clases'); }
         },
         {

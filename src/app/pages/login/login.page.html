@@ -1,41 +1,215 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
-    <ion-title class="ion-text-center">AICO</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="gamer-content">
+  <div class="gamer-container">
 
-<ion-content class="ion-padding auth-content">
-  <div class="auth-wrapper">
-    
-    <!-- Logo y Encabezado -->
-    <div class="auth-header">
-      <div class="logo-container">
-        <ion-icon name="game-controller-outline" class="brand-icon"></ion-icon>
+    <!-- Decorative Wavy Background Shapes & Sparkles -->
+    <div class="bg-shape shape-top-left"></div>
+    <div class="bg-shape shape-bottom-left"></div>
+    <div class="bg-shape shape-top-right"></div>
+    <div class="bg-shape shape-bottom-right"></div>
+
+    <!-- Background Sparkles and Stars -->
+    <div class="sparkle sparkle-1">✦</div>
+    <div class="sparkle sparkle-2">★</div>
+    <div class="sparkle sparkle-3">✦</div>
+    <div class="sparkle sparkle-4">✧</div>
+    <div class="sparkle sparkle-5">✦</div>
+
+    <!-- Top-Left Doodle: "Juega, conecta, disfruta ♡" -->
+    <div class="doodle-container doodle-top-left">
+      <div class="doodle-text">
+        Juega,<br>conecta,<br>disfruta
+        <span class="doodle-heart">♡</span>
       </div>
-      <h1 class="brand-title">Bienvenido</h1>
-      <p class="brand-subtitle">Inicia sesión en tu cuenta AICO</p>
+      <svg class="doodle-underline" viewBox="0 0 100 20">
+        <path d="M5,12 Q50,18 95,8 M10,16 Q55,22 90,14" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
     </div>
 
-    <!-- Tarjeta de Formulario -->
-    <ion-card class="auth-card">
-      <ion-card-content>
+    <!-- Left 3D Gamepad Illustration -->
+    <div class="illustration-container illustration-gamepad">
+      <!-- Speed/Action lines -->
+      <svg class="action-lines" viewBox="0 0 40 60">
+        <path d="M10,10 Q25,30 10,50 M25,15 Q38,30 25,45" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+
+      <!-- 3D Gamepad SVG -->
+      <svg class="gamepad-svg" viewBox="0 0 200 160">
+        <defs>
+          <linearGradient id="padGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#b066ff"/>
+            <stop offset="50%" stop-color="#8038ff"/>
+            <stop offset="100%" stop-color="#5b11db"/>
+          </linearGradient>
+          <linearGradient id="padHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Shadow -->
+        <ellipse cx="100" cy="142" rx="75" ry="12" fill="rgba(10, 5, 40, 0.4)" filter="blur(5px)" />
+
+        <!-- Main Body -->
+        <path d="M45,40 C65,35 135,35 155,40 C180,46 195,80 180,120 C173,138 152,142 135,125 C122,112 112,105 100,105 C88,105 78,112 65,125 C48,142 27,138 20,120 C5,80 20,46 45,40 Z" fill="url(#padGrad)" filter="url(#glow)"/>
+        
+        <!-- Top Highlight Rim -->
+        <path d="M48,42 C66,37 134,37 152,42 C172,47 182,72 176,98 C174,80 162,48 145,45 C128,42 72,42 55,45 C38,48 26,80 24,98 C18,72 28,47 48,42 Z" fill="url(#padHighlight)"/>
+
+        <!-- D-Pad (Left) -->
+        <g transform="translate(48, 68)">
+          <path d="M-8,-22 H8 V-8 H22 V8 H8 V22 H-8 V8 H-22 V-8 H-8 Z" fill="#4a189e" rx="3"/>
+          <path d="M-6,-20 H6 V-6 H20 V6 H6 V20 H-6 V6 H-20 V-6 H-6 Z" fill="#6922d4"/>
+          <!-- Direction arrows -->
+          <polygon points="0,-16 -4,-10 4,-10" fill="#a472ff"/>
+          <polygon points="0,16 -4,10 4,10" fill="#a472ff"/>
+          <polygon points="-16,0 -10,-4 -10,4" fill="#a472ff"/>
+          <polygon points="16,0 10,-4 10,4" fill="#a472ff"/>
+        </g>
+
+        <!-- Action Buttons (Right) -->
+        <g transform="translate(152, 68)">
+          <circle cx="0" cy="-14" r="7" fill="#8038ff" stroke="#a472ff" stroke-width="1.5"/>
+          <circle cx="14" cy="0" r="7" fill="#8038ff" stroke="#a472ff" stroke-width="1.5"/>
+          <circle cx="0" cy="14" r="7" fill="#8038ff" stroke="#a472ff" stroke-width="1.5"/>
+          <circle cx="-14" cy="0" r="7" fill="#8038ff" stroke="#a472ff" stroke-width="1.5"/>
+          <!-- Button markings -->
+          <text x="0" y="-11" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">Y</text>
+          <text x="14" y="3" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">B</text>
+          <text x="0" y="17" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">A</text>
+          <text x="-14" y="3" font-size="8" fill="#fff" text-anchor="middle" font-weight="bold">X</text>
+        </g>
+
+        <!-- Joysticks -->
+        <circle cx="78" cy="92" r="14" fill="#3b1180"/>
+        <circle cx="78" cy="90" r="11" fill="url(#padGrad)" stroke="#a472ff" stroke-width="1"/>
+
+        <circle cx="122" cy="92" r="14" fill="#3b1180"/>
+        <circle cx="122" cy="90" r="11" fill="url(#padGrad)" stroke="#a472ff" stroke-width="1"/>
+
+        <!-- Center Home Button -->
+        <circle cx="100" cy="62" r="6" fill="#ffffff" opacity="0.9"/>
+      </svg>
+    </div>
+
+    <!-- Bottom-Left Doodle: "Good Vibes Only" -->
+    <div class="doodle-container doodle-bottom-left">
+      <div class="doodle-text">
+        Good<br>Vibes<br>Only
+        <span class="doodle-smiley">☺</span>
+      </div>
+      <svg class="doodle-underline" viewBox="0 0 90 15">
+        <path d="M5,8 Q45,14 85,6 M10,12 Q50,18 80,10" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Top-Right Doodle: "Tu zona gamer" with Crown -->
+    <div class="doodle-container doodle-top-right">
+      <div class="crown-icon">
+        <svg viewBox="0 0 40 25" width="28" height="18">
+          <path d="M5,22 L2,7 L12,14 L20,2 L28,14 L38,7 L35,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="doodle-text text-right">
+        Tu zona<br>gamer
+      </div>
+      <svg class="doodle-underline" viewBox="0 0 90 15">
+        <path d="M10,8 L40,8 M50,8 L85,8" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-dasharray="4,4" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Right 3D Pill Badge: "Level up ♡" with Pointer Cursor -->
+    <div class="badge-level-up">
+      <div class="level-up-inner">
+        <span>Level up ♡</span>
+      </div>
+      <!-- Pixel / Vector Mouse Cursor -->
+      <svg class="cursor-pointer" viewBox="0 0 24 24" width="28" height="28">
+        <path d="M4,2 L18,11 L11,13 L15,21 L12,22 L8,14 L4,17 Z" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Right 3D Headphones Illustration -->
+    <div class="illustration-container illustration-headphones">
+      <svg class="headphones-svg" viewBox="0 0 180 180">
+        <defs>
+          <linearGradient id="phoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="50%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <linearGradient id="earCupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#60a5fa"/>
+            <stop offset="100%" stop-color="#1e40af"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Headband Arc -->
+        <path d="M35,95 C35,40 145,40 145,95" fill="none" stroke="url(#phoneGrad)" stroke-width="18" stroke-linecap="round" filter="url(#glow)"/>
+        <path d="M45,90 C45,50 135,50 135,90" fill="none" stroke="#93c5fd" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+
+        <!-- Left Earcup Cushion & Cup -->
+        <g transform="translate(30, 105) rotate(-15)">
+          <rect x="-18" y="-28" width="36" height="56" rx="18" fill="url(#earCupGrad)" stroke="#ffffff" stroke-width="3"/>
+          <ellipse cx="0" cy="0" rx="12" ry="20" fill="#1e3a8a"/>
+          <path d="M0,-8 C-4,-8 -6,-4 -6,0 C-6,6 0,10 0,10 C0,10 6,6 6,0 C6,-4 4,-8 0,-8 Z" fill="#ffffff"/>
+        </g>
+
+        <!-- Right Earcup Cushion & Cup -->
+        <g transform="translate(150, 105) rotate(15)">
+          <rect x="-18" y="-28" width="36" height="56" rx="18" fill="url(#earCupGrad)" stroke="#ffffff" stroke-width="3"/>
+          <ellipse cx="0" cy="0" rx="12" ry="20" fill="#1e3a8a"/>
+          <path d="M0,-8 C-4,-8 -6,-4 -6,0 C-6,6 0,10 0,10 C0,10 6,6 6,0 C6,-4 4,-8 0,-8 Z" fill="#ffffff"/>
+        </g>
+
+        <!-- Sound wave accents -->
+        <path d="M168,85 Q178,105 168,125" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M175,92 Q183,105 175,118" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Center Main Content / Login Card Block -->
+    <div class="auth-center-block">
+
+      <!-- Header: Logo + Title + Subtitle -->
+      <div class="auth-header">
+        <div class="logo-circle-glow">
+          <div class="logo-circle-inner">
+            <ion-icon name="game-controller" class="brand-controller-icon"></ion-icon>
+          </div>
+        </div>
+        
+        <h1 class="brand-title">AICO<sup>+</sup></h1>
+        <h2 class="welcome-heading">¡Bienvenido!</h2>
+        <p class="welcome-subtext">Inicia sesión en tu cuenta AICO</p>
+      </div>
+
+      <!-- Main Login Card -->
+      <div class="login-card">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-          
-          <!-- Correo Electrónico -->
-          <div class="input-group">
-            <ion-item lines="none" class="custom-input-item">
-              <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+
+          <!-- Email Input Group -->
+          <div class="input-box">
+            <label class="field-label">Correo Electrónico</label>
+            <div class="input-field-wrapper" [class.field-error]="email?.invalid && (email?.dirty || email?.touched)">
+              <div class="icon-prefix">
+                <ion-icon name="mail-outline"></ion-icon>
+              </div>
               <ion-input
                 type="email"
                 formControlName="email"
                 placeholder="correo@ejemplo.com"
-                label="Correo Electrónico"
-                labelPlacement="stacked"
                 autocomplete="email"
                 inputmode="email">
               </ion-input>
-            </ion-item>
-            <div class="error-container" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+            </div>
+            <div class="error-msg" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
               <span *ngIf="email?.errors?.['required']">
                 <ion-icon name="alert-circle-outline"></ion-icon> El correo es obligatorio.
               </span>
@@ -45,31 +219,27 @@
             </div>
           </div>
 
-          <!-- Contraseña -->
-          <div class="input-group">
-            <ion-item lines="none" class="custom-input-item">
-              <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+          <!-- Password Input Group -->
+          <div class="input-box">
+            <label class="field-label">Contraseña</label>
+            <div class="input-field-wrapper" [class.field-error]="password?.invalid && (password?.dirty || password?.touched)">
+              <div class="icon-prefix">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+              </div>
               <ion-input
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
                 placeholder="Mínimo 6 caracteres"
-                label="Contraseña"
-                labelPlacement="stacked"
                 autocomplete="current-password">
               </ion-input>
-              <ion-button
-                fill="clear"
-                slot="end"
+              <button
+                type="button"
                 class="password-toggle-btn"
-                (click)="togglePasswordVisibility()"
-                type="button">
-                <ion-icon
-                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
-                  slot="icon-only">
-                </ion-icon>
-              </ion-button>
-            </ion-item>
-            <div class="error-container" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                (click)="togglePasswordVisibility()">
+                <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+              </button>
+            </div>
+            <div class="error-msg" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
               <span *ngIf="password?.errors?.['required']">
                 <ion-icon name="alert-circle-outline"></ion-icon> La contraseña es obligatoria.
               </span>
@@ -79,47 +249,36 @@
             </div>
           </div>
 
-          <!-- Botón Iniciar Sesión -->
-          <ion-button
+          <!-- Submit Button -->
+          <button
             type="submit"
-            expand="block"
-            color="primary"
-            class="submit-button ion-margin-top"
+            class="submit-btn"
             [disabled]="isSubmitting">
-            <ion-icon name="log-in-outline" slot="start" *ngIf="!isSubmitting"></ion-icon>
-            <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
-            <span *ngIf="!isSubmitting">Iniciar Sesión</span>
-          </ion-button>
+            <ion-spinner name="crescent" *ngIf="isSubmitting" class="btn-spinner"></ion-spinner>
+            <span *ngIf="!isSubmitting" class="btn-content">
+              <span class="arrow-icon">➔</span> INICIAR SESIÓN
+            </span>
+          </button>
+
+          <!-- Quick Fill Demo Button -->
+          <div class="demo-fill-container">
+            <button type="button" class="demo-fill-btn" (click)="fillDemoCredentials()">
+              <ion-icon name="key-outline"></ion-icon>
+              <span>Llenar con cuenta de prueba</span>
+            </button>
+          </div>
 
         </form>
+      </div>
 
-        <!-- Botón de prueba rápida (Demo) -->
-        <div class="demo-login-box">
-          <ion-button
-            fill="clear"
-            size="small"
-            color="medium"
-            (click)="fillDemoCredentials()">
-            <ion-icon name="key-outline" slot="start"></ion-icon>
-            Llenar con cuenta de prueba
-          </ion-button>
-        </div>
+      <!-- Footer: Register Prompt -->
+      <div class="auth-footer">
+        <p class="footer-question">¿No tienes una cuenta aún?</p>
+        <svg class="footer-wave" viewBox="0 0 140 12">
+          <path d="M5,6 Q35,12 70,6 T135,6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
 
-      </ion-card-content>
-    </ion-card>
-
-    <!-- Enlace a Registro -->
-    <div class="auth-footer">
-      <p>¿No tienes una cuenta aún?</p>
-      <ion-button
-        fill="outline"
-        color="dark"
-        routerLink="/register"
-        expand="block"
-        class="secondary-button">
-        <ion-icon name="person-add-outline" slot="start"></ion-icon>
-        Crear cuenta nueva
-      </ion-button>
     </div>
 
   </div>

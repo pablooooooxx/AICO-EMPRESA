@@ -27,7 +27,7 @@
         <ion-label>Crear Juego (cuatro)</ion-label>
       </ion-item>
       <ion-item button (click)="selectTab('clases')" [class.active-item]="activeTab === 'clases'">
-        <ion-icon name="storefront-outline" slot="start" color="success"></ion-icon>
+        <ion-icon name="book-outline" slot="start" color="success"></ion-icon>
         <ion-label>Mis Clases (cinco)</ion-label>
       </ion-item>
       <ion-item button (click)="selectTab('closet')" [class.active-item]="activeTab === 'closet'">
@@ -68,16 +68,20 @@
 </ion-menu>
 
 <div class="ion-page" id="main-content">
-  <!-- Cabecera Azul Fiel al Mockup -->
+  <!-- Cabecera Gamer Fiel al Mockup -->
   <ion-header class="ion-no-border">
-    <ion-toolbar class="blue-toolbar">
+    <ion-toolbar class="blue-toolbar" [class.gamer-toolbar]="activeTab === 'estudiante'">
       <ion-buttons slot="start">
         <ion-menu-button autoHide="false"></ion-menu-button>
       </ion-buttons>
       <ion-title class="header-title">
-        {{ currentTabTitle }}
+        <span *ngIf="activeTab === 'estudiante'" class="dos-logo">dos<span class="dos-sparkle">✨</span></span>
+        <span *ngIf="activeTab !== 'estudiante'">{{ currentTabTitle }}</span>
       </ion-title>
       <ion-buttons slot="end">
+        <ion-button (click)="selectTab('closet')" title="Perfil / Avatar">
+          <ion-icon name="person-circle-outline" slot="icon-only" style="font-size: 26px; color: #c084fc;"></ion-icon>
+        </ion-button>
         <ion-button (click)="presentHeaderMenu()" title="Opciones">
           <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
         </ion-button>
@@ -85,28 +89,90 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content class="main-screen-content">
+  <ion-content class="main-screen-content" [class.gamer-bg-active]="activeTab === 'estudiante'">
 
     <!-- ============================================== -->
-    <!-- VISTA 1: "dos" (HOME ESTUDIANTE) -->
+    <!-- VISTA 1: "dos" (HOME ESTUDIANTE GAMER STYLED) -->
     <!-- ============================================== -->
-    <div class="screen-view view-estudiante" *ngIf="activeTab === 'estudiante'">
+    <div class="screen-view view-estudiante gamer-theme-wrapper" *ngIf="activeTab === 'estudiante'">
       
-      <!-- Fila de Perfil Estudiante -->
+      <!-- Ambient Background Shapes -->
+      <div class="bg-shape shape-top-left"></div>
+      <div class="bg-shape shape-bottom-left"></div>
+      <div class="bg-shape shape-top-right"></div>
+      <div class="bg-shape shape-bottom-right"></div>
+
+      <!-- Sparkles -->
+      <div class="sparkle sparkle-1">✦</div>
+      <div class="sparkle sparkle-2">★</div>
+      <div class="sparkle sparkle-3">✦</div>
+      <div class="sparkle sparkle-4">✧</div>
+
+      <!-- Header Profile Row -->
       <div class="profile-header-row">
-        <div class="avatar-circle">
+        <div class="avatar-circle-glow">
           <ion-icon name="person-outline"></ion-icon>
         </div>
         <div class="profile-meta">
-          <div class="user-fullname">{{ currentUser?.name || 'Nombre de usuario' }} (estudiante)</div>
+          <div class="user-fullname">
+            {{ currentUser?.name || 'Usuario Demo' }} (estudiante)
+            <span class="inline-heart">♡</span>
+          </div>
           <div class="user-level">Nivel {{ estudianteNivel }}</div>
         </div>
       </div>
 
-      <!-- Banner Motivacional Morado con Trofeo -->
+      <!-- Top Middle Doodle: "Tú puedes ♡" with Crown -->
+      <div class="doodle-tu-puedes">
+        <div class="crown-icon-tu">👑</div>
+        <div class="doodle-text">Tú puedes <span class="heart-pink">♡</span></div>
+        <svg class="doodle-underline" viewBox="0 0 100 15">
+          <path d="M5,8 Q50,14 95,6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Overlapping 3D Gamepad Illustration -->
+      <div class="gamer-gamepad-3d">
+        <svg class="gamepad-svg" viewBox="0 0 200 160">
+          <defs>
+            <linearGradient id="padGradStudent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a78bfa"/>
+              <stop offset="50%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#4c1d95"/>
+            </linearGradient>
+            <linearGradient id="padHighlightStudent" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="100" cy="142" rx="75" ry="12" fill="rgba(10, 5, 40, 0.4)" filter="blur(5px)" />
+          <path d="M45,40 C65,35 135,35 155,40 C180,46 195,80 180,120 C173,138 152,142 135,125 C122,112 112,105 100,105 C88,105 78,112 65,125 C48,142 27,138 20,120 C5,80 20,46 45,40 Z" fill="url(#padGradStudent)"/>
+          <path d="M48,42 C66,37 134,37 152,42 C172,47 182,72 176,98 C174,80 162,48 145,45 C128,42 72,42 55,45 C38,48 26,80 24,98 C18,72 28,47 48,42 Z" fill="url(#padHighlightStudent)"/>
+          <g transform="translate(48, 68)">
+            <path d="M-8,-22 H8 V-8 H22 V8 H8 V22 H-8 V8 H-22 V-8 H-8 Z" fill="#312e81" rx="3"/>
+            <polygon points="0,-16 -4,-10 4,-10" fill="#c084fc"/>
+            <polygon points="0,16 -4,10 4,10" fill="#c084fc"/>
+            <polygon points="-16,0 -10,-4 -10,4" fill="#c084fc"/>
+            <polygon points="16,0 10,-4 10,4" fill="#c084fc"/>
+          </g>
+          <g transform="translate(152, 68)">
+            <circle cx="0" cy="-14" r="7" fill="#6d28d9" stroke="#c084fc" stroke-width="1.5"/>
+            <circle cx="14" cy="0" r="7" fill="#6d28d9" stroke="#c084fc" stroke-width="1.5"/>
+            <circle cx="0" cy="14" r="7" fill="#6d28d9" stroke="#c084fc" stroke-width="1.5"/>
+            <circle cx="-14" cy="0" r="7" fill="#6d28d9" stroke="#c084fc" stroke-width="1.5"/>
+          </g>
+          <circle cx="78" cy="90" r="11" fill="url(#padGradStudent)" stroke="#c084fc" stroke-width="1"/>
+          <circle cx="122" cy="90" r="11" fill="url(#padGradStudent)" stroke="#c084fc" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <!-- Banner Motivacional Morado ("¡Sigue así!") -->
       <div class="purple-motivation-card">
+        <div class="banner-star-icon">
+          <span class="star-symbol">★</span>
+        </div>
         <div class="banner-text">
-          <h2 class="banner-title">¡Sigue así!</h2>
+          <h2 class="banner-title">¡<u>Sigue</u> así!</h2>
           <p class="banner-sub">Cada pregunta correcta te acerca a tus metas</p>
         </div>
         <div class="banner-trophy">
@@ -114,24 +180,36 @@
         </div>
       </div>
 
+      <!-- Middle Right Doodle: "Good Vibes Only ☺" -->
+      <div class="doodle-good-vibes">
+        <div class="doodle-text">Good<br>Vibes<br>Only <span class="smiley">☺</span></div>
+        <svg class="doodle-underline" viewBox="0 0 90 15">
+          <path d="M5,8 L85,8" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-dasharray="4,4"/>
+        </svg>
+      </div>
+
       <!-- Sección Continuar -->
       <div class="section-container">
-        <h3 class="section-title">Continuar</h3>
+        <h3 class="section-title-handwritten">Continuar <span class="dashes">彡</span></h3>
 
         <!-- Tarjeta de Actividad en Curso -->
-        <div class="activity-card" (click)="continuarPrueba()">
+        <div class="activity-card-gamer" (click)="continuarPrueba()">
+          <div class="card-crown-icon">👑</div>
           <div class="activity-thumb">
-            <ion-icon name="newspaper-outline"></ion-icon>
+            <ion-icon name="document-text-outline"></ion-icon>
           </div>
           <div class="activity-details">
             <h4 class="activity-title">{{ pruebaActual.titulo }}</h4>
             <p class="activity-subject">{{ pruebaActual.materia }}</p>
             <div class="progress-wrap">
-              <span class="progress-text">Progreso : {{ pruebaActual.progreso }}%</span>
+              <span class="progress-text">Progreso: {{ pruebaActual.progreso }}%</span>
               <div class="progress-bar-bg">
                 <div class="progress-bar-fill" [style.width.%]="pruebaActual.progreso"></div>
               </div>
             </div>
+          </div>
+          <div class="card-arrow-icon">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
           </div>
         </div>
 
@@ -140,84 +218,268 @@
           <div class="avatar-circle-sm">
             <ion-icon name="person-outline"></ion-icon>
           </div>
-          <span class="avatar-label">Avatar</span>
+          <span class="avatar-label"><u>Avatar</u> &gt;</span>
         </div>
       </div>
+
+      <!-- Bottom Left 3D Headphones -->
+      <div class="gamer-headphones-3d">
+        <svg class="headphones-svg" viewBox="0 0 180 180">
+          <defs>
+            <linearGradient id="phoneGradStudent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#60a5fa"/>
+              <stop offset="50%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#1d4ed8"/>
+            </linearGradient>
+          </defs>
+          <path d="M35,95 C35,40 145,40 145,95" fill="none" stroke="url(#phoneGradStudent)" stroke-width="18" stroke-linecap="round"/>
+          <g transform="translate(30, 105) rotate(-15)">
+            <rect x="-18" y="-28" width="36" height="56" rx="18" fill="#2563eb" stroke="#ffffff" stroke-width="3"/>
+            <ellipse cx="0" cy="0" rx="12" ry="20" fill="#1e3a8a"/>
+            <path d="M0,-8 C-4,-8 -6,-4 -6,0 C-6,6 0,10 0,10 C0,10 6,6 6,0 C6,-4 4,-8 0,-8 Z" fill="#ffffff"/>
+          </g>
+          <g transform="translate(150, 105) rotate(15)">
+            <rect x="-18" y="-28" width="36" height="56" rx="18" fill="#2563eb" stroke="#ffffff" stroke-width="3"/>
+            <ellipse cx="0" cy="0" rx="12" ry="20" fill="#1e3a8a"/>
+            <path d="M0,-8 C-4,-8 -6,-4 -6,0 C-6,6 0,10 0,10 C0,10 6,6 6,0 C6,-4 4,-8 0,-8 Z" fill="#ffffff"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Bottom Right Doodle: "Juega, conecta, disfruta ♡" -->
+      <div class="doodle-juega-conecta">
+        <div class="doodle-text">Juega,<br>conecta,<br>disfruta <span class="doodle-heart">♡</span></div>
+        <svg class="doodle-underline" viewBox="0 0 100 20">
+          <path d="M5,12 Q50,18 95,8" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
 
     </div>
 
     <!-- ============================================== -->
     <!-- VISTA 2: "tres" (HOME PROFESOR) -->
     <!-- ============================================== -->
-    <div class="screen-view view-profesor" *ngIf="activeTab === 'profesor'">
+    <!-- ============================================== -->
+    <!-- VISTA 2: "tres" (HOME PROFESOR COSMIC NEON THEME) -->
+    <!-- ============================================== -->
+    <div class="screen-view view-profesor cosmic-profesor-screen" *ngIf="activeTab === 'profesor'">
       
-      <!-- Fila de Perfil Profesor -->
-      <div class="profile-header-row">
-        <div class="avatar-circle">
+      <!-- Fondo Estrellas y Destellos Decorativos -->
+      <div class="cosmic-stars-layer">
+        <span class="star-sparkle s1">★</span>
+        <span class="star-sparkle s2">✦</span>
+        <span class="star-sparkle s3">★</span>
+        <span class="star-sparkle s4">✦</span>
+        <span class="star-sparkle s5">★</span>
+        <span class="star-sparkle s6">✦</span>
+      </div>
+
+
+
+      <!-- Fila de Perfil Profesor y Mensaje de Bienvenida -->
+      <div class="profesor-profile-welcome-row">
+        <div class="profesor-avatar-badge">
           <ion-icon name="person-outline"></ion-icon>
         </div>
-        <div class="profile-meta">
-          <div class="user-fullname">{{ currentUser?.name || 'Nombre de usuario' }} (profesor)</div>
-          <div class="user-welcome">¡Bienvenido de nuevo!</div>
+        <div class="profesor-welcome-meta">
+          <div class="profesor-username">{{ currentUser?.name || 'Usuario Demo' }} (profesor)</div>
+          <div class="profesor-welcome-text">
+            ¡Bienvenido de nuevo! <span class="heart-doodle">♡</span>
+          </div>
         </div>
       </div>
 
-      <!-- Tarjeta Morada de Racha Diaria con Fuego -->
-      <div class="purple-streak-card">
-        <div class="streak-header-line">
-          <span class="streak-title">Tu racha diaria: <b>{{ rachaDias }} días de racha</b></span>
-          <span class="streak-flame">🔥</span>
-        </div>
-        <div class="streak-bar-container">
-          <div class="streak-bar-fill" [style.width.%]="progresoRacha * 100"></div>
-        </div>
-      </div>
+      <!-- Gran Cápsula Glass Neon: Racha Diaria + 3 Métricas Clave -->
+      <div class="cosmic-streak-metrics-capsule">
+        <div class="capsule-gloss"></div>
 
-      <!-- Fila de 3 Métricas Clave -->
-      <div class="metrics-card">
-        <div class="metric-col">
-          <span class="metric-lbl">Clases hoy</span>
-          <span class="metric-val">{{ statsDocente.clasesHoy }}</span>
+        <!-- Fila Superior: Tu racha diaria + Barra con Fuego -->
+        <div class="streak-top-section">
+          <div class="streak-info-line">
+            <span class="flame-icon-glow">🔥</span>
+            <span class="streak-label-text">
+              Tu racha diaria: <span class="highlight-days">{{ rachaDias }} días de racha</span>
+            </span>
+            <span class="sparkle-doodle">✨</span>
+          </div>
+
+          <div class="streak-progress-bar-wrapper">
+            <div class="streak-progress-bar-track">
+              <div class="streak-progress-bar-fill" [style.width.%]="(progresoRacha || 0.75) * 100"></div>
+            </div>
+            <span class="end-flame-icon">🔥</span>
+          </div>
         </div>
-        <div class="metric-divider"></div>
-        <div class="metric-col">
-          <span class="metric-lbl">Juegos creados</span>
-          <span class="metric-val">{{ statsDocente.juegosCreados }}</span>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric-col">
-          <span class="metric-lbl">Estudiantes</span>
-          <span class="metric-val">{{ statsDocente.estudiantes }}</span>
+
+        <div class="capsule-divider-line"></div>
+
+        <!-- Fila Inferior: 3 Métricas Clave (Clases Hoy | Juegos Creados | Estudiantes) -->
+        <div class="metrics-bottom-section">
+          <!-- Métrica 1 -->
+          <div class="metric-item">
+            <div class="metric-badge-icon badge-star">
+              <ion-icon name="star"></ion-icon>
+            </div>
+            <div class="metric-text-box">
+              <span class="metric-label">Clases hoy</span>
+              <span class="metric-number">{{ statsDocente.clasesHoy }}</span>
+            </div>
+          </div>
+
+          <div class="metric-separator"></div>
+
+          <!-- Métrica 2 -->
+          <div class="metric-item">
+            <div class="metric-badge-icon badge-gamepad">
+              <ion-icon name="game-controller"></ion-icon>
+            </div>
+            <div class="metric-text-box">
+              <span class="metric-label">Juegos creados</span>
+              <span class="metric-number">{{ statsDocente.juegosCreados }}</span>
+            </div>
+          </div>
+
+          <div class="metric-separator"></div>
+
+          <!-- Métrica 3 -->
+          <div class="metric-item">
+            <div class="metric-badge-icon badge-people">
+              <ion-icon name="people"></ion-icon>
+            </div>
+            <div class="metric-text-box">
+              <span class="metric-label">Estudiantes</span>
+              <span class="metric-number">{{ statsDocente.estudiantes }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Sección Tus Logros Recientes -->
-      <div class="section-container">
-        <h3 class="section-title">Tus logros recientes:</h3>
-        <div class="badges-row">
-          <div class="badge-item" *ngFor="let logro of logrosDocente" [title]="logro.title">
-            <div class="badge-circle" [style.background-color]="logro.bgLight" [style.border-color]="logro.color">
-              <ion-icon [name]="logro.icon" [style.color]="logro.color"></ion-icon>
+      <div class="cosmic-logros-section">
+        <div class="section-title-row">
+          <h3 class="cosmic-section-title">
+            Tus logros recientes: <span class="heart-doodle">♡</span>
+          </h3>
+          <svg class="wavy-title-underline" viewBox="0 0 110 8">
+            <path d="M0 4 Q 27.5 0, 55 4 T 110 4" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="logros-badges-grid">
+          <!-- Logro 1 -->
+          <div class="logro-badge-card">
+            <div class="badge-sphere grad-rocket">
+              <ion-icon name="rocket-outline"></ion-icon>
             </div>
-            <span class="badge-label">{{ logro.title }}</span>
+            <span class="badge-title">Maestro Estrella</span>
+          </div>
+
+          <!-- Logro 2 -->
+          <div class="logro-badge-card">
+            <div class="badge-sphere grad-trophy">
+              <ion-icon name="trophy-outline"></ion-icon>
+            </div>
+            <span class="badge-title">Creador Pro</span>
+          </div>
+
+          <!-- Logro 3 -->
+          <div class="logro-badge-card">
+            <div class="badge-sphere grad-flame">
+              <ion-icon name="flame-outline"></ion-icon>
+            </div>
+            <span class="badge-title">Racha de Fuego</span>
+          </div>
+
+          <!-- Logro 4 -->
+          <div class="logro-badge-card">
+            <div class="badge-sphere grad-star">
+              <ion-icon name="star-outline"></ion-icon>
+            </div>
+            <span class="badge-title">Docente Top</span>
           </div>
         </div>
       </div>
 
-      <!-- Fila Puntos y Nivel Docente -->
-      <div class="teacher-level-row">
-        <div class="level-box">
-          <span class="level-lbl">Puntos docentes</span>
-          <div class="level-val-row">
-            <span class="star-icon">⭐</span>
-            <span class="level-val">{{ statsDocente.puntos }} pts</span>
+      <!-- Cápsula Glass Neon Inferior: Puntos Docentes y Nivel Docente -->
+      <div class="cosmic-points-level-capsule">
+        <div class="capsule-gloss"></div>
+
+        <!-- Lado Izquierdo: Puntos Docentes -->
+        <div class="level-column">
+          <div class="crown-mini-doodle">
+            <svg viewBox="0 0 20 12">
+              <path d="M2 11L4 3L8 7L10 1L12 7L16 3L18 11H2Z" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="column-title">Puntos docentes <span class="sparkle-ray">-</span></span>
+          <div class="points-pill-btn">
+            <span class="star-badge-sm">⭐</span>
+            <span class="pts-value">{{ statsDocente.puntos }} pts</span>
           </div>
         </div>
-        <div class="level-box">
-          <span class="level-lbl">Nivel docente</span>
-          <div class="level-val-row">
-            <span class="crown-icon">👑</span>
-            <span class="level-val">{{ statsDocente.nivel }}</span>
+
+        <!-- Lado Derecho: Nivel Docente -->
+        <div class="level-column">
+          <div class="crown-mini-doodle">
+            <svg viewBox="0 0 20 12">
+              <path d="M2 11L4 3L8 7L10 1L12 7L16 3L18 11H2Z" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="column-title">Nivel docente <span class="sparkle-ray">-</span></span>
+          <div class="level-pill-btn">
+            <span class="crown-badge-sm">👑</span>
+            <span class="level-value">{{ statsDocente.nivel }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie de Pantalla Decorativo (Gamepad 🎮, ¡Tú puedes! ♡, Audífonos 3D Neon) -->
+      <div class="cosmic-bottom-decorations">
+        <!-- Izquierda: Gamepad Doodled -->
+        <div class="decor-gamepad-box">
+          <svg class="gamepad-doodle-svg" viewBox="0 0 64 48">
+            <rect x="4" y="8" width="56" height="32" rx="16" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+            <path d="M16 18H20V22H24V26H20V30H16V26H12V22H16Z" fill="#93c5fd"/>
+            <circle cx="44" cy="20" r="2.5" fill="#ec4899"/>
+            <circle cx="48" cy="24" r="2.5" fill="#a855f7"/>
+            <circle cx="40" cy="24" r="2.5" fill="#3b82f6"/>
+            <circle cx="44" cy="28" r="2.5" fill="#10b981"/>
+            <path d="M2 14 C-1 20 2 26 2 26" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M62 14 C65 20 62 26 62 26" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Centro: ¡Tú puedes! ♡ -->
+        <div class="decor-motivation-box">
+          <span class="tu-puedes-text">> ¡Tú puedes! <span class="heart-doodle">♡</span></span>
+          <svg class="motivation-underline-svg" viewBox="0 0 120 12">
+            <path d="M5 6 Q 60 12, 115 6" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 2 L23 4 L20 6 L17 4 Z" fill="#93c5fd"/>
+            <path d="M100 2 L103 4 L100 6 L97 4 Z" fill="#93c5fd"/>
+          </svg>
+        </div>
+
+        <!-- Derecha: Audífonos Gamer 3D -->
+        <div class="decor-headphones-box">
+          <div class="headphones-3d-glow">
+            <svg class="headphones-3d-svg" viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="hpBandGradProf" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38bdf8"/>
+                  <stop offset="100%" stop-color="#818cf8"/>
+                </linearGradient>
+                <linearGradient id="hpEarGradProf" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#60a5fa"/>
+                  <stop offset="100%" stop-color="#1d4ed8"/>
+                </linearGradient>
+              </defs>
+              <path d="M 14 36 A 20 20 0 0 1 50 36" fill="none" stroke="url(#hpBandGradProf)" stroke-width="7" stroke-linecap="round"/>
+              <rect x="8" y="28" width="12" height="20" rx="6" fill="url(#hpEarGradProf)" stroke="#ffffff" stroke-width="2"/>
+              <rect x="44" y="28" width="12" height="20" rx="6" fill="url(#hpEarGradProf)" stroke="#ffffff" stroke-width="2"/>
+              <circle cx="50" cy="38" r="4.5" fill="#ec4899"/>
+              <path d="M48.5 37.5 C48.5 36.5 49.5 36 50 36.7 C50.5 36 51.5 36.5 51.5 37.5 C51.5 38.5 50 39.5 50 39.5 C50 39.5 48.5 38.5 48.5 37.5 Z" fill="#ffffff"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -271,47 +533,152 @@
     <!-- ============================================== -->
     <!-- VISTA 4: "cinco" (MIS CLASES) -->
     <!-- ============================================== -->
-    <div class="screen-view view-clases" *ngIf="activeTab === 'clases'">
+    <div class="screen-view view-clases cosmic-clases-screen" *ngIf="activeTab === 'clases'">
       
-      <!-- Fila Título Mis Clases y Botón Nueva Clase -->
-      <div class="classes-top-bar">
-        <h2 class="classes-screen-title">Mis clases</h2>
-        <button class="btn-new-class" (click)="nuevaClase()">
+      <!-- Fondo Estrellas y Destellos Decorativos -->
+      <div class="cosmic-stars-layer">
+        <span class="star-sparkle s1">★</span>
+        <span class="star-sparkle s2">✦</span>
+        <span class="star-sparkle s3">★</span>
+        <span class="star-sparkle s4">✦</span>
+        <span class="star-sparkle s5">★</span>
+        <span class="star-sparkle s6">✦</span>
+      </div>
+
+      <!-- Header Superior "Mis clases" -->
+      <div class="cosmic-top-header">
+        <div class="header-title-box">
+          <div class="crown-doodle-container">
+            <svg class="crown-svg" viewBox="0 0 24 16">
+              <path d="M2 14L4 4L9 9L12 2L15 9L20 4L22 14H2Z" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="4" cy="3" r="1.2" fill="#93c5fd"/>
+              <circle cx="12" cy="1.5" r="1.2" fill="#93c5fd"/>
+              <circle cx="20" cy="3" r="1.2" fill="#93c5fd"/>
+            </svg>
+          </div>
+          <h2 class="mis-clases-main-title">
+            <span class="sparkle-ray">-</span> Mis clases <span class="heart-doodle">♡</span> <span class="sparkle-ray">-</span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- Buscador y Botón "+ Nueva clase" -->
+      <div class="cosmic-search-bar-row">
+        <div class="cosmic-search-input-box">
+          <ion-icon name="search-outline" class="search-icon"></ion-icon>
+          <input 
+            type="text" 
+            class="cosmic-input" 
+            placeholder="Buscar clases..." 
+            [(ngModel)]="searchQuery" />
+          <button class="clear-search-btn" *ngIf="searchQuery" (click)="searchQuery = ''">
+            <ion-icon name="close-circle"></ion-icon>
+          </button>
+        </div>
+
+        <button type="button" class="btn-new-class-cosmic" (click)="nuevaClase()">
           + Nueva clase
         </button>
       </div>
 
-      <!-- Buscador de Clases -->
-      <div class="search-classes-box">
-        <ion-icon name="search-outline" class="search-icon"></ion-icon>
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Buscar clases..." 
-          [(ngModel)]="searchQuery" />
-        <button class="clear-search-btn" *ngIf="searchQuery" (click)="searchQuery = ''">
-          <ion-icon name="close-circle"></ion-icon>
-        </button>
-      </div>
-
-      <!-- Lista de Clases -->
-      <div class="classes-list">
-        <div class="class-item-card" *ngFor="let clase of clasesFiltradas">
-          <div class="class-subject-icon" [style.background-color]="clase.color">
+      <!-- Lista de Clases Capsule Cards Neon Glow -->
+      <div class="classes-list-container">
+        <div class="cosmic-class-capsule" *ngFor="let clase of clasesFiltradas; let i = index">
+          <div class="capsule-gloss"></div>
+          
+          <!-- Badge Icono Circular -->
+          <div class="class-circle-icon-badge" [ngClass]="'badge-grad-' + (i % 4)">
             <ion-icon [name]="clase.icon"></ion-icon>
           </div>
-          <div class="class-info">
-            <h4 class="class-name">{{ clase.name }}</h4>
-            <span class="class-students">{{ clase.studentsCount }} estudiantes</span>
-            <button class="class-info-link" (click)="verDetalleClase(clase)">
-              Más información
+
+          <!-- Información de la clase -->
+          <div class="class-capsule-content">
+            <div class="class-name-row">
+              <svg class="mini-crown-doodle" viewBox="0 0 20 12">
+                <path d="M2 11L4 3L8 7L10 1L12 7L16 3L18 11H2Z" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h3 class="class-title">{{ clase.name }}</h3>
+            </div>
+
+            <div class="class-students-row">
+              <span class="students-count-text">
+                <ion-icon name="people-outline"></ion-icon> {{ clase.studentsCount }} estudiantes
+              </span>
+              <svg class="wavy-accent-underline" viewBox="0 0 70 6" preserveAspectRatio="none">
+                <path d="M0 3 Q 17.5 0, 35 3 T 70 3" fill="none" [attr.stroke]="clase.color || '#60a5fa'" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Acción Derecha "Más información >" -->
+          <div class="class-capsule-action">
+            <span class="doodle-symbol-heart" *ngIf="i === 0 || i === 2">♡</span>
+            <button type="button" class="btn-more-info-link" (click)="verDetalleClase(clase)">
+              Más información <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
+            <span class="doodle-symbol-star" *ngIf="i === 0 || i === 1">★</span>
           </div>
         </div>
 
-        <div class="empty-classes" *ngIf="clasesFiltradas.length === 0">
+        <div class="empty-classes-cosmic" *ngIf="clasesFiltradas.length === 0">
           <ion-icon name="search-outline"></ion-icon>
           <p>No se encontraron clases con "{{ searchQuery }}"</p>
+        </div>
+      </div>
+
+      <!-- Pie de Pantalla: Doodles Gamepad, "¡Tú puedes! ♡", Audífonos 3D Neon -->
+      <div class="cosmic-bottom-decorations">
+        <!-- Izquierda: Gamepad Doodled -->
+        <div class="decor-gamepad-box">
+          <svg class="gamepad-doodle-svg" viewBox="0 0 64 48">
+            <rect x="4" y="8" width="56" height="32" rx="16" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+            <!-- D-Pad -->
+            <path d="M16 18H20V22H24V26H20V30H16V26H12V22H16Z" fill="#93c5fd"/>
+            <!-- Action buttons -->
+            <circle cx="44" cy="20" r="2.5" fill="#ec4899"/>
+            <circle cx="48" cy="24" r="2.5" fill="#a855f7"/>
+            <circle cx="40" cy="24" r="2.5" fill="#3b82f6"/>
+            <circle cx="44" cy="28" r="2.5" fill="#10b981"/>
+            <!-- Motion waves -->
+            <path d="M2 14 C-1 20 2 26 2 26" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M62 14 C65 20 62 26 62 26" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Centro: ¡Tú puedes! ♡ -->
+        <div class="decor-motivation-box">
+          <span class="tu-puedes-text">¡Tú puedes! <span class="heart-doodle">♡</span></span>
+          <svg class="motivation-underline-svg" viewBox="0 0 120 12">
+            <path d="M5 6 Q 60 12, 115 6" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 2 L23 4 L20 6 L17 4 Z" fill="#93c5fd"/>
+            <path d="M100 2 L103 4 L100 6 L97 4 Z" fill="#93c5fd"/>
+          </svg>
+        </div>
+
+        <!-- Derecha: Audífonos Gamer 3D -->
+        <div class="decor-headphones-box">
+          <div class="headphones-3d-glow">
+            <svg class="headphones-3d-svg" viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="hpBandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#38bdf8"/>
+                  <stop offset="100%" stop-color="#818cf8"/>
+                </linearGradient>
+                <linearGradient id="hpEarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#60a5fa"/>
+                  <stop offset="100%" stop-color="#1d4ed8"/>
+                </linearGradient>
+              </defs>
+              <!-- Band -->
+              <path d="M 14 36 A 20 20 0 0 1 50 36" fill="none" stroke="url(#hpBandGrad)" stroke-width="7" stroke-linecap="round"/>
+              <!-- Ear pads -->
+              <rect x="8" y="28" width="12" height="20" rx="6" fill="url(#hpEarGrad)" stroke="#ffffff" stroke-width="2"/>
+              <rect x="44" y="28" width="12" height="20" rx="6" fill="url(#hpEarGrad)" stroke="#ffffff" stroke-width="2"/>
+              <!-- Heart emblem on right cup -->
+              <circle cx="50" cy="38" r="4.5" fill="#ec4899"/>
+              <path d="M48.5 37.5 C48.5 36.5 49.5 36 50 36.7 C50.5 36 51.5 36.5 51.5 37.5 C51.5 38.5 50 39.5 50 39.5 C50 39.5 48.5 38.5 48.5 37.5 Z" fill="#ffffff"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -425,64 +792,339 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VISTA 6: "Tienda" (TIENDA DE AVATAR) -->
+    <!-- VISTA 6: "Tienda" (TIENDA DE AVATAR GAMER REDESIGN) -->
     <!-- ============================================== -->
-    <div class="screen-view view-tienda" *ngIf="activeTab === 'tienda'">
+    <div class="screen-view view-tienda gamer-theme-wrapper" *ngIf="activeTab === 'tienda'">
       
-      <!-- Subcabecera Morada Tienda de Avatar -->
-      <div class="purple-sub-header text-center">
-        <h2 class="sub-header-title-white">Tienda de Avatar</h2>
-      </div>
+      <!-- Ambient Background Shapes -->
+      <div class="bg-shape shape-top-left"></div>
+      <div class="bg-shape shape-bottom-left"></div>
+      <div class="bg-shape shape-top-right"></div>
+      <div class="bg-shape shape-bottom-right"></div>
 
-      <!-- Barra de Monedas y Enlace a Vestuario -->
-      <div class="shop-balance-bar">
-        <div class="coins-pill">
-          <span class="coin-icon">🪙</span>
-          <span class="coin-amount">{{ userCoins }}$</span>
+      <!-- Sparkles -->
+      <div class="sparkle sparkle-1">✦</div>
+      <div class="sparkle sparkle-2">★</div>
+      <div class="sparkle sparkle-3">✦</div>
+      <div class="sparkle sparkle-4">✧</div>
+
+      <!-- Top Row: Coins Pill (Left), Center Title & Avatar Platform, Ir al vestuario (Right) -->
+      <div class="shop-top-bar">
+        
+        <!-- Left: Coins Pill + Doodle -->
+        <div class="shop-left-header">
+          <div class="coins-pill-gamer">
+            <span class="coin-icon">🪙</span>
+            <span class="coin-amount">{{ userCoins }}$</span>
+          </div>
+          <div class="doodle-personaliza">
+            Personaliza<br>tu personaje <span class="heart-pink">♡</span>
+            <svg class="doodle-underline-sm" viewBox="0 0 90 12">
+              <path d="M5,6 Q45,12 85,4" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
         </div>
-        <button class="btn-goto-wardrobe" (click)="irAlVestuario()">
-          Ir al vestuario &gt;
-        </button>
+
+        <!-- Center: "Tienda 👑 de Avatar" Title & Standing Avatar character -->
+        <div class="shop-center-header">
+          <div class="shop-main-title">
+            Tienda <span class="crown-inline">👑</span> de Avatar
+          </div>
+          
+          <div class="avatar-3d-wrapper">
+            <!-- Floating Heart Doodle on Right -->
+            <div class="avatar-heart-doodle">♡</div>
+
+            <!-- Light Rays Outward -->
+            <svg class="avatar-light-rays" viewBox="0 0 200 200">
+              <line x1="30" y1="90" x2="15" y2="90" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="40" y1="65" x2="25" y2="55" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="40" y1="115" x2="25" y2="125" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+              
+              <line x1="170" y1="90" x2="185" y2="90" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="160" y1="65" x2="175" y2="55" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+              <line x1="160" y1="115" x2="175" y2="125" stroke="rgba(255,255,255,0.8)" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+
+            <!-- Radial Backlight Glow -->
+            <div class="avatar-backlight-glow"></div>
+
+            <!-- 3D Avatar Character SVG -->
+            <svg class="avatar-character-svg" viewBox="0 0 160 220">
+              <defs>
+                <!-- Skin Gradient -->
+                <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fae7d0"/>
+                  <stop offset="50%" stop-color="#f8d9b6"/>
+                  <stop offset="100%" stop-color="#e5b88f"/>
+                </linearGradient>
+                <!-- Hair Gradient -->
+                <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#6e3c1b"/>
+                  <stop offset="70%" stop-color="#4a240c"/>
+                  <stop offset="100%" stop-color="#331606"/>
+                </linearGradient>
+                <!-- Shirt Yellow Gradient -->
+                <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#fcd34d"/>
+                  <stop offset="60%" stop-color="#fbbf24"/>
+                  <stop offset="100%" stop-color="#d97706"/>
+                </linearGradient>
+                <!-- Pants Blue Gradient -->
+                <linearGradient id="pantsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#2563eb"/>
+                  <stop offset="100%" stop-color="#1e3a8a"/>
+                </linearGradient>
+                <!-- Shadow Filter -->
+                <filter id="avatarDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#090422" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+
+              <!-- Floor Shadow -->
+              <ellipse cx="80" cy="212" rx="35" ry="6" fill="rgba(10, 5, 30, 0.5)" filter="blur(3px)" />
+
+              <!-- Character Group with Shadow -->
+              <g filter="url(#avatarDropShadow)">
+                <!-- Shoes (White) -->
+                <rect x="56" y="196" width="22" height="14" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                <rect x="82" y="196" width="22" height="14" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                <path d="M56,206 H78 V210 H56 Z" fill="#e2e8f0"/>
+                <path d="M82,206 H104 V210 H82 Z" fill="#e2e8f0"/>
+
+                <!-- Pants (Blue) -->
+                <rect x="60" y="148" width="17" height="50" rx="6" fill="url(#pantsGrad)"/>
+                <rect x="83" y="148" width="17" height="50" rx="6" fill="url(#pantsGrad)"/>
+
+                <!-- Arms (Yellow Long Sleeve) -->
+                <rect x="36" y="98" width="14" height="42" rx="7" fill="url(#shirtGrad)"/>
+                <circle cx="43" cy="144" r="6" fill="url(#skinGrad)"/>
+                
+                <rect x="110" y="98" width="14" height="42" rx="7" fill="url(#shirtGrad)"/>
+                <circle cx="117" cy="144" r="6" fill="url(#skinGrad)"/>
+
+                <!-- Body Torso (Yellow Shirt) -->
+                <rect x="46" y="92" width="68" height="58" rx="14" fill="url(#shirtGrad)"/>
+                <path d="M68,92 C72,98 88,98 92,92 Z" fill="#f59e0b"/>
+
+                <!-- Head (Skin Circle) -->
+                <circle cx="80" cy="54" r="38" fill="url(#skinGrad)"/>
+
+                <!-- Hair (Brown Cap/Bowl Cut) -->
+                <path d="M42,52 C42,22 118,22 118,52 C118,54 110,50 95,48 C80,46 60,48 42,52 Z" fill="url(#hairGrad)"/>
+                <ellipse cx="78" cy="28" rx="20" ry="6" fill="#8d4922" opacity="0.6"/>
+
+                <!-- Eyes -->
+                <circle cx="68" cy="58" r="4.5" fill="#1e1b4b"/>
+                <circle cx="70" cy="56" r="1.5" fill="#ffffff"/>
+
+                <circle cx="92" cy="58" r="4.5" fill="#1e1b4b"/>
+                <circle cx="94" cy="56" r="1.5" fill="#ffffff"/>
+
+                <!-- Cheeks -->
+                <ellipse cx="63" cy="64" rx="4" ry="2.5" fill="#f472b6" opacity="0.4"/>
+                <ellipse cx="97" cy="64" rx="4" ry="2.5" fill="#f472b6" opacity="0.4"/>
+
+                <!-- Smile -->
+                <path d="M74,65 Q80,72 86,65" fill="none" stroke="#ec4899" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right: "¡Hazlo único!" Doodle + "Ir al vestuario >" Button -->
+        <div class="shop-right-header">
+          <div class="doodle-hazlo-unico">
+            ¡Hazlo<br>único! <span class="heart-pink">♡</span>
+          </div>
+          <button class="btn-goto-wardrobe-gamer" (click)="irAlVestuario()">
+            Ir al vestuario &gt;
+          </button>
+        </div>
+
       </div>
 
-      <!-- Vitrina Superior de la Tienda -->
-      <div class="shop-showcase-container">
-        <div class="showcase-room">
-          <div class="avatar-character mini">
-            <div class="avatar-head" [style.background-color]="tonoPielActual">
-              <div class="avatar-hair"></div>
-              <div class="avatar-eyes">
-                <div class="eye left-eye"></div>
-                <div class="eye right-eye"></div>
-              </div>
-              <div class="avatar-smile"></div>
-            </div>
-            <div class="avatar-body yellow-hoodie">
-              <div class="hoodie-pocket"></div>
-            </div>
-            <div class="avatar-legs">
-              <div class="leg left-leg"></div>
-              <div class="leg right-leg"></div>
+      <!-- Shop Grid (6 Cards, 3 columns) -->
+      <div class="shop-cards-grid">
+        
+        <!-- Card 1: Ropa -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[0])">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-ropa">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <path d="M30,30 L42,20 L58,20 L70,30 L85,42 L72,55 L70,48 L70,82 L30,82 L30,48 L28,55 L15,42 Z" fill="#e0e7ff" stroke="#818cf8" stroke-width="3"/>
+              <path d="M42,20 C42,28 58,28 58,20 Z" fill="#6366f1"/>
+              <path d="M43,45 L40,38 L46,41 L50,35 L54,41 L60,38 L57,45 Z" fill="#3b82f6"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Ropa</h3>
+            <p class="card-subtitle">¡Viste a tu avatar como más te guste! <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[0].owned">
+                <span class="coin-icon-sm">🪙</span> 300$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[0].owned">
+                ✓ Comprado
+              </span>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Catálogo de Prendas en Tienda (2 columnas) -->
-      <div class="shop-items-grid">
-        <div class="shop-item-card" *ngFor="let item of tiendaItems" (click)="comprarItem(item)">
-          <div class="shop-item-preview" [style.border-color]="item.color">
-            <ion-icon [name]="item.icon" [style.color]="item.color"></ion-icon>
+        <!-- Card 2: Accesorios -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[1])">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-accesorios">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <polygon points="50,15 62,38 88,38 67,54 75,80 50,64 25,80 33,54 12,38 38,38" fill="url(#starGrad)" stroke="#ffffff" stroke-width="2"/>
+              <defs>
+                <linearGradient id="starGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#6366f1"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-          <div class="shop-item-action">
-            <span class="owned-tag" *ngIf="item.owned">
-              <ion-icon name="checkmark-circle"></ion-icon> Comprado
-            </span>
-            <button class="buy-pill-btn" *ngIf="!item.owned">
-              <span class="coin-mini">🪙</span> {{ item.price }}$
-            </button>
+          <div class="card-content">
+            <h3 class="card-title">Accesorios</h3>
+            <p class="card-subtitle">Pequeños detalles, grandes cambios. <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[1].owned">
+                <span class="coin-icon-sm">🪙</span> 230$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[1].owned">
+                ✓ Comprado
+              </span>
+            </div>
           </div>
         </div>
+
+        <!-- Card 3: Cabello -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[2])">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-cabello">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <path d="M20,60 C20,30 80,30 80,60 Z" fill="#3b82f6" stroke="#ffffff" stroke-width="2"/>
+              <path d="M15,60 C40,55 85,60 95,68 C70,72 30,70 15,60 Z" fill="#60a5fa"/>
+              <path d="M43,45 L40,38 L46,41 L50,35 L54,41 L60,38 L57,45 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Cabello</h3>
+            <p class="card-subtitle">Elige tu estilo favorito. <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[2].owned">
+                <span class="coin-icon-sm">🪙</span> 180$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[2].owned">
+                ✓ Comprado
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Cara -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[3])">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-cara">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <rect x="15" y="38" width="30" height="24" rx="8" fill="#1e1b4b" stroke="#ffffff" stroke-width="2.5"/>
+              <rect x="55" y="38" width="30" height="24" rx="8" fill="#1e1b4b" stroke="#ffffff" stroke-width="2.5"/>
+              <path d="M45,46 L55,46" stroke="#ffffff" stroke-width="3"/>
+              <path d="M25,48 C23,45 27,45 28,48 C29,50 25,52 25,52 C25,52 21,50 22,48 Z" fill="#f472b6"/>
+              <path d="M65,48 C63,45 67,45 68,48 C69,50 65,52 65,52 C65,52 61,50 62,48 Z" fill="#f472b6"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Cara</h3>
+            <p class="card-subtitle">Haz que tu avatar tenga más personalidad. <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[3].owned">
+                <span class="coin-icon-sm">🪙</span> 150$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[3].owned">
+                ✓ Comprado
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Emotes -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[4])">
+          <div class="card-illustration icon-emotes">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <circle cx="50" cy="58" r="18" fill="#60a5fa" stroke="#ffffff" stroke-width="2"/>
+              <circle cx="28" cy="38" r="8" fill="#60a5fa"/>
+              <circle cx="42" cy="28" r="8" fill="#60a5fa"/>
+              <circle cx="58" cy="28" r="8" fill="#60a5fa"/>
+              <circle cx="72" cy="38" r="8" fill="#60a5fa"/>
+              <path d="M50,54 C47,50 53,50 55,54 C56,56 50,60 50,60 C50,60 44,56 45,54 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Emotes</h3>
+            <p class="card-subtitle">Exprésate sin palabras. <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[4].owned">
+                <span class="coin-icon-sm">🪙</span> 200$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[4].owned">
+                ✓ Comprado
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Poses -->
+        <div class="tienda-card-gamer" (click)="comprarItem(tiendaItems[5])">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-poses">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <rect x="20" y="20" width="60" height="60" rx="16" fill="#6366f1" stroke="#ffffff" stroke-width="2.5"/>
+              <circle cx="50" cy="38" r="7" fill="#ffffff"/>
+              <path d="M50,47 L50,65 M50,52 L38,45 M50,52 L62,45 M50,65 L40,75 M50,65 L60,75" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Poses</h3>
+            <p class="card-subtitle">Muévete, disfruta, ¡sé tú! <span class="heart-inline">♡</span></p>
+            <div class="card-action">
+              <button class="buy-pill-btn" *ngIf="!tiendaItems[5].owned">
+                <span class="coin-icon-sm">🪙</span> 210$
+              </button>
+              <span class="owned-pill-btn" *ngIf="tiendaItems[5].owned">
+                ✓ Comprado
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Center Doodle -->
+      <div class="doodle-bottom-center">
+        ─ Tu avatar, tus reglas! ─
+      </div>
+
+      <!-- Left Bottom Doodle: "Good Vibes Only ☺" + Gamepad -->
+      <div class="doodle-good-vibes-left">
+        <span>Good<br>Vibes<br>Only ☺</span>
+      </div>
+      <div class="gamepad-3d-left">
+        <svg class="gamepad-svg" viewBox="0 0 200 160">
+          <ellipse cx="100" cy="142" rx="75" ry="12" fill="rgba(10, 5, 40, 0.4)" />
+          <path d="M45,40 C65,35 135,35 155,40 C180,46 195,80 180,120 C173,138 152,142 135,125 C122,112 112,105 100,105 C88,105 78,112 65,125 C48,142 27,138 20,120 C5,80 20,46 45,40 Z" fill="#8038ff"/>
+        </svg>
+      </div>
+
+      <!-- Right Bottom 3D Headphones -->
+      <div class="headphones-3d-right">
+        <svg class="headphones-svg" viewBox="0 0 180 180">
+          <path d="M35,95 C35,40 145,40 145,95" fill="none" stroke="#2563eb" stroke-width="18" stroke-linecap="round"/>
+          <g transform="translate(150, 105) rotate(15)">
+            <rect x="-18" y="-28" width="36" height="56" rx="18" fill="#3b82f6" stroke="#ffffff" stroke-width="3"/>
+          </g>
+        </svg>
       </div>
 
     </div>
@@ -538,75 +1180,243 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- VISTA 8: "Estadísticas" -->
+    <!-- VISTA 8: "Estadísticas" (GAMER REDESIGN) -->
     <!-- ============================================== -->
-    <div class="screen-view view-estadisticas" *ngIf="activeTab === 'estadisticas'">
+    <div class="screen-view view-estadisticas gamer-theme-wrapper" *ngIf="activeTab === 'estadisticas'">
       
-      <!-- Banner Morado Estadísticas y Logros -->
-      <div class="purple-sub-header text-center">
-        <h2 class="sub-header-title-white">Estadisticas y Logros</h2>
-      </div>
+      <!-- Ambient Background Shapes -->
+      <div class="bg-shape shape-top-left"></div>
+      <div class="bg-shape shape-bottom-left"></div>
+      <div class="bg-shape shape-top-right"></div>
+      <div class="bg-shape shape-bottom-right"></div>
 
-      <!-- Segmento / Toggle de dos opciones -->
-      <div class="segmented-control-container">
-        <button class="seg-btn active-seg">
-          Estadisticas
-        </button>
-        <button class="seg-btn" (click)="switchStatsTab('logros')">
-          Logros
-        </button>
-      </div>
+      <!-- Sparkles -->
+      <div class="sparkle sparkle-1">✦</div>
+      <div class="sparkle sparkle-2">★</div>
+      <div class="sparkle sparkle-3">✦</div>
+      <div class="sparkle sparkle-4">✧</div>
 
-      <!-- Grilla 2x2 de Métricas Moradas -->
-      <div class="stats-metrics-grid">
-        <div class="stat-purple-card">
-          <span class="stat-card-title">Clases Asistidas</span>
-          <span class="stat-card-number">{{ statsEstudiante.clasesAsistidas }}</span>
-        </div>
-        <div class="stat-purple-card">
-          <span class="stat-card-title">Porcentaje Promedio</span>
-          <span class="stat-card-number">{{ statsEstudiante.porcentajePromedio }}%</span>
-        </div>
-        <div class="stat-purple-card">
-          <span class="stat-card-title">Juegos Fallados</span>
-          <span class="stat-card-number">{{ statsEstudiante.juegosFallados }}</span>
-        </div>
-        <div class="stat-purple-card">
-          <span class="stat-card-title">Juegos Completados</span>
-          <span class="stat-card-number">{{ statsEstudiante.juegosCompletados }}</span>
-        </div>
-      </div>
-
-      <!-- Sección Tu Progreso -->
-      <div class="progress-section-container">
-        <div class="progress-section-header">
-          <span>Tu Progreso</span>
+      <!-- Top Bar: Left Doodle + Center Segmented Toggle + Right Doodle -->
+      <div class="stats-top-control-bar">
+        
+        <!-- Left Doodle -->
+        <div class="stats-left-doodle">
+          <span class="sparkle-star">✦</span>
+          <span>Pequeños<br>logros, grandes<br><strong>avances</strong> <span class="heart-pink">♡</span></span>
         </div>
 
-        <!-- Gráfica Interactiva de Tendencia SVG -->
-        <div class="progress-chart-card">
-          <div class="chart-title-tag">Progreso General</div>
-          <svg class="progress-svg-chart" viewBox="0 0 320 180">
-            <!-- Líneas de rejilla -->
-            <line x1="20" y1="20" x2="310" y2="20" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="20" y1="60" x2="310" y2="60" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="20" y1="100" x2="310" y2="100" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="20" y1="140" x2="310" y2="140" stroke="#f0f0f0" stroke-width="1" />
-            
-            <!-- Ejes -->
-            <line x1="20" y1="160" x2="310" y2="160" stroke="#8e24aa" stroke-width="1.5" />
-            <line x1="20" y1="10" x2="20" y2="160" stroke="#8e24aa" stroke-width="1.5" />
-            
-            <!-- Área bajo la curva -->
-            <path [attr.d]="svgAreaPath" fill="rgba(142, 36, 170, 0.08)" />
-            
-            <!-- Línea de datos -->
-            <path [attr.d]="svgLinePath" fill="none" stroke="#8e24aa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            
-            <!-- Puntos de datos -->
-            <circle *ngFor="let p of chartPoints" [attr.cx]="p.x" [attr.cy]="p.y" r="4" fill="#ffffff" stroke="#8e24aa" stroke-width="2.5" />
+        <!-- Center: Title & Toggle -->
+        <div class="stats-center-toggle">
+          <h2 class="stats-main-title">
+            Estadísticas <span class="crown-inline">👑</span> y Logros
+          </h2>
+          <div class="gamer-segmented-toggle">
+            <button class="seg-btn-gamer active" (click)="switchStatsTab('estadisticas')">
+              Estadísticas
+            </button>
+            <button class="seg-btn-gamer" (click)="switchStatsTab('logros')">
+              Logros
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Doodle -->
+        <div class="stats-right-doodle">
+          <span>¡Tú puedes! <span class="heart-pink">♡</span></span>
+          <svg class="doodle-underline-sm" viewBox="0 0 80 10">
+            <path d="M5,5 Q40,9 75,4" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
+
+      </div>
+
+      <!-- 2x2 Cards Grid of Metrics -->
+      <div class="stats-cards-grid">
+        
+        <!-- Card 1: Clases Asistidas -->
+        <div class="stat-gamer-card">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-notebook">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <rect x="25" y="15" width="55" height="70" rx="10" fill="url(#bookGrad)" stroke="#ffffff" stroke-width="2.5"/>
+              <defs>
+                <linearGradient id="bookGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#8b5cf6"/>
+                  <stop offset="100%" stop-color="#4c1d95"/>
+                </linearGradient>
+              </defs>
+              <circle cx="25" cy="28" r="4" fill="#ffffff"/>
+              <circle cx="25" cy="43" r="4" fill="#ffffff"/>
+              <circle cx="25" cy="58" r="4" fill="#ffffff"/>
+              <circle cx="25" cy="73" r="4" fill="#ffffff"/>
+              <path d="M43,45 L40,38 L46,41 L50,35 L54,41 L60,38 L57,45 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Clases Asistidas</h3>
+            <div class="card-value">
+              <span class="dashes">彡</span>
+              <span class="value-num">{{ statsEstudiante.clasesAsistidas }}</span>
+              <span class="dashes">彡</span>
+              <span class="heart-inline">♡</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Porcentaje Promedio -->
+        <div class="stat-gamer-card">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-target">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <circle cx="50" cy="50" r="35" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5"/>
+              <circle cx="50" cy="50" r="24" fill="#ffffff"/>
+              <circle cx="50" cy="50" r="14" fill="#6366f1"/>
+              <path d="M60,35 L75,20 L68,27 L70,18 L60,25 Z" fill="#60a5fa"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Porcentaje Promedio</h3>
+            <div class="card-value">
+              <span class="dashes">彡</span>
+              <span class="value-num">{{ statsEstudiante.porcentajePromedio }}%</span>
+              <span class="dashes">彡</span>
+              <span class="heart-inline">♡</span>
+            </div>
+          </div>
+          <div class="card-side-doodle">
+            ¡Vas<br>muy bien!
+          </div>
+        </div>
+
+        <!-- Card 3: Juegos Fallados -->
+        <div class="stat-gamer-card">
+          <div class="card-crown-tag">👑</div>
+          <div class="card-illustration icon-gamepad">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <path d="M22,35 C32,30 68,30 78,35 C90,40 98,62 90,82 C86,92 74,94 65,85 C58,77 54,73 50,73 C46,73 42,77 35,85 C26,94 14,92 10,82 C2,62 10,40 22,35 Z" fill="#8038ff" stroke="#ffffff" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Juegos Fallados</h3>
+            <div class="card-value">
+              <span class="dashes">彡</span>
+              <span class="value-num">{{ statsEstudiante.juegosFallados }}</span>
+              <span class="dashes">彡</span>
+              <span class="heart-inline">♡</span>
+            </div>
+          </div>
+          <div class="card-side-doodle">
+            ¡No te<br>rindas! <span class="heart-pink">♡</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Juegos Completados -->
+        <div class="stat-gamer-card">
+          <div class="card-illustration icon-trophy">
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <path d="M30,25 H70 V48 C70,62 58,70 50,70 C42,70 30,62 30,48 Z" fill="#3b82f6" stroke="#ffffff" stroke-width="2.5"/>
+              <path d="M42,70 H58 V82 H42 Z" fill="#2563eb"/>
+              <rect x="32" y="82" width="36" height="10" rx="3" fill="#ffffff"/>
+              <path d="M43,38 L40,31 L46,34 L50,28 L54,34 L60,31 L57,38 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Juegos Completados</h3>
+            <div class="card-value">
+              <span class="dashes">彡</span>
+              <span class="value-num">{{ statsEstudiante.juegosCompletados }}</span>
+              <span class="dashes">彡</span>
+              <span class="heart-inline">♡</span>
+            </div>
+          </div>
+          <div class="card-side-doodle">
+            Eres<br>increíble <span class="heart-pink">♡</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Card: Tu Progreso & Chart -->
+      <div class="progress-gamer-card">
+        
+        <!-- Left Column: Icon + Tu Progreso -->
+        <div class="progress-left-col">
+          <div class="card-illustration icon-chart">
+            <div class="card-crown-tag">👑</div>
+            <svg viewBox="0 0 100 100" class="card-svg">
+              <rect x="18" y="60" width="14" height="28" rx="4" fill="#a855f7"/>
+              <rect x="38" y="48" width="14" height="40" rx="4" fill="#818cf8"/>
+              <rect x="58" y="32" width="14" height="56" rx="4" fill="#60a5fa"/>
+              <rect x="78" y="20" width="14" height="68" rx="4" fill="#c084fc"/>
+              <path d="M15,65 Q45,35 85,15" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+              <polygon points="85,10 88,22 76,18" fill="#ffffff"/>
+            </svg>
+          </div>
+          <h3 class="progress-title">Tu Progreso <span class="heart-inline">♡</span></h3>
+        </div>
+
+        <!-- Center Column: Glassmorphism Chart -->
+        <div class="progress-center-col">
+          <div class="chart-header-doodle">─ Progreso General ─</div>
+          <div class="chart-glass-box">
+            <svg class="progress-svg-line-chart" viewBox="0 0 340 100">
+              <defs>
+                <linearGradient id="chartLineGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#ec4899"/>
+                  <stop offset="50%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#60a5fa"/>
+                </linearGradient>
+                <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(236,72,153,0.3)"/>
+                  <stop offset="100%" stop-color="rgba(168,85,247,0.0)"/>
+                </linearGradient>
+              </defs>
+              <line x1="10" y1="25" x2="330" y2="25" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3,3"/>
+              <line x1="10" y1="50" x2="330" y2="50" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3,3"/>
+              <line x1="10" y1="75" x2="330" y2="75" stroke="rgba(255,255,255,0.1)" stroke-dasharray="3,3"/>
+              
+              <path d="M 20 85 L 60 70 L 100 78 L 140 60 L 180 72 L 220 40 L 260 52 L 310 20 L 310 95 L 20 95 Z" fill="url(#chartAreaGrad)"/>
+              
+              <path d="M 20 85 L 60 70 L 100 78 L 140 60 L 180 72 L 220 40 L 260 52 L 310 20" fill="none" stroke="url(#chartLineGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              
+              <circle cx="20" cy="85" r="4" fill="#ffffff" stroke="#ec4899" stroke-width="2"/>
+              <circle cx="60" cy="70" r="4" fill="#ffffff" stroke="#ec4899" stroke-width="2"/>
+              <circle cx="100" cy="78" r="4" fill="#ffffff" stroke="#a855f7" stroke-width="2"/>
+              <circle cx="140" cy="60" r="4" fill="#ffffff" stroke="#a855f7" stroke-width="2"/>
+              <circle cx="180" cy="72" r="4" fill="#ffffff" stroke="#a855f7" stroke-width="2"/>
+              <circle cx="220" cy="40" r="4" fill="#ffffff" stroke="#60a5fa" stroke-width="2"/>
+              <circle cx="260" cy="52" r="4" fill="#ffffff" stroke="#60a5fa" stroke-width="2"/>
+              <circle cx="310" cy="20" r="4" fill="#ffffff" stroke="#60a5fa" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right Column: Doodle + 3D Star Character -->
+        <div class="progress-right-col">
+          <div class="doodle-cada-dia">
+            <span class="crown-sm">👑</span><br>
+            Cada día<br>cuentas <span class="heart-pink">♡</span>
+          </div>
+          
+          <div class="star-character-3d">
+            <svg viewBox="0 0 100 100" class="star-svg">
+              <defs>
+                <linearGradient id="starCharGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#c084fc"/>
+                  <stop offset="60%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#7c3aed"/>
+                </linearGradient>
+              </defs>
+              <polygon points="50,10 63,35 90,38 70,58 76,85 50,71 24,85 30,58 10,38 37,35" fill="url(#starCharGrad)" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="43" cy="48" r="3" fill="#1e1b4b"/>
+              <circle cx="57" cy="48" r="3" fill="#1e1b4b"/>
+              <ellipse cx="38" cy="53" rx="3" ry="1.5" fill="#f472b6" opacity="0.6"/>
+              <ellipse cx="62" cy="53" rx="3" ry="1.5" fill="#f472b6" opacity="0.6"/>
+              <path d="M47,54 Q50,58 53,54" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -1201,7 +2011,7 @@
         [class.tab-active]="activeTab === 'clases'"
         (click)="selectTab('clases')"
         title="Mis Clases (cinco)">
-        <ion-icon name="storefront-outline"></ion-icon>
+        <ion-icon name="book-outline"></ion-icon>
       </button>
 
     </div>
