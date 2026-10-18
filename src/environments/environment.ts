@@ -10,7 +10,8 @@ export const environment = {
   storageBucket: "aico-55d10.firebasestorage.app",
   messagingSenderId: "772904032408",
   appId: "1:772904032408:web:20274eeab93c54c56798ed",
-  measurementId: "G-SVYTQ0VL3S"
+  measurementId: "G-SVYTQ0VL3S",
+  geminiApiKey: 'Q.Ab8RN6IoMiesykkkkcWoecoXF7cHHCd7OPN8dEwb3SZYMaQVzw'
   },
 };
 /*
