@@ -1,69 +1,57 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, MenuController, ToastController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
-import { AichatService } from '../services/ai-chat.service';
 import { User } from '../models/user.model';
-import { Chatmessage } from '../models/chat.model';
 
 export interface GameTypeOption {
   id: string;
   name: string;
-  desc: string;
   icon: string;
-  badgeColor: string;
-}
-
-export interface SavedGame {
-  id: string;
-  titulo: string;
-  tipo: string;
-  tipoLabel: string;
-  modo: 'en-vivo' | 'asignar';
-  preguntasCount: number;
-  fecha: string;
-}
-
-export interface StudentItem {
-  id: string;
-  name: string;
-  avatar: string;
-  asistencia: number;
-  retosCompletados: number;
-  promedio: number;
+  color: string;
+  bgLight: string;
 }
 
 export interface ClaseItem {
   id: number;
   name: string;
   grado: string;
-  codigo: string;
-  docente: string;
   studentsCount: number;
-  estudiantesList: StudentItem[];
-  actividadesCount: number;
   icon: string;
+  color: string;
+  bgLight: string;
+}
+
+export interface LogroItem {
+  id: number;
+  title: string;
+  icon: string;
+  color: string;
+  bgLight: string;
+}
+
+export interface TiendaItem {
+  id: string;
+  name: string;
+  subtitle?: string;
+  price: number;
+  icon: string;
+  owned: boolean;
   color: string;
 }
 
-export interface StoreItem {
+export interface AvatarPrenda {
   id: string;
   name: string;
-  category: 'cabello' | 'tops' | 'pantalones' | 'zapatos' | 'accesorios';
-  price: number;
-  tag?: string;
-  owned: boolean;
-  equipped: boolean;
   icon: string;
-  color: string;
+  equipped: boolean;
+  type: string;
 }
 
 export interface LogroDesafio {
   id: number;
   title: string;
-  desc: string;
   medal: 'bronze' | 'silver' | 'gold' | 'diamond';
   completed: boolean;
-  recompensa: number;
 }
 
 @Component({
@@ -75,225 +63,56 @@ export interface LogroDesafio {
 export class HomePage implements OnInit {
   currentUser: User | null = null;
 
-  // Pestaña activa en pantalla
-  activeTab: 'estudiante' | 'profesor' | 'clases' | 'clase-detalle' | 'crear-juego' | 'tienda' | 'closet' | 'logros' | 'estadisticas' | 'configuracion' | 'opciones-adicionales' | 'quiz-lobby' | 'quiz-opcion' | 'quiz-vf' | 'quiz-abierta' | 'quiz-ganar' | 'ruleta-juego' = 'estudiante';
+  // Pestaña activa
+  activeTab: 'estudiante' | 'profesor' | 'crear-juego' | 'clases' | 'closet' | 'tienda' | 'logros' | 'estadisticas' | 'configuracion' | 'opciones-adicionales' | 'quiz-lobby' | 'quiz-opcion' | 'quiz-vf' | 'quiz-abierta' | 'quiz-ganar' = 'estudiante';
 
-  // Destino activo en la barra inferior de 5 botones
-  currentBottomNav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'logros' = 'inicio';
-
-  // Monedas y Economía
-  userCoins: number = 1250;
-
-  // Configuración de Avatar sincronizada globalmente
-  avatarConfig = {
-    skinColor: '#f8d9b6',
-    hairId: 'cabello-moderno',
-    topId: 'sudadera-estrella',
-    bottomId: 'pantalon-urbano',
-    shoesId: 'sneakers-pro',
-    accessoryId: 'mascota-snoopy',
-    expression: 'Feliz',
-    angle: 'Frente'
-  };
-
-  // Paleta de tonos de piel (naturales y cósmicos)
-  tonosPiel = [
-    { color: '#fae7d0', label: 'Claro' },
-    { color: '#f8d9b6', label: 'Medio' },
-    { color: '#e5b88f', label: 'Cálido' },
-    { color: '#c98a58', label: 'Bronce' },
-    { color: '#703c19', label: 'Oscuro' },
-    { color: '#d8b4fe', label: 'Morado Cósmico' },
-    { color: '#93c5fd', label: 'Azul Estelar' },
-    { color: '#f472b6', label: 'Rosa Galaxia' }
-  ];
-
-  // Expresiones faciales cartoon
-  expresiones = ['Feliz', 'Guiño', 'Sorprendido', 'Neutro', 'Pensativo'];
-
-  // Ángulos de vista 360°
-  angulosVista = ['Frente', '3/4', 'Perfil', 'Espalda'];
-
-  // Categorías de la Tienda / Armario (Roblox style)
-  storeCategoryFilter: 'todo' | 'cabello' | 'tops' | 'pantalones' | 'zapatos' | 'accesorios' = 'todo';
-
-  // Artículos de la Tienda e Inventario
-  storeItems: StoreItem[] = [
-    { id: 'sudadera-estrella', name: 'Sudadera Estrella', category: 'tops', price: 350, tag: 'NUEVO', owned: true, equipped: true, icon: 'shirt-outline', color: '#a855f7' },
-    { id: 'pantalon-urbano', name: 'Pantalón Urbano', category: 'pantalones', price: 280, tag: 'POPULAR', owned: true, equipped: true, icon: 'barcode-outline', color: '#3b82f6' },
-    { id: 'mascota-snoopy', name: 'Perrito Galáctico Snoopy', category: 'accesorios', price: 450, tag: 'DESTACADO', owned: true, equipped: true, icon: 'paw-outline', color: '#ec4899' },
-    { id: 'cabello-moderno', name: 'Corte Galáctico', category: 'cabello', price: 180, tag: 'ESTILO', owned: true, equipped: true, icon: 'sparkles-outline', color: '#6366f1' },
-    { id: 'sneakers-pro', name: 'Sneakers Cósmicos', category: 'zapatos', price: 220, owned: true, equipped: true, icon: 'footsteps-outline', color: '#10b981' },
-    { id: 'hoodie-neon', name: 'Hoodie Neón Cyber', category: 'tops', price: 320, tag: 'NUEVO', owned: false, equipped: false, icon: 'shirt-outline', color: '#f43f5e' },
-    { id: 'falda-plisada', name: 'Falda Plisada Violeta', category: 'pantalones', price: 250, owned: false, equipped: false, icon: 'color-palette-outline', color: '#c084fc' },
-    { id: 'gorra-saber', name: 'Gorra SaberStyle', category: 'accesorios', price: 160, owned: false, equipped: false, icon: 'flash-outline', color: '#ffb300' },
-    { id: 'botas-lunares', name: 'Botas de Gravedad', category: 'zapatos', price: 310, tag: 'ÉPICO', owned: false, equipped: false, icon: 'rocket-outline', color: '#8b5cf6' },
-    { id: 'cabello-rizos', name: 'Melena Estelar', category: 'cabello', price: 200, owned: false, equipped: false, icon: 'flower-outline', color: '#f472b6' }
-  ];
+  // Sub-pestaña para Estadísticas y Logros
+  statsSubTab: 'estadisticas' | 'logros' = 'estadisticas';
 
   // ==========================================
-  // Datos Módulo de Creación de Juegos
-  // ==========================================
-  selectedGameType: string = 'quiz';
-  selectedParticipationMode: 'en-vivo' | 'asignar' = 'en-vivo';
-  nuevoJuegoTitulo: string = '';
-
-  gameTypes: GameTypeOption[] = [
-    { id: 'quiz', name: 'Cuestionario', desc: 'Preguntas de opción múltiple con puntajes inmediatos', icon: 'help-circle-outline', badgeColor: '#ec4899' },
-    { id: 'ruleta', name: 'Ruleta Aleatoria', desc: 'Rueda de conceptos y preguntas para dinamizar la clase', icon: 'disc-outline', badgeColor: '#8b5cf6' },
-    { id: 'abierta', name: 'Pregunta Abierta', desc: 'Debates y respuestas escritas estilo chat colaborativo', icon: 'chatbubbles-outline', badgeColor: '#3b82f6' },
-    { id: 'verdadero-falso', name: 'Verdadero o Falso', desc: 'Dilemas rápidos de verificación conceptual', icon: 'checkmark-done-circle-outline', badgeColor: '#10b981' },
-    { id: 'completar', name: 'Completar Frase', desc: 'Rellena los espacios vacíos con los términos correctos', icon: 'document-text-outline', badgeColor: '#f59e0b' },
-    { id: 'sopa-letras', name: 'Sopa de Letras', desc: 'Búsqueda de términos clave en cuadrícula interactiva', icon: 'grid-outline', badgeColor: '#06b6d4' }
-  ];
-
-  savedGames: SavedGame[] = [
-    { id: 'g1', titulo: 'Quiz de Funciones y Límites', tipo: 'quiz', tipoLabel: 'Cuestionario', modo: 'en-vivo', preguntasCount: 15, fecha: 'Hoy' },
-    { id: 'g2', titulo: 'Ruleta de Repaso Saber 11', tipo: 'ruleta', tipoLabel: 'Ruleta', modo: 'en-vivo', preguntasCount: 6, fecha: 'Ayer' },
-    { id: 'g3', titulo: 'Debate: Funciones en la Vida Real', tipo: 'abierta', tipoLabel: 'Pregunta Abierta', modo: 'asignar', preguntasCount: 3, fecha: '18 Oct' },
-    { id: 'g4', titulo: 'Comprobación: Leyes de Newton', tipo: 'verdadero-falso', tipoLabel: 'Verdadero o Falso', modo: 'asignar', preguntasCount: 8, fecha: '15 Oct' },
-    { id: 'g5', titulo: 'Vocabulario Biología Celular', tipo: 'sopa-letras', tipoLabel: 'Sopa de Letras', modo: 'asignar', preguntasCount: 10, fecha: '12 Oct' }
-  ];
-
-  // Ruleta interactiva
-  ruletaSectores: string[] = ['Dominio', 'Rango', 'Inyectiva', 'Asíntota', 'Pendiente', 'Parábola'];
-  ruletaRotacion: number = 0;
-  ruletaGirando: boolean = false;
-  ruletaResultado: string | null = null;
-
-  // ==========================================
-  // Datos Flujo de Quiz
+  // Datos Flujo de Quiz (Juego de Funciones)
   // ==========================================
   quizTimer: number = 15;
-  quizJugadores: number = 24;
+  quizJugadores: number = 15;
   quizOpcionSeleccionada: string | null = null;
   quizVFSeleccionado: string | null = null;
   quizMiRespuestaAbierta: string = '';
   quizRespuestasFeed = [
     {
-      autor: 'Prof. Carlos Ramírez',
+      autor: 'Maria (MAESTRA)',
       rol: 'profesor',
-      texto: 'Recuerden que una función f(x) asigna a cada elemento del dominio exactamente un elemento del codominio.',
-      correcta: true
+      texto: 'Una función es una operación matemática donde un mismo valor de entrada puede tener muchas salidas diferentes al mismo tiempo.',
+      correcta: false
     },
     {
-      autor: 'Sofia Morales (Estudiante)',
+      autor: 'Luis (Estudiante)',
       rol: 'estudiante',
-      texto: 'Es una relación entre dos magnitudes de forma que a cada valor de la primera le corresponde un único valor de la segunda.',
+      texto: 'Una función es una relación matemática que asigna a cada valor de entrada (x) un único valor de salida (y).',
       correcta: true
     },
     {
-      autor: 'Mateo Gómez (Estudiante)',
+      autor: 'Estefhany (Estudiante)',
       rol: 'estudiante',
-      texto: 'Una regla matemática donde la variable x determina el resultado exacto de y.',
+      texto: 'Es una regla de correspondencia entre dos variables donde a cada valor de x le corresponde uno de y.',
       correcta: true
     }
   ];
 
   // ==========================================
-  // Datos Mis Clases y Gestión
+  // Datos Vista Configuración
   // ==========================================
-  searchQuery: string = '';
-  claseSeleccionada: ClaseItem | null = null;
-  clases: ClaseItem[] = [
-    {
-      id: 101,
-      name: 'Matemáticas 11-A',
-      grado: '11°',
-      codigo: 'SABER-MAT11',
-      docente: 'Prof. Carlos Ramírez',
-      studentsCount: 24,
-      actividadesCount: 5,
-      icon: 'calculator-outline',
-      color: '#8b5cf6',
-      estudiantesList: [
-        { id: 's1', name: 'Juan Pérez', avatar: '👨‍🎓', asistencia: 96, retosCompletados: 14, promedio: 88 },
-        { id: 's2', name: 'Sofia Morales', avatar: '👩‍🎓', asistencia: 92, retosCompletados: 13, promedio: 91 },
-        { id: 's3', name: 'Mateo Gómez', avatar: '👨‍🎓', asistencia: 88, retosCompletados: 12, promedio: 79 },
-        { id: 's4', name: 'Valeria Torres', avatar: '👩‍🎓', asistencia: 100, retosCompletados: 15, promedio: 95 },
-        { id: 's5', name: 'Lucas Ramírez', avatar: '👨‍🎓', asistencia: 84, retosCompletados: 10, promedio: 75 }
-      ]
-    },
-    {
-      id: 102,
-      name: 'Sociales & Ciudadanas',
-      grado: '10°',
-      codigo: 'SABER-SOC10',
-      docente: 'Prof. Carlos Ramírez',
-      studentsCount: 28,
-      actividadesCount: 4,
-      icon: 'globe-outline',
-      color: '#ec4899',
-      estudiantesList: [
-        { id: 's6', name: 'Camila Rojas', avatar: '👩‍🎓', asistencia: 94, retosCompletados: 11, promedio: 85 },
-        { id: 's7', name: 'Andrés López', avatar: '👨‍🎓', asistencia: 90, retosCompletados: 9, promedio: 80 }
-      ]
-    },
-    {
-      id: 103,
-      name: 'Ciencias Naturales 9',
-      grado: '9°',
-      codigo: 'SABER-CNAT9',
-      docente: 'Prof. Carlos Ramírez',
-      studentsCount: 22,
-      actividadesCount: 3,
-      icon: 'flask-outline',
-      color: '#3b82f6',
-      estudiantesList: [
-        { id: 's8', name: 'Daniela Castro', avatar: '👩‍🎓', asistencia: 95, retosCompletados: 10, promedio: 87 }
-      ]
-    }
-  ];
-
-  // ==========================================
-  // Estadísticas Explicadas con Lógica Real
-  // ==========================================
-  statsEstudiante = {
-    clasesAsistidas: 12,
-    juegosCompletados: 10,
-    juegosFallados: 3,
-    totalPartidas: 13,
-    porcentajePromedio: 78 // (10 / 13) = 76.9% ≈ 78%
-  };
-
-  logrosDesafios: LogroDesafio[] = [
-    { id: 1, title: 'Primer Vuelo Estelar', desc: 'Completa tu primera partida de práctica.', medal: 'bronze', completed: true, recompensa: 50 },
-    { id: 2, title: 'Racha Cósmica', desc: 'Responde 5 preguntas correctas consecutivas.', medal: 'silver', completed: true, recompensa: 100 },
-    { id: 3, title: 'Maestro de la Galaxia', desc: 'Obtén el 1er lugar en una partida en vivo.', medal: 'gold', completed: true, recompensa: 250 },
-    { id: 4, title: 'Leyenda Diamante', desc: 'Gana 10 partidas consecutivas con puntaje perfecto.', medal: 'diamond', completed: false, recompensa: 500 }
-  ];
-
-  // ==========================================
-  // Asistente Virtual StAIle
-  // ==========================================
-  staileOpen: boolean = false;
-  staileInput: string = '';
-  staileLoading: boolean = false;
-  staileMessages: Chatmessage[] = [
-    {
-      id: 'staile_welcome',
-      role: 'assistant',
-      content: '¡Hola! 🚀 Soy **StAIle**, tu tutor galáctico en SaberStyle. ¿Tienes dudas sobre tus clases, una fórmula o cómo ganar monedas?',
-      timestamp: new Date()
-    }
-  ];
-
-  // Sugerencias rápidas para el chat de StAIle
-  staileSugerencias = [
-    '¿Cómo calculo el dominio de una función?',
-    '¿Cómo gano monedas para el avatar?',
-    '¿Cómo creo una ruleta en clase?'
-  ];
-
-  // ==========================================
-  // Configuración & Preferencias
-  // ==========================================
-  configIdioma: string = 'Español';
-  configTema: 'oscuro' | 'claro' = 'oscuro';
+  nombreUsuarioConfig: string = 'Thomas';
+  handleUsuarioConfig: string = 'ThomasVastosRamirez';
   configPrivacidad = {
     info: 'privado' as 'privado' | 'publico',
     compartirClase: 'amigos' as 'amigos' | 'todos'
   };
+  configIdioma: string = 'Español';
+  configTema: 'oscuro' | 'claro' = 'claro';
+
+  // ==========================================
+  // Datos Vista Opciones Adicionales (Accesibilidad e IA)
+  // ==========================================
   accesibilidad = {
     daltonismo: false,
     letrasResaltadas: false,
@@ -301,9 +120,128 @@ export class HomePage implements OnInit {
     simplificadorIA: false
   };
 
+  // ==========================================
+  // Datos Vista Estudiante (dos)
+  // ==========================================
+  estudianteNivel: number = 5;
+  pruebaActual = {
+    titulo: 'Prueba saber 11',
+    materia: 'Matemáticas',
+    progreso: 50,
+    preguntasRestantes: 15
+  };
+
+  // ==========================================
+  // Datos Vista Profesor (tres)
+  // ==========================================
+  rachaDias: number = 4;
+  progresoRacha: number = 0.75;
+  statsDocente = {
+    clasesHoy: 3,
+    juegosCreados: 8,
+    estudiantes: 72,
+    puntos: 1450,
+    nivel: 'Nivel Oro'
+  };
+
+  logrosDocente: LogroItem[] = [
+    { id: 1, title: 'Maestro Estrella', icon: 'ribbon-outline', color: '#9c27b0', bgLight: '#f3e5f5' },
+    { id: 2, title: 'Creador Pro', icon: 'trophy-outline', color: '#e91e63', bgLight: '#fce4ec' },
+    { id: 3, title: 'Racha de Fuego', icon: 'flame-outline', color: '#4caf50', bgLight: '#e8f5e9' },
+    { id: 4, title: 'Docente Top', icon: 'star-outline', color: '#ffb300', bgLight: '#fff8e1' }
+  ];
+
+  // ==========================================
+  // Datos Vista Crear Juego (cuatro)
+  // ==========================================
+  selectedGameType: string = 'quiz';
+  gameTypes: GameTypeOption[] = [
+    { id: 'quiz', name: 'Quiz', icon: 'help-circle-outline', color: '#e91e63', bgLight: '#fce4ec' },
+    { id: 'ruleta', name: 'Ruleta', icon: 'disc-outline', color: '#9c27b0', bgLight: '#f3e5f5' },
+    { id: 'abierta', name: 'Pregunta Abierta', icon: 'chatbubbles-outline', color: '#4caf50', bgLight: '#e8f5e9' },
+    { id: 'verdadero-falso', name: 'Verdadero o falso', icon: 'checkmark-done-circle-outline', color: '#ffb300', bgLight: '#fff8e1' },
+    { id: 'completar', name: 'Completa la oración', icon: 'document-text-outline', color: '#00bcd4', bgLight: '#e0f7fa' },
+    { id: 'sopa-letras', name: 'Sopa de letras', icon: 'grid-outline', color: '#ec407a', bgLight: '#f8bbd0' }
+  ];
+  totalJuegosGuardados: number = 5;
+
+  // ==========================================
+  // Datos Vista Mis Clases (cinco)
+  // ==========================================
+  searchQuery: string = '';
+  clases: ClaseItem[] = [
+    { id: 1, name: 'Matemáticas 11', grado: '11°', studentsCount: 24, icon: 'calculator-outline', color: '#8e24aa', bgLight: '#f3e5f5' },
+    { id: 2, name: 'Sociales 10', grado: '10°', studentsCount: 30, icon: 'globe-outline', color: '#e91e63', bgLight: '#fce4ec' },
+    { id: 3, name: 'Inglés 11', grado: '11°', studentsCount: 18, icon: 'book-outline', color: '#43a047', bgLight: '#e8f5e9' },
+    { id: 4, name: 'Ciencias Naturales 9', grado: '9°', studentsCount: 22, icon: 'flask-outline', color: '#1e88e5', bgLight: '#e3f2fd' }
+  ];
+
+  // ==========================================
+  // Datos Vista Closet / Editar Avatar
+  // ==========================================
+  tonosPiel: string[] = [
+    '#fae7d0', '#f8d9b6', '#e5b88f', '#c98a58', '#a05c32', '#703c19', '#42220f', '#241208'
+  ];
+  tonoPielActual: string = '#f8d9b6';
+
+  avatarPrendas: AvatarPrenda[] = [
+    { id: 'sneakers', name: 'Zapatillas Blancas', icon: 'footsteps-outline', equipped: true, type: 'shoes' },
+    { id: 'suit', name: 'Traje Formal Azul', icon: 'shirt-outline', equipped: false, type: 'suit' },
+    { id: 'skirt', name: 'Falda Plisada Rosa', icon: 'color-palette-outline', equipped: false, type: 'skirt' },
+    { id: 'hat', name: 'Gorro Morado AICO', icon: 'sparkles-outline', equipped: false, type: 'hat' }
+  ];
+  prendaSeleccionadaId: string = 'sneakers';
+  avatarOutfitIndex: number = 0;
+  avatarOutfits = [
+    { id: 'coat', label: 'Abrigo Beige y Morado', color: '#8e24aa' },
+    { id: 'hoodie', label: 'Buzo Deportivo Amarillo', color: '#ffb300' },
+    { id: 'suit', label: 'Traje de Gala Ejecutivo', color: '#283593' }
+  ];
+
+  // ==========================================
+  // Datos Vista Tienda de Avatar
+  // ==========================================
+  userCoins: number = 250;
+  tiendaItems: TiendaItem[] = [
+    { id: 'ropa', name: 'Ropa', subtitle: '¡Viste a tu avatar como más te guste! ♡', price: 300, icon: 'shirt-outline', owned: false, color: '#a855f7' },
+    { id: 'accesorios', name: 'Accesorios', subtitle: 'Pequeños detalles, grandes cambios. ♡', price: 230, icon: 'star-outline', owned: false, color: '#8b5cf6' },
+    { id: 'cabello', name: 'Cabello', subtitle: 'Elige tu estilo favorito. ♡', price: 180, icon: 'sparkles-outline', owned: true, color: '#3b82f6' },
+    { id: 'cara', name: 'Cara', subtitle: 'Haz que tu avatar tenga más personalidad. ♡', price: 150, icon: 'glasses-outline', owned: false, color: '#60a5fa' },
+    { id: 'emotes', name: 'Emotes', subtitle: 'Exprésate sin palabras. ♡', price: 200, icon: 'paw-outline', owned: false, color: '#38bdf8' },
+    { id: 'poses', name: 'Poses', subtitle: 'Muévete, disfruta, ¡sé tú! ♡', price: 210, icon: 'body-outline', owned: true, color: '#818cf8' }
+  ];
+
+  // ==========================================
+  // Datos Vista Estadísticas y Logros
+  // ==========================================
+  statsEstudiante = {
+    clasesAsistidas: 12,
+    porcentajePromedio: 78,
+    juegosFallados: 3,
+    juegosCompletados: 10
+  };
+
+  chartPoints = [
+    { x: 30, y: 140, val: '20%' },
+    { x: 75, y: 110, val: '40%' },
+    { x: 120, y: 130, val: '30%' },
+    { x: 165, y: 70, val: '65%' },
+    { x: 210, y: 90, val: '55%' },
+    { x: 255, y: 35, val: '88%' },
+    { x: 300, y: 40, val: '85%' }
+  ];
+  svgLinePath = 'M 30 140 L 75 110 L 120 130 L 165 70 L 210 90 L 255 35 L 300 40';
+  svgAreaPath = 'M 30 140 L 75 110 L 120 130 L 165 70 L 210 90 L 255 35 L 300 40 L 300 160 L 30 160 Z';
+
+  logrosDesafios: LogroDesafio[] = [
+    { id: 1, title: 'Crea o Juega una partida.', medal: 'bronze', completed: true },
+    { id: 2, title: 'Gana el obten una racha de respuestas', medal: 'silver', completed: true },
+    { id: 3, title: 'Obten el primer lugar en una prtida', medal: 'gold', completed: true },
+    { id: 4, title: 'Gana 10 partidas seguidas con el primer lugar', medal: 'diamond', completed: false }
+  ];
+
   constructor(
     private authService: AuthService,
-    private aiChatService: AichatService,
     private alertController: AlertController,
     private menuCtrl: MenuController,
     private toastController: ToastController,
@@ -313,439 +251,80 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
-      if (user) {
-        if (user.coins !== undefined) {
-          this.userCoins = user.coins;
-        }
-        if (user.avatarConfig) {
-          this.avatarConfig = { ...this.avatarConfig, ...user.avatarConfig };
-        }
-        // Redirección inteligente de rol
-        if (user.role === 'teacher') {
-          this.activeTab = 'profesor';
-        } else {
-          this.activeTab = 'estudiante';
-        }
-        this.currentBottomNav = 'inicio';
-      }
     });
   }
 
-  // ==========================================
-  // NAVEGACIÓN PRINCIPAL (5 DESTINOS)
-  // ==========================================
-  selectBottomNav(nav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'logros') {
-    this.currentBottomNav = nav;
-    switch (nav) {
-      case 'inicio':
-        this.activeTab = this.currentUser?.role === 'teacher' ? 'profesor' : 'estudiante';
-        break;
-      case 'clases':
-        this.activeTab = 'clases';
-        break;
-      case 'crear':
-        this.activeTab = 'crear-juego';
-        break;
-      case 'tienda':
-        this.activeTab = 'tienda';
-        break;
-      case 'logros':
-        this.activeTab = 'logros';
-        break;
-    }
-  }
-
-  selectTab(tab: any) {
+  // Navegación de pestañas inferiores y pantallas
+  selectTab(tab: 'estudiante' | 'profesor' | 'crear-juego' | 'clases' | 'closet' | 'tienda' | 'logros' | 'estadisticas' | 'configuracion' | 'opciones-adicionales' | 'quiz-lobby' | 'quiz-opcion' | 'quiz-vf' | 'quiz-abierta' | 'quiz-ganar') {
     this.activeTab = tab;
-    if (tab === 'estudiante' || tab === 'profesor') {
-      this.currentBottomNav = 'inicio';
-    } else if (tab === 'clases' || tab === 'clase-detalle') {
-      this.currentBottomNav = 'clases';
-    } else if (tab === 'crear-juego') {
-      this.currentBottomNav = 'crear';
-    } else if (tab === 'tienda') {
-      this.currentBottomNav = 'tienda';
-    } else if (tab === 'logros' || tab === 'estadisticas') {
-      this.currentBottomNav = 'logros';
+    if (tab === 'estadisticas' || tab === 'logros') {
+      this.statsSubTab = tab;
     }
   }
 
-  abrirVestuario() {
-    this.activeTab = 'closet';
+  isTabActive(tab: string): boolean {
+    return (this.activeTab as string) === tab;
   }
 
-  volverAInicio() {
-    this.selectBottomNav('inicio');
-  }
-
-  // ==========================================
-  // TIENDA & ECONOMÍA DE MONEDAS
-  // ==========================================
-  get filteredStoreItems(): StoreItem[] {
-    if (this.storeCategoryFilter === 'todo') {
-      return this.storeItems;
-    }
-    return this.storeItems.filter(item => item.category === this.storeCategoryFilter);
-  }
-
-  setStoreCategory(cat: 'todo' | 'cabello' | 'tops' | 'pantalones' | 'zapatos' | 'accesorios') {
-    this.storeCategoryFilter = cat;
-  }
-
-  async comprarPrenda(item: StoreItem) {
-    if (item.owned) {
-      this.equiparPrenda(item);
-      return;
-    }
-
-    if (this.userCoins < item.price) {
-      const alert = await this.alertController.create({
-        header: 'Monedas Insuficientes',
-        message: `Necesitas ${item.price} monedas para adquirir "${item.name}". Tu saldo actual es de ${this.userCoins} monedas. ¡Completa misiones y retos para ganar más!`,
-        buttons: ['Entendido']
-      });
-      await alert.present();
-      return;
-    }
-
-    const alert = await this.alertController.create({
-      header: 'Confirmar Adquisición',
-      message: `¿Deseas comprar "${item.name}" por ${item.price} monedas cósmicas?`,
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Comprar',
-          handler: () => {
-            this.userCoins -= item.price;
-            item.owned = true;
-            this.equiparPrenda(item);
-            this.sincronizarUsuario();
-            this.mostrarToast(`¡Excelente! Has adquirido y equipado "${item.name}".`);
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  equiparPrenda(item: StoreItem) {
-    // Desequipar otras de la misma categoría
-    this.storeItems
-      .filter(i => i.category === item.category && i.id !== item.id)
-      .forEach(i => (i.equipped = false));
-
-    item.equipped = true;
-
-    // Actualizar configuración del avatar
-    if (item.category === 'tops') this.avatarConfig.topId = item.id;
-    if (item.category === 'pantalones') this.avatarConfig.bottomId = item.id;
-    if (item.category === 'cabello') this.avatarConfig.hairId = item.id;
-    if (item.category === 'zapatos') this.avatarConfig.shoesId = item.id;
-    if (item.category === 'accesorios') this.avatarConfig.accessoryId = item.id;
-
-    this.sincronizarUsuario();
-    this.mostrarToast(`Prenda "${item.name}" equipada en tu avatar.`);
-  }
-
-  // ==========================================
-  // ARMARIO / CLOSET Y PERSONALIZACIÓN AVATAR
-  // ==========================================
-  cambiarTonoPiel(color: string) {
-    this.avatarConfig.skinColor = color;
-    this.sincronizarUsuario();
-  }
-
-  cambiarExpresion(exp: string) {
-    this.avatarConfig.expression = exp;
-    this.sincronizarUsuario();
-  }
-
-  cambiarAngulo(angulo: string) {
-    this.avatarConfig.angle = angulo;
-  }
-
-  guardarCambiosVestuario() {
-    this.sincronizarUsuario();
-    this.mostrarToast('¡Estilo de avatar guardado y sincronizado con éxito!');
-    this.volverAInicio();
-  }
-
-  private sincronizarUsuario() {
-    this.authService.updateCurrentUser({
-      coins: this.userCoins,
-      avatarConfig: { ...this.avatarConfig }
-    });
-  }
-
-  // ==========================================
-  // CREACIÓN Y GESTIÓN DE JUEGOS
-  // ==========================================
-  selectGameType(id: string) {
-    this.selectedGameType = id;
-  }
-
-  setParticipationMode(mode: 'en-vivo' | 'asignar') {
-    this.selectedParticipationMode = mode;
-  }
-
-  async guardarNuevoJuego() {
-    const tipoObj = this.gameTypes.find(g => g.id === this.selectedGameType);
-    const titulo = this.nuevoJuegoTitulo.trim() || `Nueva Dinámica de ${tipoObj?.name || 'Juego'}`;
-
-    const nuevo: SavedGame = {
-      id: 'g_' + Date.now(),
-      titulo: titulo,
-      tipo: this.selectedGameType,
-      tipoLabel: tipoObj?.name || 'Actividad',
-      modo: this.selectedParticipationMode,
-      preguntasCount: this.selectedGameType === 'ruleta' ? 6 : 10,
-      fecha: 'Ahora'
-    };
-
-    this.savedGames.unshift(nuevo);
-    this.nuevoJuegoTitulo = '';
-    this.mostrarToast(`¡"${nuevo.titulo}" creado exitosamente (${nuevo.modo === 'en-vivo' ? 'En Vivo' : 'Asignado'})!`);
-  }
-
-  jugarJuego(juego: SavedGame) {
-    if (juego.tipo === 'ruleta') {
-      this.activeTab = 'ruleta-juego';
-      this.ruletaResultado = null;
-    } else {
-      this.activeTab = 'quiz-lobby';
+  get currentTabTitle(): string {
+    switch (this.activeTab) {
+      case 'estudiante': return 'dos';
+      case 'profesor': return 'tres';
+      case 'crear-juego': return 'cuatro';
+      case 'clases': return 'cinco';
+      case 'closet': return 'Closet';
+      case 'tienda': return 'Tienda';
+      case 'logros': return 'Logros';
+      case 'estadisticas': return 'Estadisticas';
+      case 'configuracion': return 'Configuracion';
+      case 'opciones-adicionales': return 'Opciones Adicionales';
+      case 'quiz-lobby': return 'Prueba Matematicas';
+      case 'quiz-opcion': return 'Prueba Matematicas';
+      case 'quiz-vf': return 'Quiz de Matematicas';
+      case 'quiz-abierta': return 'Quiz de Matematicas';
+      case 'quiz-ganar': return 'GANAR';
+      default: return 'AICO';
     }
   }
 
-  async editarJuego(juego: SavedGame) {
-    const alert = await this.alertController.create({
-      header: 'Editar Juego',
-      subHeader: juego.tipoLabel,
-      inputs: [
-        {
-          name: 'titulo',
-          type: 'text',
-          value: juego.titulo,
-          placeholder: 'Título de la actividad'
-        }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            if (data.titulo?.trim()) {
-              juego.titulo = data.titulo.trim();
-              this.mostrarToast('Cambios del juego guardados.');
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async renombrarJuego(juego: SavedGame) {
-    const alert = await this.alertController.create({
-      header: 'Renombrar Actividad',
-      inputs: [
-        {
-          name: 'nuevoNombre',
-          type: 'text',
-          value: juego.titulo,
-          placeholder: 'Nuevo nombre'
-        }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Renombrar',
-          handler: (data) => {
-            if (data.nuevoNombre?.trim()) {
-              juego.titulo = data.nuevoNombre.trim();
-              this.mostrarToast('Actividad renombrada.');
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async eliminarJuego(juego: SavedGame) {
-    const alert = await this.alertController.create({
-      header: '¿Eliminar Actividad?',
-      message: `¿Estás seguro de que deseas eliminar "${juego.titulo}"? Esta acción no se puede deshacer.`,
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            this.savedGames = this.savedGames.filter(g => g.id !== juego.id);
-            this.mostrarToast('Actividad eliminada de tus juegos guardados.');
-          }
-        }
-      ]
-    });
-    await alert.present();
+  preguntaGemini() {
+    this.mostrarToast('✨ Pregunta a Gemini: ¿En qué te puedo ayudar con tus tareas hoy?');
   }
 
   // ==========================================
-  // DINÁMICA DE LA RULETA INTERACTIVA
-  // ==========================================
-  girarRuleta() {
-    if (this.ruletaGirando) return;
-    this.ruletaGirando = true;
-    this.ruletaResultado = null;
-
-    const vueltas = 5 + Math.floor(Math.random() * 5);
-    const anguloExtra = Math.floor(Math.random() * 360);
-    const rotacionTotal = this.ruletaRotacion + vueltas * 360 + anguloExtra;
-    this.ruletaRotacion = rotacionTotal;
-
-    setTimeout(() => {
-      this.ruletaGirando = false;
-      const indiceSector = Math.floor((rotacionTotal % 360) / (360 / this.ruletaSectores.length));
-      this.ruletaResultado = this.ruletaSectores[indiceSector] || this.ruletaSectores[0];
-      this.userCoins += 50;
-      this.sincronizarUsuario();
-      this.mostrarToast(`¡La ruleta cayó en: ${this.ruletaResultado}! +50 monedas ganadas.`);
-    }, 3200);
-  }
-
-  // ==========================================
-  // CLASES Y GESTIÓN DE ESTUDIANTES
-  // ==========================================
-  get clasesFiltradas(): ClaseItem[] {
-    if (!this.searchQuery.trim()) {
-      return this.clases;
-    }
-    const q = this.searchQuery.toLowerCase();
-    return this.clases.filter(c => c.name.toLowerCase().includes(q) || c.codigo.toLowerCase().includes(q));
-  }
-
-  verDetalleClase(clase: ClaseItem) {
-    this.claseSeleccionada = clase;
-    this.activeTab = 'clase-detalle';
-  }
-
-  async copiarCodigoClase(codigo: string) {
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(codigo);
-    }
-    this.mostrarToast(`¡Código de clase "${codigo}" copiado al portapapeles!`);
-  }
-
-  async invitarEstudiante() {
-    const alert = await this.alertController.create({
-      header: 'Invitar Estudiante',
-      message: 'Ingresa el correo institucional del alumno para enviarle una invitación:',
-      inputs: [
-        {
-          name: 'email',
-          type: 'email',
-          placeholder: 'estudiante@institucion.edu.co'
-        }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Enviar Invitación',
-          handler: (data) => {
-            if (data.email?.trim()) {
-              this.mostrarToast(`Invitación enviada a ${data.email.trim()}`);
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async nuevaClase() {
-    const alert = await this.alertController.create({
-      header: 'Crear Nueva Clase',
-      inputs: [
-        { name: 'nombre', type: 'text', placeholder: 'Nombre (Ej: Física Mecánica)' },
-        { name: 'grado', type: 'text', placeholder: 'Grado (Ej: 11°B)' }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Crear',
-          handler: (data) => {
-            if (data.nombre?.trim()) {
-              const codigoAleatorio = 'SABER-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-              const nueva: ClaseItem = {
-                id: Date.now(),
-                name: data.nombre.trim(),
-                grado: data.grado?.trim() || '11°',
-                codigo: codigoAleatorio,
-                docente: this.currentUser?.name || 'Profesor',
-                studentsCount: 1,
-                actividadesCount: 0,
-                icon: 'school-outline',
-                color: '#ec4899',
-                estudiantesList: [
-                  { id: 's_new', name: 'Juan Pérez', avatar: '👨‍🎓', asistencia: 100, retosCompletados: 0, promedio: 100 }
-                ]
-              };
-              this.clases.unshift(nueva);
-              this.mostrarToast(`Clase "${nueva.name}" creada con código ${codigoAleatorio}`);
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  // ==========================================
-  // ASISTENTE DE IA: StAIle
-  // ==========================================
-  toggleStaile() {
-    this.staileOpen = !this.staileOpen;
-  }
-
-  enviarMensajeStaile(texto?: string) {
-    const query = (texto || this.staileInput).trim();
-    if (!query) return;
-
-    this.staileInput = '';
-    this.staileLoading = true;
-
-    this.aiChatService.sendMessage(query).subscribe({
-      next: (resp) => {
-        this.staileLoading = false;
-        this.staileMessages = this.aiChatService.getConversationHistory();
-      },
-      error: () => {
-        this.staileLoading = false;
-      }
-    });
-  }
-
-  // ==========================================
-  // FLUJO DE JUEGO / QUIZ
+  // Interacciones Flujo de Quiz (Juego de Funciones)
   // ==========================================
   iniciarQuiz() {
     this.quizTimer = 15;
     this.quizOpcionSeleccionada = null;
     this.activeTab = 'quiz-opcion';
+    this.mostrarToast('¡Comenzó la prueba! Pregunta 13 de 15.');
   }
 
   seleccionarOpcionQuiz(opcion: string) {
     this.quizOpcionSeleccionada = opcion;
+    if (opcion === 'B') {
+      this.mostrarToast('¡Excelente! El dominio de f(x)=1/(x-3) es x ≠ 3.');
+    } else {
+      this.mostrarToast('Respuesta guardada.');
+    }
     setTimeout(() => {
+      this.quizTimer = 15;
       this.activeTab = 'quiz-vf';
-    }, 600);
+    }, 700);
   }
 
   seleccionarVF(val: string) {
     this.quizVFSeleccionado = val;
+    if (val === 'Verdadero') {
+      this.mostrarToast('¡Correcto! Una función lineal siempre genera una recta.');
+    } else {
+      this.mostrarToast('Respuesta registrada.');
+    }
     setTimeout(() => {
+      this.quizTimer = 150;
       this.activeTab = 'quiz-abierta';
-    }, 600);
+    }, 700);
   }
 
   enviarRespuestaAbierta() {
@@ -754,32 +333,309 @@ export class HomePage implements OnInit {
       return;
     }
     this.quizRespuestasFeed.push({
-      autor: (this.currentUser?.name || 'Juan Pérez') + ' (Tú)',
+      autor: (this.currentUser?.name || 'Thomas') + ' (Tú)',
       rol: 'estudiante',
       texto: this.quizMiRespuestaAbierta.trim(),
       correcta: true
     });
     this.quizMiRespuestaAbierta = '';
+    this.mostrarToast('¡Respuesta enviada a la clase!');
     setTimeout(() => {
       this.activeTab = 'quiz-ganar';
-    }, 700);
+    }, 800);
   }
 
   reclamarYTerminarQuiz() {
     this.userCoins += 100;
-    this.statsEstudiante.juegosCompletados++;
-    this.statsEstudiante.totalPartidas++;
-    this.sincronizarUsuario();
-    this.mostrarToast('¡Felicitaciones! Has ganado 🪙 100 monedas cósmicas.');
-    this.volverAInicio();
+    this.mostrarToast('¡Felicitaciones! Has recibido 🪙 100$ monedas para la tienda.');
+    this.selectTab('estudiante');
   }
 
   // ==========================================
-  // CONFIGURACIÓN, IDIOMA Y TEMA
+  // Interacciones Closet / Avatar
   // ==========================================
+  cambiarTonoPiel(tono: string) {
+    this.tonoPielActual = tono;
+  }
+
+  seleccionarPrenda(prenda: AvatarPrenda) {
+    this.prendaSeleccionadaId = prenda.id;
+  }
+
+  toggleEquiparPrenda(prenda: AvatarPrenda) {
+    prenda.equipped = !prenda.equipped;
+    this.mostrarToast(prenda.equipped ? `¡${prenda.name} equipada!` : `Prenda desequipada.`);
+  }
+
+  prevAvatarOutfit() {
+    this.avatarOutfitIndex = (this.avatarOutfitIndex - 1 + this.avatarOutfits.length) % this.avatarOutfits.length;
+  }
+
+  nextAvatarOutfit() {
+    this.avatarOutfitIndex = (this.avatarOutfitIndex + 1) % this.avatarOutfits.length;
+  }
+
+  resetAvatarChanges() {
+    this.tonoPielActual = '#f8d9b6';
+    this.avatarOutfitIndex = 0;
+    this.mostrarToast('Se restauraron los ajustes originales del avatar.');
+  }
+
+  guardarCambiosAvatar() {
+    this.mostrarToast('¡Cambios de avatar guardados con éxito!');
+    this.selectTab('estudiante');
+  }
+
+  // ==========================================
+  // Interacciones Tienda
+  // ==========================================
+  irAlVestuario() {
+    this.selectTab('closet');
+  }
+
+  async comprarItem(item: TiendaItem) {
+    if (item.owned) {
+      this.selectTab('closet');
+      return;
+    }
+
+    if (this.userCoins < item.price) {
+      const alert = await this.alertController.create({
+        header: 'Monedas insuficientes',
+        message: `Necesitas ${item.price}$ monedas para comprar este artículo. Tu saldo actual es de ${this.userCoins}$. ¡Juega más partidas para conseguir monedas!`,
+        buttons: ['Entendido']
+      });
+      await alert.present();
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar Compra',
+      message: `¿Deseas comprar "${item.name}" por ${item.price}$ monedas?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Comprar',
+          handler: () => {
+            this.userCoins -= item.price;
+            item.owned = true;
+            this.mostrarToast(`¡Compraste "${item.name}" con éxito!`);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  // ==========================================
+  // Interacciones Estadísticas y Logros
+  // ==========================================
+  switchStatsTab(subTab: 'estadisticas' | 'logros') {
+    this.statsSubTab = subTab;
+    this.activeTab = subTab;
+  }
+
+  // ==========================================
+  // Interacciones Crear Juego
+  // ==========================================
+  selectGameType(typeId: string) {
+    this.selectedGameType = typeId;
+  }
+
+  async crearJuego() {
+    const juego = this.gameTypes.find(g => g.id === this.selectedGameType);
+    const alert = await this.alertController.create({
+      header: '¡Configurar ' + (juego?.name || 'Juego') + '!',
+      message: `Has seleccionado el modo "${juego?.name}". Ingresa el título de tu nueva actividad:`,
+      inputs: [
+        {
+          name: 'titulo',
+          type: 'text',
+          placeholder: 'Ej: Repaso examen final'
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Comenzar',
+          handler: (data) => {
+            if (data.titulo?.trim()) {
+              this.totalJuegosGuardados++;
+              this.mostrarToast(`Juego "${data.titulo}" creado exitosamente.`);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async abrirJuegosGuardados() {
+    const alert = await this.alertController.create({
+      header: 'Juegos Guardados (' + this.totalJuegosGuardados + ')',
+      message: '1. Quiz Matemáticas 11\n2. Ruleta Historia Saber 11\n3. Preguntas Abiertas Inglés\n4. Verdadero o Falso Filosofía\n5. Sopa de Letras Biología',
+      buttons: ['Cerrar']
+    });
+    await alert.present();
+  }
+
+  // ==========================================
+  // Interacciones Clases
+  // ==========================================
+  get clasesFiltradas(): ClaseItem[] {
+    if (!this.searchQuery.trim()) {
+      return this.clases;
+    }
+    const q = this.searchQuery.toLowerCase();
+    return this.clases.filter(c => c.name.toLowerCase().includes(q));
+  }
+
+  async nuevaClase() {
+    const alert = await this.alertController.create({
+      header: 'Nueva Clase',
+      inputs: [
+        {
+          name: 'nombre',
+          type: 'text',
+          placeholder: 'Nombre de la materia (Ej: Física 10)'
+        },
+        {
+          name: 'estudiantes',
+          type: 'number',
+          placeholder: 'Número estimado de estudiantes',
+          min: 1
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Crear Clase',
+          handler: (data) => {
+            if (data.nombre?.trim()) {
+              const nueva: ClaseItem = {
+                id: Date.now(),
+                name: data.nombre.trim(),
+                grado: 'General',
+                studentsCount: Number(data.estudiantes) || 20,
+                icon: 'school-outline',
+                color: '#8e24aa',
+                bgLight: '#f3e5f5'
+              };
+              this.clases.unshift(nueva);
+              this.statsDocente.clasesHoy++;
+              this.mostrarToast(`Clase "${nueva.name}" agregada con éxito.`);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async verDetalleClase(clase: ClaseItem) {
+    const alert = await this.alertController.create({
+      header: clase.name,
+      subHeader: `${clase.studentsCount} estudiantes matriculados`,
+      message: 'Código de acceso: AICO-' + clase.id + '\nEstado: Activa\nDocente asignado: ' + (this.currentUser?.name || 'Profesor'),
+      buttons: ['Entendido']
+    });
+    await alert.present();
+  }
+
+  // ==========================================
+  // Interacciones Estudiante
+  // ==========================================
+  continuarPrueba() {
+    this.selectTab('quiz-lobby');
+  }
+
+  // Menú superior de 3 puntos
+  async presentHeaderMenu() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Navegación AICO',
+      buttons: [
+        {
+          text: 'Home Estudiante (dos)',
+          icon: 'school-outline',
+          handler: () => { this.selectTab('estudiante'); }
+        },
+        {
+          text: 'Home Profesor (tres)',
+          icon: 'person-outline',
+          handler: () => { this.selectTab('profesor'); }
+        },
+        {
+          text: 'Crear Juego (cuatro)',
+          icon: 'game-controller-outline',
+          handler: () => { this.selectTab('crear-juego'); }
+        },
+        {
+          text: 'Mis Clases (cinco)',
+          icon: 'book-outline',
+          handler: () => { this.selectTab('clases'); }
+        },
+        {
+          text: 'Closet / Editar Avatar',
+          icon: 'shirt-outline',
+          handler: () => { this.selectTab('closet'); }
+        },
+        {
+          text: 'Tienda de Avatar',
+          icon: 'pricetags-outline',
+          handler: () => { this.selectTab('tienda'); }
+        },
+        {
+          text: 'Logros',
+          icon: 'trophy-outline',
+          handler: () => { this.selectTab('logros'); }
+        },
+        {
+          text: 'Estadísticas',
+          icon: 'bar-chart-outline',
+          handler: () => { this.selectTab('estadisticas'); }
+        },
+        {
+          text: 'Configuración',
+          icon: 'settings-outline',
+          handler: () => { this.selectTab('configuracion'); }
+        },
+        {
+          text: 'Opciones Adicionales',
+          icon: 'options-outline',
+          handler: () => { this.selectTab('opciones-adicionales'); }
+        },
+        {
+          text: 'Cerrar Sesión',
+          role: 'destructive',
+          icon: 'log-out-outline',
+          handler: () => { this.confirmLogout(); }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          icon: 'close'
+        }
+      ]
+    });
+    await actionSheet.present();
+  }
+
+  // ==========================================
+  // Interacciones Configuración
+  // ==========================================
+  setPrivacidadInfo(tipo: 'privado' | 'publico') {
+    this.configPrivacidad.info = tipo;
+    this.mostrarToast(`Información establecida como ${tipo.toUpperCase()}`);
+  }
+
+  setCompartirClase(tipo: 'amigos' | 'todos') {
+    this.configPrivacidad.compartirClase = tipo;
+    this.mostrarToast(`Compartir clase: ${tipo === 'amigos' ? 'Solo amigos' : 'Todos'}`);
+  }
+
   setTema(tema: 'oscuro' | 'claro') {
     this.configTema = tema;
-    document.body.classList.toggle('light-theme-active', tema === 'claro');
+    document.body.classList.toggle('dark-theme-active', tema === 'oscuro');
     this.mostrarToast(`Tema ${tema.toUpperCase()} aplicado.`);
   }
 
@@ -806,41 +662,46 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  async presentHeaderMenu() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'SaberStyle (Aico)',
-      buttons: [
-        {
-          text: 'Configuración y Perfil',
-          icon: 'settings-outline',
-          handler: () => { this.activeTab = 'configuracion'; }
-        },
-        {
-          text: 'Accesibilidad',
-          icon: 'options-outline',
-          handler: () => { this.activeTab = 'opciones-adicionales'; }
-        },
-        {
-          text: 'Cerrar Sesión',
-          role: 'destructive',
-          icon: 'log-out-outline',
-          handler: () => { this.confirmLogout(); }
-        },
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          icon: 'close'
-        }
-      ]
-    });
-    await actionSheet.present();
+  irAOpcionesAdicionales() {
+    this.selectTab('opciones-adicionales');
+  }
+
+  // ==========================================
+  // Interacciones Opciones Adicionales (Accesibilidad e IA)
+  // ==========================================
+  toggleDaltonismo(val: boolean) {
+    this.accesibilidad.daltonismo = val;
+    document.body.classList.toggle('daltonismo-mode', val);
+    this.mostrarToast(`Corrección de color (Daltonismo): ${val ? 'Activado' : 'Desactivado'}`);
+  }
+
+  toggleLetrasResaltadas(val: boolean) {
+    this.accesibilidad.letrasResaltadas = val;
+    document.body.classList.toggle('high-contrast-text', val);
+    this.mostrarToast(`Letras resaltadas: ${val ? 'Activado' : 'Desactivado'}`);
+  }
+
+  toggleLecturaVoz(val: boolean) {
+    this.accesibilidad.lecturaVozAlta = val;
+    if (val && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const utter = new SpeechSynthesisUtterance('Lectura en voz alta activada en AICO');
+      utter.lang = 'es-ES';
+      window.speechSynthesis.speak(utter);
+    }
+    this.mostrarToast(`Lectura en voz alta: ${val ? 'Activado' : 'Desactivado'}`);
+  }
+
+  toggleSimplificadorIA(val: boolean) {
+    this.accesibilidad.simplificadorIA = val;
+    document.body.classList.toggle('ia-simplified', val);
+    this.mostrarToast(`Corrección de simplificador de elementos IA: ${val ? 'Activado' : 'Desactivado'}`);
   }
 
   async confirmLogout(): Promise<void> {
     await this.menuCtrl.close();
     const alert = await this.alertController.create({
       header: 'Cerrar Sesión',
-      message: '¿Estás seguro de que deseas salir de SaberStyle?',
+      message: '¿Estás seguro de que deseas salir de tu cuenta?',
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
@@ -865,3 +726,4 @@ export class HomePage implements OnInit {
     await toast.present();
   }
 }
+

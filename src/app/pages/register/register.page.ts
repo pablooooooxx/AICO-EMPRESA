@@ -43,8 +43,6 @@ export class RegisterPage implements OnInit {
   showConfirmPassword = false;
   isSubmitting = false;
 
-  selectedRole: 'student' | 'teacher' = 'student';
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -62,18 +60,12 @@ export class RegisterPage implements OnInit {
       {
         name: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
-        role: ['student', [Validators.required]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
-        terms: [true, [Validators.requiredTrue]]
+        terms: [false, [Validators.requiredTrue]]
       },
       { validators: passwordsMatchValidator }
     );
-  }
-
-  setRole(role: 'student' | 'teacher'): void {
-    this.selectedRole = role;
-    this.registerForm.patchValue({ role });
   }
 
   get name() {
@@ -113,18 +105,13 @@ export class RegisterPage implements OnInit {
 
     this.isSubmitting = true;
     const loading = await this.loadingController.create({
-      message: 'Creando tu cuenta en SaberStyle...',
+      message: 'Creando tu cuenta...',
       spinner: 'crescent'
     });
     await loading.present();
 
     const { name, email, password } = this.registerForm.value;
-    const result = this.authService.register({ 
-      name, 
-      email, 
-      password, 
-      role: this.selectedRole 
-    });
+    const result = this.authService.register({ name, email, password });
 
     await loading.dismiss();
     this.isSubmitting = false;
@@ -137,7 +124,6 @@ export class RegisterPage implements OnInit {
       await this.presentToast(result.message, 'danger');
     }
   }
-
 
   private async presentToast(message: string, color: 'success' | 'danger' | 'warning'): Promise<void> {
     const toast = await this.toastController.create({
