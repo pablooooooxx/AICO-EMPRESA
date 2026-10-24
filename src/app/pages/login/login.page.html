@@ -260,20 +260,31 @@
             </span>
           </button>
 
-          <!-- Quick Fill Demo Button -->
+          <!-- Quick Fill Demo Buttons -->
           <div class="demo-fill-container">
-            <button type="button" class="demo-fill-btn" (click)="fillDemoCredentials()">
-              <ion-icon name="key-outline"></ion-icon>
-              <span>Llenar con cuenta de prueba</span>
-            </button>
+            <span class="demo-label">Acceso Rápido de Prueba:</span>
+            <div class="demo-buttons-row">
+              <button type="button" class="demo-fill-btn student-demo-btn" (click)="fillStudentDemo()">
+                <ion-icon name="school-outline"></ion-icon>
+                <span>Demo Estudiante</span>
+              </button>
+              <button type="button" class="demo-fill-btn teacher-demo-btn" (click)="fillTeacherDemo()">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>Demo Profesor</span>
+              </button>
+            </div>
           </div>
 
         </form>
       </div>
 
-      <!-- Footer: Register Prompt -->
+      <!-- Footer: Register Prompt with Active Link -->
       <div class="auth-footer">
         <p class="footer-question">¿No tienes una cuenta aún?</p>
+        <a routerLink="/register" class="register-link-action">
+          <span>Crear Cuenta Nueva</span>
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </a>
         <svg class="footer-wave" viewBox="0 0 140 12">
           <path d="M5,6 Q35,12 70,6 T135,6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
         </svg>
