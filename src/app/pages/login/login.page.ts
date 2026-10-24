@@ -75,22 +75,11 @@ export class LoginPage implements OnInit {
     }
   }
 
-  fillStudentDemo(): void {
-    this.loginForm.patchValue({
-      email: 'estudiante@saberstyle.com',
-      password: 'password123'
-    });
-  }
-
-  fillTeacherDemo(): void {
-    this.loginForm.patchValue({
-      email: 'profesor@saberstyle.com',
-      password: 'password123'
-    });
-  }
-
   fillDemoCredentials(): void {
-    this.fillStudentDemo();
+    this.loginForm.patchValue({
+      email: 'demo@aico.com',
+      password: 'password123'
+    });
   }
 
   private async presentToast(message: string, color: 'success' | 'danger' | 'warning'): Promise<void> {

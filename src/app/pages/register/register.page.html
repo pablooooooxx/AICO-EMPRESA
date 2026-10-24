@@ -1,85 +1,43 @@
-<ion-content class="gamer-content">
-  <div class="gamer-container">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login" text="Atrás"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Registro AICO</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-    <!-- Decorative Wavy Background Shapes & Sparkles -->
-    <div class="bg-shape shape-top-left"></div>
-    <div class="bg-shape shape-bottom-left"></div>
-    <div class="bg-shape shape-top-right"></div>
-    <div class="bg-shape shape-bottom-right"></div>
+<ion-content class="ion-padding auth-content">
+  <div class="auth-wrapper">
 
-    <!-- Background Sparkles and Stars -->
-    <div class="sparkle sparkle-1">✦</div>
-    <div class="sparkle sparkle-2">★</div>
-    <div class="sparkle sparkle-3">✦</div>
-    <div class="sparkle sparkle-4">✧</div>
-    <div class="sparkle sparkle-5">✦</div>
-
-    <!-- Top-Left Doodle -->
-    <div class="doodle-container doodle-top-left">
-      <div class="doodle-text">
-        Aprende,<br>crea,<br>triunfa
-        <span class="doodle-heart">✨</span>
+    <!-- Encabezado -->
+    <div class="auth-header">
+      <div class="logo-container">
+        <ion-icon name="person-add-outline" class="brand-icon"></ion-icon>
       </div>
-      <svg class="doodle-underline" viewBox="0 0 100 20">
-        <path d="M5,12 Q50,18 95,8 M10,16 Q55,22 90,14" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+      <h1 class="brand-title">Crea tu Cuenta</h1>
+      <p class="brand-subtitle">Únete a la comunidad de AICO</p>
     </div>
 
-    <!-- Center Card -->
-    <div class="auth-card-wrapper">
-      
-      <!-- Brand & Header -->
-      <div class="brand-header">
-        <div class="logo-badge">
-          <span class="sparkle-icon">✦</span>
-          <span class="app-title">SaberStyle</span>
-        </div>
-        <p class="company-badge">by Aico Educación</p>
-        <h2 class="auth-subtitle">Crea tu Cuenta Galáctica</h2>
-      </div>
-
-      <!-- Main Form Card -->
-      <div class="glass-form-card">
+    <!-- Tarjeta de Formulario de Registro -->
+    <ion-card class="auth-card">
+      <ion-card-content>
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
 
-          <!-- Selector de Rol (Estudiante vs Profesor) -->
-          <div class="role-selector-container">
-            <label class="field-label">Selecciona tu Rol</label>
-            <div class="role-pills-row">
-              <button 
-                type="button" 
-                class="role-pill" 
-                [class.role-active]="selectedRole === 'student'"
-                (click)="setRole('student')">
-                <ion-icon name="school-outline"></ion-icon>
-                <span>Estudiante</span>
-              </button>
-              <button 
-                type="button" 
-                class="role-pill" 
-                [class.role-active]="selectedRole === 'teacher'"
-                (click)="setRole('teacher')">
-                <ion-icon name="person-outline"></ion-icon>
-                <span>Profesor</span>
-              </button>
-            </div>
-          </div>
-
           <!-- Nombre Completo -->
-          <div class="input-box">
-            <label class="field-label">Nombre Completo</label>
-            <div class="input-field-wrapper" [class.field-error]="name?.invalid && (name?.dirty || name?.touched)">
-              <div class="icon-prefix">
-                <ion-icon name="person-outline"></ion-icon>
-              </div>
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="person-outline" slot="start" class="input-icon"></ion-icon>
               <ion-input
                 type="text"
                 formControlName="name"
                 placeholder="Ej: Juan Pérez"
+                label="Nombre Completo"
+                labelPlacement="stacked"
                 autocomplete="name">
               </ion-input>
-            </div>
-            <div class="error-msg" *ngIf="name?.invalid && (name?.dirty || name?.touched)">
+            </ion-item>
+            <div class="error-container" *ngIf="name?.invalid && (name?.dirty || name?.touched)">
               <span *ngIf="name?.errors?.['required']">
                 <ion-icon name="alert-circle-outline"></ion-icon> El nombre es obligatorio.
               </span>
@@ -90,21 +48,20 @@
           </div>
 
           <!-- Correo Electrónico -->
-          <div class="input-box">
-            <label class="field-label">Correo Electrónico</label>
-            <div class="input-field-wrapper" [class.field-error]="email?.invalid && (email?.dirty || email?.touched)">
-              <div class="icon-prefix">
-                <ion-icon name="mail-outline"></ion-icon>
-              </div>
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
               <ion-input
                 type="email"
                 formControlName="email"
                 placeholder="correo@ejemplo.com"
+                label="Correo Electrónico"
+                labelPlacement="stacked"
                 autocomplete="email"
                 inputmode="email">
               </ion-input>
-            </div>
-            <div class="error-msg" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+            </ion-item>
+            <div class="error-container" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
               <span *ngIf="email?.errors?.['required']">
                 <ion-icon name="alert-circle-outline"></ion-icon> El correo es obligatorio.
               </span>
@@ -115,58 +72,66 @@
           </div>
 
           <!-- Contraseña -->
-          <div class="input-box">
-            <label class="field-label">Contraseña</label>
-            <div class="input-field-wrapper" [class.field-error]="password?.invalid && (password?.dirty || password?.touched)">
-              <div class="icon-prefix">
-                <ion-icon name="lock-closed-outline"></ion-icon>
-              </div>
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
               <ion-input
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
                 placeholder="Mínimo 6 caracteres"
+                label="Contraseña"
+                labelPlacement="stacked"
                 autocomplete="new-password">
               </ion-input>
-              <button
-                type="button"
+              <ion-button
+                fill="clear"
+                slot="end"
                 class="password-toggle-btn"
-                (click)="togglePasswordVisibility()">
-                <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-              </button>
-            </div>
-            <div class="error-msg" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                (click)="togglePasswordVisibility()"
+                type="button">
+                <ion-icon
+                  [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+                  slot="icon-only">
+                </ion-icon>
+              </ion-button>
+            </ion-item>
+            <div class="error-container" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
               <span *ngIf="password?.errors?.['required']">
                 <ion-icon name="alert-circle-outline"></ion-icon> La contraseña es obligatoria.
               </span>
               <span *ngIf="password?.errors?.['minlength']">
-                <ion-icon name="alert-circle-outline"></ion-icon> Debe tener al menos 6 caracteres.
+                <ion-icon name="alert-circle-outline"></ion-icon> Mínimo 6 caracteres requeridos.
               </span>
             </div>
           </div>
 
           <!-- Confirmar Contraseña -->
-          <div class="input-box">
-            <label class="field-label">Confirmar Contraseña</label>
-            <div class="input-field-wrapper" [class.field-error]="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)">
-              <div class="icon-prefix">
-                <ion-icon name="checkmark-done-outline"></ion-icon>
-              </div>
+          <div class="input-group">
+            <ion-item lines="none" class="custom-input-item">
+              <ion-icon name="shield-checkmark-outline" slot="start" class="input-icon"></ion-icon>
               <ion-input
                 [type]="showConfirmPassword ? 'text' : 'password'"
                 formControlName="confirmPassword"
                 placeholder="Repite tu contraseña"
+                label="Confirmar Contraseña"
+                labelPlacement="stacked"
                 autocomplete="new-password">
               </ion-input>
-              <button
-                type="button"
+              <ion-button
+                fill="clear"
+                slot="end"
                 class="password-toggle-btn"
-                (click)="toggleConfirmPasswordVisibility()">
-                <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-              </button>
-            </div>
-            <div class="error-msg" *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)">
+                (click)="toggleConfirmPasswordVisibility()"
+                type="button">
+                <ion-icon
+                  [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+                  slot="icon-only">
+                </ion-icon>
+              </ion-button>
+            </ion-item>
+            <div class="error-container" *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)">
               <span *ngIf="confirmPassword?.errors?.['required']">
-                <ion-icon name="alert-circle-outline"></ion-icon> Por favor confirma tu contraseña.
+                <ion-icon name="alert-circle-outline"></ion-icon> Debes confirmar tu contraseña.
               </span>
               <span *ngIf="confirmPassword?.errors?.['passwordMismatch']">
                 <ion-icon name="alert-circle-outline"></ion-icon> Las contraseñas no coinciden.
@@ -174,40 +139,48 @@
             </div>
           </div>
 
-          <!-- Términos -->
-          <div class="terms-row">
-            <label class="terms-label">
-              <input type="checkbox" formControlName="terms" class="custom-checkbox">
-              <span>Acepto las políticas de uso y privacidad de SaberStyle</span>
-            </label>
+          <!-- Términos y Condiciones -->
+          <div class="terms-group">
+            <ion-item lines="none" class="terms-item">
+              <ion-checkbox formControlName="terms" justify="start">
+                <span class="terms-text">Acepto los <b>términos y condiciones</b> de AICO</span>
+              </ion-checkbox>
+            </ion-item>
+            <div class="error-container" *ngIf="terms?.invalid && (terms?.dirty || terms?.touched)">
+              <span *ngIf="terms?.errors?.['required']">
+                <ion-icon name="alert-circle-outline"></ion-icon> Debes aceptar los términos para continuar.
+              </span>
+            </div>
           </div>
 
-          <!-- Submit Button -->
-          <button
+          <!-- Botón Registrarse -->
+          <ion-button
             type="submit"
-            class="submit-btn"
+            expand="block"
+            color="primary"
+            class="submit-button ion-margin-top"
             [disabled]="isSubmitting">
-            <ion-spinner name="crescent" *ngIf="isSubmitting" class="btn-spinner"></ion-spinner>
-            <span *ngIf="!isSubmitting" class="btn-content">
-              <span>✦</span> REGISTRARME COMO {{ selectedRole === 'student' ? 'ESTUDIANTE' : 'PROFESOR' }}
-            </span>
-          </button>
+            <ion-icon name="person-add-outline" slot="start" *ngIf="!isSubmitting"></ion-icon>
+            <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
+            <span *ngIf="!isSubmitting">Crear Cuenta</span>
+          </ion-button>
 
         </form>
-      </div>
+      </ion-card-content>
+    </ion-card>
 
-      <!-- Footer: Volver al Login -->
-      <div class="auth-footer">
-        <p class="footer-question">¿Ya tienes una cuenta registrada?</p>
-        <a routerLink="/login" class="login-link-action">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-          <span>Iniciar Sesión</span>
-        </a>
-        <svg class="footer-wave" viewBox="0 0 140 12">
-          <path d="M5,6 Q35,12 70,6 T135,6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
-
+    <!-- Enlace a Login -->
+    <div class="auth-footer">
+      <p>¿Ya tienes una cuenta registrada?</p>
+      <ion-button
+        fill="outline"
+        color="dark"
+        routerLink="/login"
+        expand="block"
+        class="secondary-button">
+        <ion-icon name="log-in-outline" slot="start"></ion-icon>
+        Iniciar Sesión
+      </ion-button>
     </div>
 
   </div>

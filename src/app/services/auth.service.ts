@@ -30,7 +30,7 @@ export class AuthService {
     return !!this.getStoredSession();
   }
 
-  public register(userData: { name: string; email: string; password: string; role?: 'student' | 'teacher' }): { success: boolean; message: string; user?: User } {
+  public register(userData: { name: string; email: string; password: string }): { success: boolean; message: string; user?: User } {
     const users = this.getStoredUsers();
     const normalizedEmail = userData.email.trim().toLowerCase();
 
@@ -39,41 +39,25 @@ export class AuthService {
       return { success: false, message: 'Ya existe una cuenta registrada con este correo electrónico.' };
     }
 
-    const role: 'student' | 'teacher' = userData.role || 'student';
     const newUser: User = {
       id: this.generateId(),
       name: userData.name.trim(),
       email: normalizedEmail,
       password: userData.password,
-      role: role,
-      coins: role === 'student' ? 1250 : 500,
-      avatarConfig: {
-        skinColor: '#f8d9b6',
-        hairId: 'cabello-moderno',
-        topId: 'hoodie-galaxia',
-        bottomId: 'pantalon-urbano',
-        shoesId: 'sneakers-pro',
-        accessoryId: 'gorra-snoopy',
-        expression: 'Feliz'
-      },
       createdAt: new Date().toISOString()
     };
 
     users.push(newUser);
     localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify(users));
 
-    // Guardar sesión del nuevo usuario
+    // Iniciar sesión automáticamente tras el registro
     const session: AuthSession = {
-      user: { ...newUser },
+      user: { id: newUser.id, name: newUser.name, email: newUser.email },
       token: 'jwt-mock-' + newUser.id + '-' + Date.now()
     };
     this.saveSession(session);
 
-    return { 
-      success: true, 
-      message: `¡Registro exitoso! Bienvenido a SaberStyle como ${role === 'student' ? 'Estudiante' : 'Profesor'}.`, 
-      user: session.user 
-    };
+    return { success: true, message: '¡Registro exitoso! Bienvenido a AICO.', user: session.user };
   }
 
   public login(credentials: { email: string; password: string }): { success: boolean; message: string; user?: User } {
@@ -90,45 +74,13 @@ export class AuthService {
       return { success: false, message: 'La contraseña ingresada es incorrecta.' };
     }
 
-    // Asegurar que tenga rol
-    if (!user.role) {
-      user.role = 'student';
-    }
-    if (user.coins === undefined) {
-      user.coins = user.role === 'student' ? 1250 : 500;
-    }
-
     const session: AuthSession = {
-      user: { ...user },
+      user: { id: user.id, name: user.name, email: user.email },
       token: 'jwt-mock-' + user.id + '-' + Date.now()
     };
     this.saveSession(session);
 
-    return { 
-      success: true, 
-      message: `¡Bienvenido de nuevo, ${user.name}! (${user.role === 'teacher' ? 'Docente' : 'Estudiante'})`, 
-      user: session.user 
-    };
-  }
-
-  public updateCurrentUser(partialUser: Partial<User>): void {
-    const current = this.currentUserSubject.value;
-    if (!current) return;
-
-    const updated: User = { ...current, ...partialUser };
-    const session = this.getStoredSession();
-    if (session) {
-      session.user = updated;
-      this.saveSession(session);
-    }
-
-    // Actualizar también en lista de usuarios
-    const users = this.getStoredUsers();
-    const index = users.findIndex(u => u.id === current.id || u.email === current.email);
-    if (index !== -1) {
-      users[index] = { ...users[index], ...partialUser };
-      localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify(users));
-    }
+    return { success: true, message: `¡Bienvenido de nuevo, ${user.name}!`, user: session.user };
   }
 
   public logout(): void {
@@ -162,61 +114,15 @@ export class AuthService {
 
   private initDefaultUsers(): void {
     const users = this.getStoredUsers();
-    let updated = false;
-
-    // Verificar o agregar demo estudiante
-    if (!users.some(u => u.email === 'estudiante@saberstyle.com')) {
-      users.push({
-        id: 'usr_student_demo',
-        name: 'Juan Pérez',
-        email: 'estudiante@saberstyle.com',
-        password: 'password123',
-        role: 'student',
-        coins: 1250,
-        avatarConfig: {
-          skinColor: '#f8d9b6',
-          hairId: 'cabello-moderno',
-          topId: 'hoodie-galaxia',
-          bottomId: 'pantalon-urbano',
-          shoesId: 'sneakers-pro',
-          accessoryId: 'gorra-snoopy',
-          expression: 'Feliz'
-        },
-        createdAt: new Date().toISOString()
-      });
-      updated = true;
-    }
-
-    // Verificar o agregar demo profesor
-    if (!users.some(u => u.email === 'profesor@saberstyle.com')) {
-      users.push({
-        id: 'usr_teacher_demo',
-        name: 'Prof. Carlos Ramírez',
-        email: 'profesor@saberstyle.com',
-        password: 'password123',
-        role: 'teacher',
-        coins: 500,
-        createdAt: new Date().toISOString()
-      });
-      updated = true;
-    }
-
-    // Retrocompatibilidad con demo@aico.com
-    if (!users.some(u => u.email === 'demo@aico.com')) {
-      users.push({
+    if (users.length === 0) {
+      const defaultUser: User = {
         id: 'usr_demo_1',
-        name: 'Juan Pérez (Demo)',
+        name: 'Usuario Demo',
         email: 'demo@aico.com',
         password: 'password123',
-        role: 'student',
-        coins: 1250,
         createdAt: new Date().toISOString()
-      });
-      updated = true;
-    }
-
-    if (updated) {
-      localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify(users));
+      };
+      localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify([defaultUser]));
     }
   }
 
