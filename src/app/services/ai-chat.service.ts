@@ -20,7 +20,7 @@ export class AichatService {
     constructor(private http: HttpClient) {}
 
     sendMessage(userMessage: string): Observable<Chatmessage> {
-        const apiKey = (environment as any).geminiApiKey || (environment as any).firebase?.geminiApiKey;
+        const apiKey = environment.firebase.geminiApiKey;
 
         const userMsg: Chatmessage = {
             id: 'msg_' + Date.now(),
