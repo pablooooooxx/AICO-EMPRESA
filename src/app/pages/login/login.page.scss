@@ -477,58 +477,28 @@
   .demo-fill-container {
     margin-top: 18px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    justify-content: center;
 
-    .demo-label {
-      font-size: 11px;
+    .demo-fill-btn {
+      background: transparent;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #6366f1;
+      font-size: 13px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #94a3b8;
-    }
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 12px;
+      transition: background 0.2s ease;
 
-    .demo-buttons-row {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-
-      .demo-fill-btn {
-        flex: 1;
+      &:hover {
         background: rgba(99, 102, 241, 0.08);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        color: #4f46e5;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        padding: 8px 10px;
-        border-radius: 12px;
-        transition: all 0.2s ease;
+      }
 
-        &:hover {
-          background: rgba(99, 102, 241, 0.16);
-          border-color: rgba(99, 102, 241, 0.4);
-        }
-
-        &.teacher-demo-btn {
-          color: #7c3aed;
-          background: rgba(124, 58, 237, 0.08);
-          border-color: rgba(124, 58, 237, 0.2);
-
-          &:hover {
-            background: rgba(124, 58, 237, 0.16);
-            border-color: rgba(124, 58, 237, 0.4);
-          }
-        }
-
-        ion-icon {
-          font-size: 15px;
-        }
+      ion-icon {
+        font-size: 16px;
       }
     }
   }
@@ -543,41 +513,11 @@
   align-items: center;
 
   .footer-question {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 500;
-    margin: 0 0 8px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .register-link-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 22px;
-    background: rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
+    font-size: 15px;
     color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    transition: all 0.25s ease;
-    margin-bottom: 12px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.35);
-    }
-
-    ion-icon {
-      font-size: 16px;
-      color: #f472b6;
-    }
+    font-weight: 500;
+    margin: 0 0 4px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   .footer-wave {
@@ -585,7 +525,6 @@
     height: 12px;
   }
 }
-
 
 /* Responsive adjustments */
 @media (max-width: 1100px) {
