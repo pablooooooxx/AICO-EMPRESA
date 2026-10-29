@@ -30,7 +30,17 @@ export class AuthService {
     return !!this.getStoredSession();
   }
 
-  public register(userData: { name: string; email: string; password: string; role?: 'student' | 'teacher' }): { success: boolean; message: string; user?: User } {
+  public isTeacher(): boolean {
+    const user = this.currentUserValue;
+    return user?.role === 'teacher';
+  }
+
+  public isStudent(): boolean {
+    const user = this.currentUserValue;
+    return user?.role === 'student';
+  }
+
+  public register(userData: { name: string; email: string; password: string; role?: 'student' | 'teacher'; autoLogin?: boolean }): { success: boolean; message: string; user?: User } {
     const users = this.getStoredUsers();
     const normalizedEmail = userData.email.trim().toLowerCase();
 
@@ -62,17 +72,20 @@ export class AuthService {
     users.push(newUser);
     localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify(users));
 
-    // Guardar sesión del nuevo usuario
-    const session: AuthSession = {
-      user: { ...newUser },
-      token: 'jwt-mock-' + newUser.id + '-' + Date.now()
-    };
-    this.saveSession(session);
+    // Si autoLogin está activo (o por defecto true), iniciar sesión
+    const shouldLogin = userData.autoLogin !== false;
+    if (shouldLogin) {
+      const session: AuthSession = {
+        user: { ...newUser },
+        token: 'jwt-mock-' + newUser.id + '-' + Date.now()
+      };
+      this.saveSession(session);
+    }
 
     return { 
       success: true, 
-      message: `¡Registro exitoso! Bienvenido a SaberStyle como ${role === 'student' ? 'Estudiante' : 'Profesor'}.`, 
-      user: session.user 
+      message: `¡Registro exitoso! Cuenta de ${role === 'student' ? 'Estudiante' : 'Profesor'} creada correctamente.`, 
+      user: newUser 
     };
   }
 

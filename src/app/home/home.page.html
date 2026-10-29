@@ -7,25 +7,25 @@
     <div class="header-glass-bar">
       
       <!-- Brand Logo con Isotipo -->
-      <div class="header-brand" (click)="volverAInicio()">
+      <div class="header-brand" (click)="volverAInicio()" title="Volver al inicio">
         <span class="sparkle-bullet">✦</span>
         <span class="brand-name">SaberStyle</span>
         <span class="company-badge-inline">Aico</span>
       </div>
 
       <!-- Saldo de Monedas Cósmicas -->
-      <div class="coins-pill" (click)="selectTab('tienda')">
+      <div class="coins-pill" (click)="abrirTienda()" title="Tienda de Avatar">
         <span class="coin-symbol">🪙</span>
         <span class="coin-amount">{{ userCoins | number }}</span>
         <button type="button" class="coin-add-btn" title="Conseguir más monedas">+</button>
       </div>
 
-      <!-- Perfil / Avatar Badge -->
+      <!-- Perfil / Avatar Badge y Menú -->
       <div class="header-user-actions">
-        <div class="user-avatar-badge" (click)="abrirVestuario()" title="Armario y Vestuario">
+        <div class="user-avatar-badge" (click)="abrirPerfil()" [title]="currentUser?.name || 'Mi Perfil'">
           <div class="mini-avatar-face" [style.background-color]="avatarConfig.skinColor">
             <span class="avatar-hair-emoji">
-              <ion-icon [name]="avatarConfig.accessoryId === 'mascota-snoopy' ? 'paw' : 'person'"></ion-icon>
+              <ion-icon [name]="currentUser?.role === 'teacher' ? 'school' : 'person'"></ion-icon>
             </span>
           </div>
         </div>
@@ -39,12 +39,12 @@
   </ion-header>
 
   <!-- ============================================== -->
-  <!-- CONTENEDOR PRINCIPAL CON FONDO GALÁCTICO       -->
+  <!-- CONTENEDOR PRINCIPAL CON FONDO DINÁMICO        -->
   <!-- ============================================== -->
   <ion-content class="cosmic-content">
     
-    <!-- Fondo Galáctico con Nebulosas y Estrellas -->
-    <div class="galaxy-backdrop">
+    <!-- Fondo Galáctico con Nebulosas y Estrellas (se oculta en Modo Enfoque) -->
+    <div class="galaxy-backdrop" *ngIf="!accesibilidad.modoEnfoque">
       <div class="nebula nebula-1"></div>
       <div class="nebula nebula-2"></div>
       <div class="nebula nebula-3"></div>
@@ -58,7 +58,7 @@
     <div class="screen-scroll-container">
 
       <!-- ============================================== -->
-      <!-- PANTALLA 1: INICIO ESTUDIANTE (REFERENCIA FIEL)-->
+      <!-- PANTALLA 1: INICIO ESTUDIANTE (MOCKUP SCREEN 5)-->
       <!-- ============================================== -->
       <div class="screen-view view-estudiante" *ngIf="activeTab === 'estudiante'">
         
@@ -74,14 +74,14 @@
             <span class="card-eyebrow">TU AVENTURA</span>
             <h3 class="adventure-title">Sigue donde quedaste</h3>
             <p class="adventure-subject">Matemáticas · Nivel 3</p>
-            <button type="button" class="continue-action-btn" (click)="iniciarQuiz()">
+            <button type="button" class="continue-action-btn" (click)="jugarActividad(savedGames[0])">
               <span>Continuar</span>
               <ion-icon name="arrow-forward"></ion-icon>
             </button>
           </div>
 
           <!-- Preview de Avatar en la tarjeta -->
-          <div class="adventure-avatar-box" (click)="abrirVestuario()" title="Ir a Vestuario">
+          <div class="adventure-avatar-box" (click)="abrirVestuario()" title="Personalizar mi avatar">
             <div class="avatar-portrait-circle" [style.background-color]="avatarConfig.skinColor">
               <div class="avatar-head-render">
                 <span class="avatar-symbol">👤</span>
@@ -92,7 +92,7 @@
         </div>
 
         <!-- Tarjeta de Misión Diaria -->
-        <div class="mission-glass-card" (click)="selectTab('logros')">
+        <div class="mission-glass-card" (click)="abrirLogros()">
           <div class="mission-info">
             <div class="mission-header-row">
               <span class="mission-tag">Misión diaria</span>
@@ -111,17 +111,17 @@
           <h3 class="section-title">Explora SaberStyle</h3>
           <div class="two-col-grid">
             
-            <div class="explore-card" (click)="selectBottomNav('clases')">
+            <div class="explore-card" (click)="selectTab('mis-juegos')">
               <div class="explore-icon-circle bg-purple">
-                <ion-icon name="book-outline"></ion-icon>
+                <ion-icon name="game-controller-outline"></ion-icon>
               </div>
-              <h4 class="explore-card-title">Mis clases</h4>
-              <p class="explore-card-desc">Aprende en equipo</p>
+              <h4 class="explore-card-title">Mis juegos</h4>
+              <p class="explore-card-desc">2 completados</p>
             </div>
 
-            <div class="explore-card" (click)="iniciarQuiz()">
+            <div class="explore-card" (click)="jugarActividad(savedGames[0])">
               <div class="explore-icon-circle bg-blue">
-                <ion-icon name="game-controller-outline"></ion-icon>
+                <ion-icon name="play-outline"></ion-icon>
               </div>
               <h4 class="explore-card-title">Jugar</h4>
               <p class="explore-card-desc">Retos y quizzes</p>
@@ -133,7 +133,7 @@
         <!-- Sección "Para ti" -->
         <div class="section-block">
           <h3 class="section-title">Para ti</h3>
-          <div class="for-you-card" (click)="iniciarQuiz()">
+          <div class="for-you-card" (click)="jugarActividad(savedGames[0])">
             <div class="for-you-icon-circle">
               <ion-icon name="flash-outline"></ion-icon>
             </div>
@@ -150,50 +150,81 @@
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 2: PANEL DE PROFESOR / DOCENTE       -->
+      <!-- PANTALLA 2: INICIO PROFESOR (MOCKUP SCREEN 6)  -->
       <!-- ============================================== -->
       <div class="screen-view view-profesor" *ngIf="activeTab === 'profesor'">
         
         <div class="welcome-section">
-          <div class="teacher-badge-pill">MODO DOCENTE</div>
-          <h1 class="welcome-title">¡Hola, {{ currentUser?.name || 'Profesor' }}!</h1>
-          <p class="welcome-subtitle">Gestiona tus clases y crea dinámicas interactivas</p>
+          <div class="teacher-badge-pill">ESPACIO DOCENTE</div>
+          <h1 class="welcome-title">¡Hola, Profe!</h1>
+          <p class="welcome-subtitle">Gestiona tus clases y actividades</p>
         </div>
 
-        <!-- Métricas del Docente -->
-        <div class="teacher-stats-row">
-          <div class="teacher-stat-card">
-            <span class="stat-number">{{ clases.length }}</span>
-            <span class="stat-label">Clases Activas</span>
-          </div>
-          <div class="teacher-stat-card">
-            <span class="stat-number">{{ savedGames.length }}</span>
-            <span class="stat-label">Juegos Creados</span>
-          </div>
-          <div class="teacher-stat-card">
-            <span class="stat-number">74</span>
-            <span class="stat-label">Alumnos Totales</span>
-          </div>
-        </div>
-
-        <!-- Accesos Rápidos del Docente -->
+        <!-- Cuadrícula 2x2 de Accesos Rápidos del Docente -->
         <div class="section-block">
-          <div class="teacher-actions-banner">
-            <button type="button" class="teacher-btn-primary" (click)="selectBottomNav('crear')">
-              <ion-icon name="add-circle-outline"></ion-icon>
-              <span>Crear Nueva Dinámica</span>
-            </button>
-            <button type="button" class="teacher-btn-secondary" (click)="nuevaClase()">
-              <ion-icon name="folder-open-outline"></ion-icon>
-              <span>Crear Clase</span>
-            </button>
+          <div class="two-col-grid">
+            
+            <div class="explore-card" (click)="abrirCrearJuego()">
+              <div class="explore-icon-circle bg-purple">
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Crear juego</h4>
+              <p class="explore-card-desc">Diseña y comparte</p>
+            </div>
+
+            <div class="explore-card" (click)="selectBottomNav('clases')">
+              <div class="explore-icon-circle bg-blue">
+                <ion-icon name="book-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Mis clases</h4>
+              <p class="explore-card-desc">Gestiona tus grupos</p>
+            </div>
+
+            <div class="explore-card" (click)="abrirProgreso()">
+              <div class="explore-icon-circle bg-green">
+                <ion-icon name="bar-chart-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Estadísticas</h4>
+              <p class="explore-card-desc">Revisa tu progreso</p>
+            </div>
+
+            <div class="explore-card" (click)="selectTab('mis-juegos')">
+              <div class="explore-icon-circle bg-amber">
+                <ion-icon name="folder-open-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Materiales</h4>
+              <p class="explore-card-desc">Recursos y guías</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sección "Explora SaberStyle" (Docente) -->
+        <div class="section-block">
+          <h3 class="section-title">Explora SaberStyle</h3>
+          <div class="two-col-grid">
+            <div class="explore-card" (click)="crearNuevaClaseModal()">
+              <div class="explore-icon-circle bg-pink">
+                <ion-icon name="person-add-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Crear clase</h4>
+              <p class="explore-card-desc">Invita estudiantes</p>
+            </div>
+
+            <div class="explore-card" (click)="selectTab('mis-juegos')">
+              <div class="explore-icon-circle bg-indigo">
+                <ion-icon name="library-outline"></ion-icon>
+              </div>
+              <h4 class="explore-card-title">Ver juegos</h4>
+              <p class="explore-card-desc">Biblioteca</p>
+            </div>
           </div>
         </div>
 
         <!-- Clases del Docente -->
         <div class="section-block">
           <div class="section-header-flex">
-            <h3 class="section-title">Tus Clases</h3>
+            <h3 class="section-title">Tus Clases Activas</h3>
             <button type="button" class="link-btn" (click)="selectBottomNav('clases')">Ver todas</button>
           </div>
 
@@ -202,8 +233,8 @@
               <ion-icon [name]="c.icon"></ion-icon>
             </div>
             <div class="class-info-col">
-              <h4 class="class-name">{{ c.name }} ({{ c.grado }})</h4>
-              <p class="class-meta">Código: <b>{{ c.codigo }}</b> · {{ c.studentsCount }} alumnos</p>
+              <h4 class="class-name">{{ c.name }}</h4>
+              <p class="class-meta">Código: <b>{{ c.codigo }}</b> · {{ c.studentsCount }} estudiantes</p>
             </div>
             <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
           </div>
@@ -212,291 +243,29 @@
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 3: MIS CLASES                         -->
-      <!-- ============================================== -->
-      <div class="screen-view view-clases" *ngIf="activeTab === 'clases'">
-        
-        <div class="screen-header">
-          <h2 class="screen-title">Mis Clases</h2>
-          <p class="screen-desc">Explora tus aulas virtuales y compañeros de estudio</p>
-        </div>
-
-        <!-- Buscador -->
-        <div class="search-glass-box">
-          <ion-icon name="search-outline"></ion-icon>
-          <input 
-            type="text" 
-            [(ngModel)]="searchQuery" 
-            placeholder="Buscar por materia o código de clase...">
-        </div>
-
-        <!-- Botón según Rol -->
-        <div class="classes-action-bar" *ngIf="currentUser?.role === 'teacher'">
-          <button type="button" class="glass-action-btn" (click)="nuevaClase()">
-            <ion-icon name="add-outline"></ion-icon>
-            <span>Crear Nueva Clase</span>
-          </button>
-        </div>
-
-        <!-- Lista de Clases -->
-        <div class="classes-list">
-          <div class="class-main-card" *ngFor="let clase of clasesFiltradas" (click)="verDetalleClase(clase)">
-            <div class="class-header-row">
-              <div class="class-icon-box" [style.background-color]="clase.color">
-                <ion-icon [name]="clase.icon"></ion-icon>
-              </div>
-              <div class="class-title-box">
-                <h3 class="class-title">{{ clase.name }}</h3>
-                <span class="class-grade-tag">{{ clase.grado }}</span>
-              </div>
-              <div class="class-students-badge">
-                <ion-icon name="people-outline"></ion-icon>
-                <span>{{ clase.studentsCount }}</span>
-              </div>
-            </div>
-
-            <div class="class-body-row">
-              <div class="code-copy-pill" (click)="$event.stopPropagation(); copiarCodigoClase(clase.codigo)">
-                <span>Código: <b>{{ clase.codigo }}</b></span>
-                <ion-icon name="copy-outline"></ion-icon>
-              </div>
-              <span class="activities-count">{{ clase.actividadesCount }} actividades</span>
-            </div>
-
-            <div class="class-footer-row">
-              <span class="docente-label">Docente: {{ clase.docente }}</span>
-              <button type="button" class="detail-btn">
-                <span>Detalle</span>
-                <ion-icon name="chevron-forward"></ion-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ============================================== -->
-      <!-- PANTALLA 4: DETALLE DE CLASE COMPLETO          -->
-      <!-- ============================================== -->
-      <div class="screen-view view-clase-detalle" *ngIf="activeTab === 'clase-detalle' && claseSeleccionada">
-        
-        <div class="detail-nav-bar">
-          <button type="button" class="back-circle-btn" (click)="selectBottomNav('clases')">
-            <ion-icon name="arrow-back"></ion-icon>
-          </button>
-          <span class="detail-nav-title">{{ claseSeleccionada.name }}</span>
-          <button type="button" class="back-circle-btn" (click)="invitarEstudiante()">
-            <ion-icon name="person-add-outline"></ion-icon>
-          </button>
-        </div>
-
-        <div class="class-hero-card">
-          <h2 class="class-hero-title">{{ claseSeleccionada.name }}</h2>
-          <p class="class-hero-sub">{{ claseSeleccionada.grado }} · {{ claseSeleccionada.docente }}</p>
-
-          <div class="hero-code-box">
-            <span class="code-label">CÓDIGO DE ACCESO:</span>
-            <span class="code-value">{{ claseSeleccionada.codigo }}</span>
-            <button type="button" class="copy-code-btn" (click)="copiarCodigoClase(claseSeleccionada.codigo)">
-              <ion-icon name="copy-outline"></ion-icon>
-              <span>Copiar</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Lista Real de Estudiantes Inscritos -->
-        <div class="section-block">
-          <div class="section-header-flex">
-            <h3 class="section-title">Estudiantes Matriculados ({{ claseSeleccionada.estudiantesList.length }})</h3>
-            <span class="section-badge">Activos</span>
-          </div>
-
-          <div class="students-roster-list">
-            <div class="student-roster-item" *ngFor="let est of claseSeleccionada.estudiantesList">
-              <div class="student-avatar-circle">{{ est.avatar }}</div>
-              <div class="student-info-col">
-                <h4 class="student-name">{{ est.name }}</h4>
-                <p class="student-stats">Asistencia: {{ est.asistencia }}% · {{ est.retosCompletados }} retos</p>
-              </div>
-              <div class="student-grade-pill">{{ est.promedio }}%</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Actividades de la Clase -->
-        <div class="section-block">
-          <h3 class="section-title">Actividades y Quizzes Asignados</h3>
-          <div class="assigned-activity-card" (click)="iniciarQuiz()">
-            <div class="activity-type-icon">
-              <ion-icon name="help-circle-outline"></ion-icon>
-            </div>
-            <div class="activity-meta-col">
-              <h4 class="activity-name">Quiz de Funciones y Límites</h4>
-              <p class="activity-sub">Modo En Vivo · 15 preguntas</p>
-            </div>
-            <button type="button" class="play-activity-btn">Iniciar</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ============================================== -->
-      <!-- PANTALLA 5: CREAR JUEGOS Y DINÁMICAS           -->
-      <!-- ============================================== -->
-      <div class="screen-view view-crear-juego" *ngIf="activeTab === 'crear-juego'">
-        
-        <div class="screen-header">
-          <h2 class="screen-title">Crear Dinámica de Juego</h2>
-          <p class="screen-desc">Elige el tipo de juego y el modo de participación para tu clase</p>
-        </div>
-
-        <!-- Paso 1: TIPO DE JUEGO (6 Minijuegos) -->
-        <div class="section-block">
-          <label class="step-label">1. Selecciona el Tipo de Dinámica:</label>
-          <div class="game-types-grid">
-            <div 
-              class="game-type-card" 
-              *ngFor="let g of gameTypes"
-              [class.game-type-selected]="selectedGameType === g.id"
-              (click)="selectGameType(g.id)">
-              <div class="game-type-icon-circle" [style.background-color]="g.badgeColor">
-                <ion-icon [name]="g.icon"></ion-icon>
-              </div>
-              <h4 class="game-type-title">{{ g.name }}</h4>
-              <p class="game-type-desc">{{ g.desc }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Paso 2: MODO DE PARTICIPACIÓN (Separado, Sin Mixto) -->
-        <div class="section-block">
-          <label class="step-label">2. Modo de Participación:</label>
-          <div class="mode-selector-row">
-            <button 
-              type="button" 
-              class="mode-pill-btn" 
-              [class.mode-active]="selectedParticipationMode === 'en-vivo'"
-              (click)="setParticipationMode('en-vivo')">
-              <ion-icon name="radio-outline"></ion-icon>
-              <div class="mode-text">
-                <span class="mode-title">En Vivo (Sincrónico)</span>
-                <span class="mode-sub">Estilo Kahoot · Competencia simultánea</span>
-              </div>
-            </button>
-
-            <button 
-              type="button" 
-              class="mode-pill-btn" 
-              [class.mode-active]="selectedParticipationMode === 'asignar'"
-              (click)="setParticipationMode('asignar')">
-              <ion-icon name="time-outline"></ion-icon>
-              <div class="mode-text">
-                <span class="mode-title">Asignar (Individual)</span>
-                <span class="mode-sub">Asincrónico · Al ritmo de cada alumno</span>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Paso 3: Configurar y Guardar -->
-        <div class="section-block">
-          <label class="step-label">3. Título de la Actividad:</label>
-          <div class="input-form-box">
-            <input 
-              type="text" 
-              [(ngModel)]="nuevoJuegoTitulo" 
-              placeholder="Ej: Repaso de Trigonometría Saber 11...">
-            <button type="button" class="create-submit-btn" (click)="guardarNuevoJuego()">
-              <ion-icon name="checkmark-outline"></ion-icon>
-              <span>Guardar Dinámica</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Biblioteca de Juegos Guardados con Acciones Completas -->
-        <div class="section-block">
-          <div class="section-header-flex">
-            <h3 class="section-title">Mis Juegos Guardados ({{ savedGames.length }})</h3>
-          </div>
-
-          <div class="saved-games-list">
-            <div class="saved-game-card" *ngFor="let juego of savedGames">
-              <div class="saved-game-header">
-                <div class="saved-game-badge" [class.mode-live]="juego.modo === 'en-vivo'">
-                  {{ juego.modo === 'en-vivo' ? 'EN VIVO' : 'ASIGNADO' }}
-                </div>
-                <span class="saved-game-type">{{ juego.tipoLabel }}</span>
-              </div>
-
-              <h4 class="saved-game-title">{{ juego.titulo }}</h4>
-              <p class="saved-game-meta">{{ juego.preguntasCount }} ítems · Creado {{ juego.fecha }}</p>
-
-              <!-- Acciones: Abrir/Jugar, Editar, Renombrar, Eliminar -->
-              <div class="saved-game-actions">
-                <button type="button" class="game-action-btn play-btn" (click)="jugarJuego(juego)">
-                  <ion-icon name="play"></ion-icon> Jugar
-                </button>
-                <button type="button" class="game-action-btn edit-btn" (click)="editarJuego(juego)">
-                  <ion-icon name="create-outline"></ion-icon> Editar
-                </button>
-                <button type="button" class="game-action-btn rename-btn" (click)="renombrarJuego(juego)">
-                  <ion-icon name="pencil-outline"></ion-icon>
-                </button>
-                <button type="button" class="game-action-btn delete-btn" (click)="eliminarJuego(juego)">
-                  <ion-icon name="trash-outline"></ion-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ============================================== -->
-      <!-- PANTALLA 6: TIENDA DE AVATAR (REFERENCIA FIEL) -->
+      <!-- PANTALLA 3: TIENDA DE AVATAR (MOCKUP SCREEN 7) -->
       <!-- ============================================== -->
       <div class="screen-view view-tienda" *ngIf="activeTab === 'tienda'">
         
         <div class="screen-header header-with-close">
-          <div>
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
             <h2 class="screen-title">✦ Tienda</h2>
             <p class="screen-desc">Encuentra tu próximo estilo</p>
           </div>
           <button type="button" class="close-screen-btn" (click)="volverAInicio()">✕</button>
         </div>
 
-        <!-- Banner de Saldo Cósmico -->
+        <!-- Saldo de Monedas Cósmicas -->
         <div class="store-balance-banner">
           <div class="balance-left">
             <span class="balance-number">{{ userCoins | number }}</span>
-            <span class="balance-label">MONEDAS</span>
+            <span class="balance-label">MONEDAS DISPONIBLES</span>
           </div>
-          <button type="button" class="get-more-coins-btn" (click)="iniciarQuiz()">
+          <button type="button" class="get-more-coins-btn" (click)="jugarActividad(savedGames[0])">
             <span>+ Conseguir</span>
-          </button>
-        </div>
-
-        <!-- Tarjeta de Vista Previa del Avatar en Vivo -->
-        <div class="avatar-preview-glass-card">
-          <span class="preview-eyebrow">VISTA PREVIA · TU AVATAR</span>
-          
-          <div class="avatar-stage-circle" [style.background-color]="avatarConfig.skinColor">
-            <div class="avatar-character-render">
-              <!-- Mascota Snoopy / Acompañante galáctico -->
-              <div class="pet-companion" *ngIf="avatarConfig.accessoryId === 'mascota-snoopy'" title="Perrito Galáctico Snoopy">
-                🐶
-              </div>
-              <div class="avatar-face-eyes">👀</div>
-              <div class="avatar-smile">‿</div>
-              <div class="avatar-clothing-indicator">👕</div>
-            </div>
-          </div>
-
-          <p class="avatar-preview-hint">Toca una prenda para probarla</p>
-          
-          <button type="button" class="open-wardrobe-btn" (click)="abrirVestuario()">
-            <ion-icon name="shirt-outline"></ion-icon>
-            <span>Vestuario</span>
           </button>
         </div>
 
@@ -505,37 +274,16 @@
           <button 
             type="button" 
             class="category-pill" 
-            [class.category-active]="storeCategoryFilter === 'todo'"
-            (click)="setStoreCategory('todo')">
-            <span>✦ Todo</span>
+            [class.category-active]="storeCategoryFilter === 'ropa'"
+            (click)="setStoreCategory('ropa')">
+            <span>Ropa</span>
           </button>
           <button 
             type="button" 
             class="category-pill" 
-            [class.category-active]="storeCategoryFilter === 'cabello'"
-            (click)="setStoreCategory('cabello')">
-            <span>Cabello</span>
-          </button>
-          <button 
-            type="button" 
-            class="category-pill" 
-            [class.category-active]="storeCategoryFilter === 'tops'"
-            (click)="setStoreCategory('tops')">
-            <span>Tops</span>
-          </button>
-          <button 
-            type="button" 
-            class="category-pill" 
-            [class.category-active]="storeCategoryFilter === 'pantalones'"
-            (click)="setStoreCategory('pantalones')">
-            <span>Pantalón</span>
-          </button>
-          <button 
-            type="button" 
-            class="category-pill" 
-            [class.category-active]="storeCategoryFilter === 'zapatos'"
-            (click)="setStoreCategory('zapatos')">
-            <span>Zapatos</span>
+            [class.category-active]="storeCategoryFilter === 'pelo'"
+            (click)="setStoreCategory('pelo')">
+            <span>Pelo</span>
           </button>
           <button 
             type="button" 
@@ -544,58 +292,104 @@
             (click)="setStoreCategory('accesorios')">
             <span>Accesorios</span>
           </button>
+          <button 
+            type="button" 
+            class="category-pill" 
+            [class.category-active]="storeCategoryFilter === 'zapatos'"
+            (click)="setStoreCategory('zapatos')">
+            <span>Zapatos</span>
+          </button>
         </div>
 
-        <!-- Grid de Productos (Destacados para ti) -->
-        <div class="section-block">
-          <h3 class="section-title">Destacados para ti</h3>
-          
-          <div class="store-grid-two-col">
-            <div class="product-glass-card" *ngFor="let item of filteredStoreItems">
-              <span class="product-tag" *ngIf="item.tag">{{ item.tag }}</span>
+        <!-- Grid de Productos de la Tienda -->
+        <div class="store-grid-two-col">
+          <div class="product-glass-card" *ngFor="let item of filteredStoreItems">
+            <span class="product-tag" *ngIf="item.tag">{{ item.tag }}</span>
 
-              <div class="product-icon-stage" [style.color]="item.color">
-                <ion-icon [name]="item.icon"></ion-icon>
-              </div>
+            <div class="product-icon-stage" [style.color]="item.color">
+              <ion-icon [name]="item.icon"></ion-icon>
+            </div>
 
-              <h4 class="product-name">{{ item.name }}</h4>
+            <h4 class="product-name">{{ item.name }}</h4>
 
-              <div class="product-price-row">
-                <span class="product-price">🪙 {{ item.price }}</span>
-              </div>
+            <div class="product-price-row">
+              <span class="product-price">🪙 {{ item.price }}</span>
+            </div>
 
-              <div class="product-actions-wrap">
-                <button 
-                  type="button" 
-                  class="product-action-btn"
-                  [class.btn-equipped]="item.equipped"
-                  [class.btn-owned]="item.owned && !item.equipped"
-                  (click)="comprarPrenda(item)">
-                  <span *ngIf="item.equipped">Equipado ✓</span>
-                  <span *ngIf="item.owned && !item.equipped">Equipar</span>
-                  <span *ngIf="!item.owned">Probar / Comprar</span>
-                </button>
-              </div>
+            <div class="product-actions-wrap">
+              <button 
+                type="button" 
+                class="product-action-btn"
+                [class.btn-equipped]="item.equipped"
+                [class.btn-owned]="item.owned && !item.equipped"
+                (click)="comprarPrenda(item)">
+                <span *ngIf="item.equipped">Equipado ✓</span>
+                <span *ngIf="item.owned && !item.equipped">Equipar</span>
+                <span *ngIf="!item.owned">Comprar</span>
+              </button>
             </div>
           </div>
+        </div>
+
+        <!-- Botón a Armario -->
+        <div class="section-block">
+          <button type="button" class="save-avatar-btn" (click)="abrirVestuario()">
+            <ion-icon name="shirt-outline"></ion-icon>
+            <span>Ir a Mi Armario</span>
+          </button>
         </div>
 
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 7: ARMARIO / VESTUARIO (CLOSET)       -->
+      <!-- PANTALLA 4: MI ARMARIO / VESTUARIO (SCREEN 8)  -->
       <!-- ============================================== -->
       <div class="screen-view view-closet" *ngIf="activeTab === 'closet'">
         
         <div class="screen-header header-with-close">
-          <div>
-            <h2 class="screen-title">Armario & Vestuario</h2>
-            <p class="screen-desc">Personaliza y equipa tu personaje cósmico</p>
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Mi armario</h2>
+            <p class="screen-desc">Personaliza y equipa tu personaje</p>
           </div>
-          <button type="button" class="close-screen-btn" (click)="guardarCambiosVestuario()">✓</button>
+          <div></div>
         </div>
 
-        <!-- Probador 360° -->
+        <!-- Categorías del Armario -->
+        <div class="categories-scroll-row">
+          <button 
+            type="button" 
+            class="category-pill" 
+            [class.category-active]="closetCategoryFilter === 'ropa'"
+            (click)="setClosetCategory('ropa')">
+            <span>Ropa</span>
+          </button>
+          <button 
+            type="button" 
+            class="category-pill" 
+            [class.category-active]="closetCategoryFilter === 'pelo'"
+            (click)="setClosetCategory('pelo')">
+            <span>Pelo</span>
+          </button>
+          <button 
+            type="button" 
+            class="category-pill" 
+            [class.category-active]="closetCategoryFilter === 'accesorios'"
+            (click)="setClosetCategory('accesorios')">
+            <span>Accesorios</span>
+          </button>
+          <button 
+            type="button" 
+            class="category-pill" 
+            [class.category-active]="closetCategoryFilter === 'zapatos'"
+            (click)="setClosetCategory('zapatos')">
+            <span>Zapatos</span>
+          </button>
+        </div>
+
+        <!-- Probador 360° y Render de Avatar (Estilo Mockup) -->
         <div class="dressing-room-card">
           <div class="angle-selector-row">
             <button 
@@ -608,23 +402,48 @@
             </button>
           </div>
 
-          <div class="avatar-full-render" [style.background-color]="avatarConfig.skinColor">
-            <div class="avatar-head">
-              <div class="avatar-hair">{{ avatarConfig.hairId }}</div>
-              <div class="avatar-expression">Expresión: {{ avatarConfig.expression }}</div>
-            </div>
-            <div class="avatar-torso">{{ avatarConfig.topId }}</div>
-            <div class="avatar-legs">{{ avatarConfig.bottomId }}</div>
-            <div class="avatar-feet">{{ avatarConfig.shoesId }}</div>
-            <div class="avatar-pet-badge" *ngIf="avatarConfig.accessoryId === 'mascota-snoopy'">
-              🐶 Snoopy Galáctico Equipado
+          <div class="avatar-stage-circle" [style.background-color]="avatarConfig.skinColor">
+            <div class="avatar-full-render">
+              <div class="avatar-head">
+                <div class="avatar-face-eyes">👀</div>
+                <div class="avatar-expression-tag">{{ avatarConfig.expression }}</div>
+              </div>
+              <div class="avatar-clothing-row">
+                <span class="equipped-item-chip">👕 {{ avatarConfig.topId }}</span>
+                <span class="equipped-item-chip">👖 {{ avatarConfig.bottomId }}</span>
+              </div>
+              <div class="avatar-pet-badge" *ngIf="avatarConfig.accessoryId === 'mascota-snoopy'">
+                🐶 Perrito Astronauta Equipado
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Selector de Expresiones Cartoon -->
+        <!-- Prendas disponibles para equipar en esta categoría -->
         <div class="section-block">
-          <label class="step-label">Expresión Facial (Estilo Cartoon Snoopy):</label>
+          <h4 class="step-label">Tus prendas desbloqueadas ({{ filteredClosetItems.length }}):</h4>
+          <div class="closet-items-grid" *ngIf="filteredClosetItems.length > 0">
+            <div 
+              class="closet-item-card" 
+              *ngFor="let it of filteredClosetItems"
+              [class.item-equipped-card]="it.equipped"
+              (click)="equiparPrenda(it)">
+              <div class="closet-item-icon" [style.color]="it.color">
+                <ion-icon [name]="it.icon"></ion-icon>
+              </div>
+              <span class="closet-item-name">{{ it.name }}</span>
+              <span class="closet-equip-tag">{{ it.equipped ? 'Equipado ✓' : 'Equipar' }}</span>
+            </div>
+          </div>
+          <div class="empty-closet-state" *ngIf="filteredClosetItems.length === 0">
+            <p>Aún no tienes artículos en esta categoría.</p>
+            <button type="button" class="link-btn" (click)="abrirTienda()">Explorar en la Tienda →</button>
+          </div>
+        </div>
+
+        <!-- Selector de Expresiones Faciales -->
+        <div class="section-block">
+          <label class="step-label">Expresión Facial:</label>
           <div class="expressions-row">
             <button 
               type="button" 
@@ -637,7 +456,7 @@
           </div>
         </div>
 
-        <!-- Selector de Tonos de Piel (Naturales y Cósmicos) -->
+        <!-- Selector de Tonos de Piel (Naturales y Morado Cósmico) -->
         <div class="section-block">
           <label class="step-label">Tono de Piel y Fantasía Cósmica:</label>
           <div class="skin-tones-row">
@@ -653,116 +472,961 @@
           </div>
         </div>
 
-        <!-- Botón Guardar -->
+        <!-- Botón Guardar Cambios -->
         <div class="section-block">
           <button type="button" class="save-avatar-btn" (click)="guardarCambiosVestuario()">
-            <span>Guardar Estilo y Sincronizar</span>
+            <span>Guardar cambios</span>
           </button>
         </div>
 
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 8: LOGROS & MISIONES DIARIAS          -->
+      <!-- PANTALLA 5: CREAR JUEGO (MOCKUP SCREEN 9)      -->
       <!-- ============================================== -->
-      <div class="screen-view view-logros" *ngIf="activeTab === 'logros'">
+      <div class="screen-view view-crear-juego" *ngIf="activeTab === 'crear-juego'">
         
         <div class="screen-header">
-          <h2 class="screen-title">Logros & Misiones</h2>
-          <p class="screen-desc">Supera retos galácticos para acumular recompensas</p>
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Crear juego</h2>
+            <p class="screen-desc">Configura tu dinámica educativa</p>
+          </div>
+          <div></div>
         </div>
 
-        <!-- Misiones Diarias (Bronce, Plata, Oro, Diamante) -->
+        <!-- Paso 1: Tipo de juego (6 Minijuegos requeridos) -->
         <div class="section-block">
-          <h3 class="section-title">Misiones Diarias</h3>
-          
-          <div class="missions-vertical-list">
-            <div class="mission-item-card" *ngFor="let logro of logrosDesafios">
-              <div class="medal-icon-badge" [class]="'medal-' + logro.medal">
-                <span *ngIf="logro.medal === 'bronze'">🥉</span>
-                <span *ngIf="logro.medal === 'silver'">🥈</span>
-                <span *ngIf="logro.medal === 'gold'">🥇</span>
-                <span *ngIf="logro.medal === 'diamond'">💎</span>
+          <h4 class="step-label">Tipo de juego</h4>
+          <div class="game-types-grid">
+            <div 
+              class="game-type-card" 
+              *ngFor="let g of gameTypes"
+              [class.game-type-selected]="selectedGameType === g.id"
+              (click)="selectGameType(g.id)">
+              <div class="game-type-icon-circle" [style.background-color]="g.badgeColor">
+                <ion-icon [name]="g.icon"></ion-icon>
               </div>
-              <div class="mission-text-col">
-                <h4 class="mission-item-title">{{ logro.title }}</h4>
-                <p class="mission-item-desc">{{ logro.desc }}</p>
-                <span class="mission-reward-text">+{{ logro.recompensa }} 🪙 Monedas</span>
+              <h4 class="game-type-title">{{ g.name }}</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Modo de participación (Estrictamente separados, sin mixto) -->
+        <div class="section-block">
+          <h4 class="step-label">Modo de participación</h4>
+          <div class="mode-selector-column">
+            
+            <div 
+              class="mode-card" 
+              [class.mode-card-selected]="selectedParticipationMode === 'en-vivo'"
+              (click)="setParticipationMode('en-vivo')">
+              <div class="mode-radio-circle">
+                <div class="inner-dot" *ngIf="selectedParticipationMode === 'en-vivo'"></div>
               </div>
-              <div class="mission-status-pill" [class.status-completed]="logro.completed">
-                {{ logro.completed ? 'Completado ✓' : 'En Curso' }}
+              <div class="mode-content">
+                <h4 class="mode-title">En vivo</h4>
+                <p class="mode-desc">El profesor inicia la sesión para que el grupo compita sincrónicamente.</p>
+              </div>
+            </div>
+
+            <div 
+              class="mode-card" 
+              [class.mode-card-selected]="selectedParticipationMode === 'individual'"
+              (click)="setParticipationMode('individual')">
+              <div class="mode-radio-circle">
+                <div class="inner-dot" *ngIf="selectedParticipationMode === 'individual'"></div>
+              </div>
+              <div class="mode-content">
+                <h4 class="mode-title">Individual</h4>
+                <p class="mode-desc">El estudiante responde después a su propio ritmo y las respuestas quedan guardadas.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Paso 3: Título -->
+        <div class="section-block">
+          <h4 class="step-label">Título de la actividad</h4>
+          <div class="input-form-box">
+            <input 
+              type="text" 
+              [(ngModel)]="nuevoJuegoTitulo" 
+              placeholder="Ej: La ruleta de la historia o Quiz de álgebra...">
+          </div>
+        </div>
+
+        <!-- Botón Continuar -->
+        <div class="section-block">
+          <button type="button" class="save-avatar-btn" (click)="continuarCreacionJuego()">
+            <span>Continuar</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 6: CONFIGURAR RULETA (SCREEN 10)      -->
+      <!-- ============================================== -->
+      <div class="screen-view view-ruleta-config" *ngIf="activeTab === 'ruleta-config'">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('crear-juego')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Ruleta</h2>
+            <p class="screen-desc">Configuración de preguntas</p>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="section-block">
+          <h4 class="step-label">Título del juego</h4>
+          <div class="input-form-box">
+            <input type="text" [(ngModel)]="ruletaConfigTitulo" placeholder="La ruleta de la historia">
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h4 class="step-label">Contenido de la ruleta ({{ ruletaConfigPreguntas.length }} preguntas)</h4>
+          <div class="ruleta-questions-list">
+            <div class="ruleta-question-row" *ngFor="let p of ruletaConfigPreguntas; let i = index">
+              <span class="q-number">Pregunta {{ i + 1 }}</span>
+              <span class="q-text">{{ p }}</span>
+              <button type="button" class="q-delete-btn" (click)="eliminarPreguntaRuleta(i)" title="Eliminar">✕</button>
+            </div>
+          </div>
+
+          <!-- Añadir nueva pregunta a la ruleta -->
+          <div class="add-q-row">
+            <input 
+              type="text" 
+              [(ngModel)]="nuevaPreguntaRuletaInput" 
+              placeholder="Escribe una nueva pregunta..."
+              (keyup.enter)="agregarPreguntaRuleta()">
+            <button type="button" class="add-q-btn" (click)="agregarPreguntaRuleta()">
+              <ion-icon name="add"></ion-icon>
+              <span>Añadir</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <button type="button" class="save-avatar-btn" (click)="guardarConfigRuleta()">
+            <span>Guardar</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 7: MIS JUEGOS (MOCKUP SCREEN 11)      -->
+      <!-- ============================================== -->
+      <div class="screen-view view-mis-juegos" *ngIf="activeTab === 'mis-juegos'">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Mis juegos</h2>
+            <p class="screen-desc">Biblioteca de actividades y dinámicas</p>
+          </div>
+          <button 
+            type="button" 
+            class="back-circle-btn" 
+            *ngIf="currentUser?.role === 'teacher'"
+            (click)="abrirCrearJuego()" 
+            title="Crear nuevo juego">
+            <ion-icon name="add"></ion-icon>
+          </button>
+        </div>
+
+        <!-- Pestañas Mis Juegos / Compartidos -->
+        <div class="tab-pill-bar">
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="juegosFiltroTab === 'mis-juegos'"
+            (click)="juegosFiltroTab = 'mis-juegos'">
+            Mis juegos
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="juegosFiltroTab === 'compartidos'"
+            (click)="juegosFiltroTab = 'compartidos'">
+            Compartidos
+          </button>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-glass-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" [(ngModel)]="juegosSearchQuery" placeholder="Buscar juegos...">
+        </div>
+
+        <!-- Lista de Juegos Guardados -->
+        <div class="saved-games-list">
+          <div class="saved-game-card" *ngFor="let juego of filteredSavedGames">
+            <div class="saved-game-main-row" (click)="jugarActividad(juego)">
+              <div class="saved-game-icon-box" [style.background-color]="juego.tipo === 'quiz' ? '#8b5cf6' : (juego.tipo === 'ruleta' ? '#ec4899' : '#3b82f6')">
+                <ion-icon [name]="juego.tipo === 'ruleta' ? 'disc-outline' : (juego.tipo === 'quiz' ? 'checkbox-outline' : 'game-controller-outline')"></ion-icon>
+              </div>
+
+              <div class="saved-game-meta-col">
+                <h4 class="saved-game-title">{{ juego.titulo }}</h4>
+                <p class="saved-game-sub">{{ juego.materia }} · {{ juego.preguntasCount }} preguntas ({{ juego.modo === 'en-vivo' ? 'En vivo' : 'Individual' }})</p>
+              </div>
+
+              <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+            </div>
+
+            <!-- Acciones requeridas: Abrir/Jugar, Editar, Renombrar, Eliminar -->
+            <div class="saved-game-actions-bar">
+              <button type="button" class="game-btn-action play-btn" (click)="jugarActividad(juego)">
+                <ion-icon name="play"></ion-icon>
+                <span>Jugar</span>
+              </button>
+              <button type="button" class="game-btn-action edit-btn" (click)="editarActividad(juego)">
+                <ion-icon name="create-outline"></ion-icon>
+                <span>Editar</span>
+              </button>
+              <button type="button" class="game-btn-action rename-btn" (click)="renombrarActividad(juego)" title="Cambiar nombre">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </button>
+              <button type="button" class="game-btn-action delete-btn" (click)="eliminarActividad(juego)" title="Eliminar actividad">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 8: CLASES (MOCKUP SCREEN 12)          -->
+      <!-- ============================================== -->
+      <div class="screen-view view-clases" *ngIf="activeTab === 'clases'">
+        
+        <div class="screen-header header-with-action">
+          <div class="header-left-group">
+            <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+              <ion-icon name="arrow-back"></ion-icon>
+            </button>
+            <h2 class="screen-title">Clases</h2>
+          </div>
+
+          <button 
+            type="button" 
+            class="header-primary-btn" 
+            *ngIf="currentUser?.role === 'teacher'"
+            (click)="crearNuevaClaseModal()">
+            <ion-icon name="add"></ion-icon>
+            <span>Crear clase</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="header-primary-btn" 
+            *ngIf="currentUser?.role !== 'teacher'"
+            (click)="unirseAClaseModal()">
+            <ion-icon name="enter-outline"></ion-icon>
+            <span>Unirme</span>
+          </button>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-glass-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" [(ngModel)]="claseSearchQuery" placeholder="Buscar por materia o código...">
+        </div>
+
+        <!-- Lista de Clases -->
+        <div class="classes-list">
+          <div class="class-card-compact" *ngFor="let c of clasesFiltradas" (click)="verDetalleClase(c)">
+            <div class="class-icon-wrapper" [style.background-color]="c.color">
+              <ion-icon [name]="c.icon"></ion-icon>
+            </div>
+
+            <div class="class-info-col">
+              <h4 class="class-name">{{ c.name }}</h4>
+              <p class="class-meta">{{ c.studentsCount }} estudiantes · Código: <b>{{ c.codigo }}</b></p>
+            </div>
+
+            <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 9: DETALLE DE CLASE (SCREEN 13)       -->
+      <!-- ============================================== -->
+      <div class="screen-view view-clase-detalle" *ngIf="activeTab === 'clase-detalle' && claseSeleccionada">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('clases')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">{{ claseSeleccionada.name }}</h2>
+            <p class="screen-desc">{{ claseSeleccionada.grado }} · {{ claseSeleccionada.docente }}</p>
+          </div>
+          <button type="button" class="back-circle-btn" (click)="invitarEstudiante()" title="Invitar">
+            <ion-icon name="person-add-outline"></ion-icon>
+          </button>
+        </div>
+
+        <!-- Tabs: Información, Estudiantes, Actividades -->
+        <div class="tab-pill-bar">
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="claseDetalleTab === 'info'"
+            (click)="claseDetalleTab = 'info'">
+            Información
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="claseDetalleTab === 'estudiantes'"
+            (click)="claseDetalleTab = 'estudiantes'">
+            Estudiantes ({{ claseSeleccionada.estudiantesList.length }})
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="claseDetalleTab === 'actividades'"
+            (click)="claseDetalleTab = 'actividades'">
+            Actividades ({{ claseSeleccionada.actividades.length }})
+          </button>
+        </div>
+
+        <!-- Tarjeta Hero de la Clase -->
+        <div class="class-hero-card">
+          <div class="hero-header-row">
+            <div class="hero-icon-box" [style.background-color]="claseSeleccionada.color">
+              <ion-icon [name]="claseSeleccionada.icon"></ion-icon>
+            </div>
+            <div>
+              <h3 class="hero-title">{{ claseSeleccionada.name }}</h3>
+              <p class="hero-meta">Código: <b>{{ claseSeleccionada.codigo }}</b> · {{ claseSeleccionada.studentsCount }} estudiantes</p>
+            </div>
+          </div>
+
+          <div class="hero-actions-row">
+            <button type="button" class="hero-pill-btn" (click)="copiarCodigoClase(claseSeleccionada.codigo)">
+              <ion-icon name="copy-outline"></ion-icon>
+              <span>Copiar código</span>
+            </button>
+            <button type="button" class="hero-pill-btn" (click)="invitarEstudiante()">
+              <ion-icon name="share-social-outline"></ion-icon>
+              <span>Invitar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: INFORMACIÓN -->
+        <div *ngIf="claseDetalleTab === 'info'">
+          <div class="section-block">
+            <h4 class="section-title">Descripción</h4>
+            <p class="info-paragraph">{{ claseSeleccionada.descripcion }}</p>
+          </div>
+
+          <div class="section-block">
+            <h4 class="section-title">Horario y Docente</h4>
+            <div class="info-box-card">
+              <p><b>Docente:</b> {{ claseSeleccionada.docente }}</p>
+              <p><b>Materia:</b> {{ claseSeleccionada.materia }}</p>
+              <p><b>Horario:</b> {{ claseSeleccionada.horario }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: ESTUDIANTES -->
+        <div *ngIf="claseDetalleTab === 'estudiantes'">
+          <div class="section-block">
+            <div class="section-header-flex">
+              <h4 class="section-title">Lista de Estudiantes Matriculados</h4>
+              <button type="button" class="link-btn" (click)="invitarEstudiante()">+ Añadir alumno</button>
+            </div>
+
+            <div class="students-roster-list">
+              <div class="student-roster-item" *ngFor="let est of claseSeleccionada.estudiantesList">
+                <div class="student-avatar-circle">{{ est.avatar }}</div>
+                <div class="student-info-col">
+                  <h4 class="student-name">{{ est.name }}</h4>
+                  <p class="student-stats">Asistencia: {{ est.asistencia }}% · {{ est.retosCompletados }} retos</p>
+                </div>
+                <div class="student-grade-pill">{{ est.promedio }}%</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Botón a Estadísticas -->
-        <div class="section-block">
-          <button type="button" class="stats-redirect-btn" (click)="selectTab('estadisticas')">
-            <ion-icon name="bar-chart-outline"></ion-icon>
-            <span>Ver Métricas y Estadísticas Detalladas</span>
-          </button>
+        <!-- TAB 3: ACTIVIDADES -->
+        <div *ngIf="claseDetalleTab === 'actividades'">
+          <div class="section-block">
+            <h4 class="section-title">Actividades de la Clase</h4>
+            <div class="assigned-activity-card" *ngFor="let act of claseSeleccionada.actividades" (click)="jugarActividad(savedGames[0])">
+              <div class="activity-type-icon">
+                <ion-icon name="help-circle-outline"></ion-icon>
+              </div>
+              <div class="activity-meta-col">
+                <h4 class="activity-name">{{ act.titulo }}</h4>
+                <p class="activity-sub">{{ act.tipo }} · {{ act.estado === 'completado' ? 'Completado' : 'En vivo' }} · {{ act.duracion }}</p>
+              </div>
+              <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+            </div>
+          </div>
         </div>
 
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 9: ESTADÍSTICAS DERIVADAS REALES     -->
+      <!-- PANTALLA 10: MI PROGRESO (MOCKUP SCREEN 14)    -->
       <!-- ============================================== -->
-      <div class="screen-view view-estadisticas" *ngIf="activeTab === 'estadisticas'">
+      <div class="screen-view view-progreso" *ngIf="activeTab === 'progreso'">
         
         <div class="screen-header">
-          <h2 class="screen-title">Estadísticas & Progreso</h2>
-          <p class="screen-desc">Datos reales derivados de tus actividades jugadas</p>
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Mi progreso</h2>
+            <p class="screen-desc">Métricas y evolución de aprendizaje</p>
+          </div>
+          <div></div>
         </div>
 
-        <!-- Explicación de Fórmulas -->
+        <!-- Tabs: General, Juegos, Clases -->
+        <div class="tab-pill-bar">
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="progresoTab === 'general'"
+            (click)="progresoTab = 'general'">
+            General
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="progresoTab === 'juegos'"
+            (click)="progresoTab = 'juegos'">
+            Juegos
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="progresoTab === 'clases'"
+            (click)="progresoTab = 'clases'">
+            Clases
+          </button>
+        </div>
+
+        <!-- Donut Circular 78% Promedio General (Fiel al Mockup) -->
+        <div class="progress-donut-stage">
+          <div class="donut-circle">
+            <svg class="donut-svg" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"></circle>
+              <circle 
+                cx="60" 
+                cy="60" 
+                r="48" 
+                fill="none" 
+                stroke="#8b5cf6" 
+                stroke-width="12"
+                stroke-dasharray="301.59"
+                [attr.stroke-dashoffset]="301.59 * (1 - (statsEstudiante.porcentajePromedio / 100))"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)">
+              </circle>
+            </svg>
+            <div class="donut-inner-text">
+              <span class="donut-number">{{ statsEstudiante.porcentajePromedio }}%</span>
+              <span class="donut-label">Promedio general</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Cifras Estadísticas Explicadas -->
+        <div class="three-stats-row">
+          <div class="stat-pill-box">
+            <span class="stat-box-num">{{ statsEstudiante.clasesAsistidas }}</span>
+            <span class="stat-box-lbl">Clases asistidas</span>
+          </div>
+          <div class="stat-pill-box">
+            <span class="stat-box-num stat-completed">{{ statsEstudiante.juegosCompletados }}</span>
+            <span class="stat-box-lbl">Completadas</span>
+          </div>
+          <div class="stat-pill-box">
+            <span class="stat-box-num stat-failed">{{ statsEstudiante.juegosFallados }}</span>
+            <span class="stat-box-lbl">Fallidas</span>
+          </div>
+        </div>
+
+        <!-- Explicación de Fórmulas y Consistencia de Datos -->
         <div class="stats-formula-card">
-          <h4 class="formula-title">📐 ¿Cómo calculamos tu rendimiento?</h4>
+          <h4 class="formula-title">📐 ¿Qué representan estas cifras?</h4>
           <p class="formula-explanation">
-            Has disputado <b>{{ statsEstudiante.totalPartidas }} partidas en total</b>: 
-            <b>{{ statsEstudiante.juegosCompletados }} victorias</b> y <b>{{ statsEstudiante.juegosFallados }} intentos fallidos</b>.
-            Tu tasa de efectividad es <b>(10 ÷ 13) = {{ statsEstudiante.porcentajePromedio }}% de promedio</b>.
+            Has participado en <b>{{ statsEstudiante.totalPartidas }} actividades en total</b>: 
+            <b>{{ statsEstudiante.juegosCompletados }} completadas con éxito</b> y <b>{{ statsEstudiante.juegosFallados }} fallidas</b>. 
+            El promedio general se calcula con la tasa real de efectividad <b>(10 ÷ 13) = {{ statsEstudiante.porcentajePromedio }}%</b>.
           </p>
         </div>
 
-        <div class="stats-grid-row">
-          <div class="stat-glass-box">
-            <span class="stat-value">{{ statsEstudiante.clasesAsistidas }}</span>
-            <span class="stat-name">Clases Asistidas</span>
-          </div>
-          <div class="stat-glass-box">
-            <span class="stat-value">{{ statsEstudiante.porcentajePromedio }}%</span>
-            <span class="stat-name">Acierto Promedio</span>
-          </div>
-          <div class="stat-glass-box">
-            <span class="stat-value">{{ statsEstudiante.juegosCompletados }}</span>
-            <span class="stat-name">Completados</span>
-          </div>
-          <div class="stat-glass-box">
-            <span class="stat-value">{{ statsEstudiante.juegosFallados }}</span>
-            <span class="stat-name">Fallidos</span>
+        <!-- Evolución en el tiempo (Gráfica SVG Curva Sep-Dic) -->
+        <div class="section-block">
+          <h4 class="section-title">Evolución en el tiempo</h4>
+          <div class="chart-glass-container">
+            <svg class="evolution-chart-svg" viewBox="0 0 280 130">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M 30,95 Q 65,85 100,75 T 170,65 T 240,35 L 240,120 L 30,120 Z" fill="url(#chartGrad)"></path>
+              <path d="M 30,95 Q 65,85 100,75 T 170,65 T 240,35" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"></path>
+              <circle *ngFor="let pt of evolucionPuntos" [attr.cx]="pt.cx" [attr.cy]="pt.cy" r="4.5" fill="#ffffff" stroke="#8b5cf6" stroke-width="2.5"></circle>
+            </svg>
+            <div class="chart-labels-row">
+              <span *ngFor="let pt of evolucionPuntos">{{ pt.mes }}</span>
+            </div>
           </div>
         </div>
 
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 11: LOGROS Y MISIONES (SCREEN 15)     -->
+      <!-- ============================================== -->
+      <div class="screen-view view-logros" *ngIf="activeTab === 'logros'">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Logros y misiones</h2>
+            <p class="screen-desc">Recompensas y desafíos galácticos</p>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- Tabs: Logros / Misiones -->
+        <div class="tab-pill-bar">
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="logrosTab === 'logros'"
+            (click)="logrosTab = 'logros'">
+            Logros
+          </button>
+          <button 
+            type="button" 
+            class="tab-sub-pill" 
+            [class.sub-pill-active]="logrosTab === 'misiones'"
+            (click)="logrosTab = 'misiones'">
+            Misiones
+          </button>
+        </div>
+
+        <!-- SUBTAB 1: LOGROS -->
+        <div *ngIf="logrosTab === 'logros'">
+          <div class="section-block">
+            <h4 class="step-label">Tus Logros</h4>
+            <div class="achievements-list">
+              <div class="achievement-card" *ngFor="let l of logros">
+                <div class="achievement-medal-icon" [class]="'medal-' + l.medal">
+                  <span *ngIf="l.medal === 'bronze'">🥉</span>
+                  <span *ngIf="l.medal === 'silver'">🥈</span>
+                  <span *ngIf="l.medal === 'gold'">🥇</span>
+                  <span *ngIf="l.medal === 'diamond'">💎</span>
+                </div>
+                <div class="achievement-info-col">
+                  <h4 class="achievement-title">{{ l.title }}</h4>
+                  <p class="achievement-desc">{{ l.desc }}</p>
+                  <span class="achievement-reward">+🪙 {{ l.recompensa }} Monedas</span>
+                </div>
+                <button 
+                  type="button" 
+                  class="claim-reward-btn" 
+                  [disabled]="!l.completed || l.claimed"
+                  (click)="reclamarLogro(l)">
+                  {{ l.claimed ? 'Reclamado ✓' : (l.completed ? 'Reclamar' : 'En curso') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBTAB 2: MISIONES DIARIAS (Bronce, Plata, Oro, Diamante) -->
+        <div *ngIf="logrosTab === 'misiones'">
+          <div class="section-block">
+            <h4 class="step-label">Misiones diarias</h4>
+            <div class="missions-vertical-list">
+              <div class="mission-item-card" *ngFor="let m of misionesDiarias">
+                <div class="medal-icon-badge" [class]="'medal-' + m.nivel">
+                  <span *ngIf="m.nivel === 'bronce'">🥉</span>
+                  <span *ngIf="m.nivel === 'plata'">🥈</span>
+                  <span *ngIf="m.nivel === 'oro'">🥇</span>
+                  <span *ngIf="m.nivel === 'diamante'">💎</span>
+                </div>
+                <div class="mission-text-col">
+                  <h4 class="mission-item-title">{{ m.title }}</h4>
+                  <p class="mission-item-desc">{{ m.desc }}</p>
+                  <div class="mission-progress-bar-small">
+                    <div class="progress-fill" [style.width]="(m.progreso / m.meta) * 100 + '%'"></div>
+                  </div>
+                  <span class="mission-reward-text">+🪙 {{ m.recompensa }} Monedas ({{ m.progreso }}/{{ m.meta }})</span>
+                </div>
+                <button 
+                  type="button" 
+                  class="claim-reward-btn" 
+                  [disabled]="!m.completed || m.claimed"
+                  (click)="reclamarMision(m)">
+                  {{ m.claimed ? 'Reclamado ✓' : (m.completed ? 'Reclamar' : 'En curso') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 12: PERFIL (MOCKUP SCREEN 16)         -->
+      <!-- ============================================== -->
+      <div class="screen-view view-perfil" *ngIf="activeTab === 'perfil'">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Perfil</h2>
+            <p class="screen-desc">Configuración y cuenta</p>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- Avatar Circle y Datos de Usuario (Fiel al Mockup) -->
+        <div class="profile-hero-card">
+          <div class="profile-avatar-circle" [style.background-color]="avatarConfig.skinColor" (click)="abrirVestuario()">
+            <span class="avatar-large-emoji">👤</span>
+          </div>
+          <h3 class="profile-name">{{ perfilNombreInput || currentUser?.name || 'Juan Pérez' }}</h3>
+          <p class="profile-sub">{{ currentUser?.role === 'teacher' ? 'Profesor · Docente' : 'Estudiante · Nivel 3' }}</p>
+          <span class="profile-coins-badge">🪙 {{ userCoins | number }} Monedas</span>
+        </div>
+
+        <!-- Formulario de Edición de Perfil (si está activo) -->
+        <div class="edit-profile-box" *ngIf="perfilEditando">
+          <h4 class="step-label">Editar Datos de Perfil</h4>
+          <div class="input-form-box">
+            <input type="text" [(ngModel)]="perfilNombreInput" placeholder="Nombre completo">
+          </div>
+          <div class="input-form-box">
+            <input type="text" [(ngModel)]="perfilBioInput" placeholder="Biografía o materia">
+          </div>
+          <div class="input-form-box">
+            <input type="text" [(ngModel)]="perfilGradoInput" placeholder="Grado o aula">
+          </div>
+          <div class="two-col-grid" style="margin-top: 10px;">
+            <button type="button" class="teacher-btn-secondary" (click)="perfilEditando = false">Cancelar</button>
+            <button type="button" class="save-avatar-btn" (click)="guardarEdicionPerfil()">Guardar</button>
+          </div>
+        </div>
+
+        <!-- Opciones de Configuración (Fieles al Mockup 16) -->
+        <div class="profile-options-list">
+          
+          <div class="profile-option-row" (click)="perfilEditando = !perfilEditando">
+            <div class="option-icon-box">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <span class="option-label">Editar perfil</span>
+            <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+          </div>
+
+          <div class="profile-option-row" (click)="cambiarIdioma()">
+            <div class="option-icon-box">
+              <ion-icon name="globe-outline"></ion-icon>
+            </div>
+            <span class="option-label">Idioma</span>
+            <span class="option-value-tag">{{ configIdioma }} ></span>
+          </div>
+
+          <!-- Selector de Tema Claro / Oscuro Funcional -->
+          <div class="profile-option-row">
+            <div class="option-icon-box">
+              <ion-icon name="moon-outline"></ion-icon>
+            </div>
+            <span class="option-label">Tema</span>
+            <div class="theme-switch-pills">
+              <button 
+                type="button" 
+                class="theme-mini-btn" 
+                [class.theme-mini-active]="configTema === 'claro'"
+                (click)="setTema('claro')">
+                Claro
+              </button>
+              <button 
+                type="button" 
+                class="theme-mini-btn" 
+                [class.theme-mini-active]="configTema === 'oscuro'"
+                (click)="setTema('oscuro')">
+                Oscuro
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-option-row" (click)="abrirAccesibilidad()">
+            <div class="option-icon-box">
+              <ion-icon name="accessibility-outline"></ion-icon>
+            </div>
+            <span class="option-label">Ayuda y accesibilidad</span>
+            <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+          </div>
+
+          <div class="profile-option-row" (click)="abrirGuiaTutorial()">
+            <div class="option-icon-box">
+              <ion-icon name="help-circle-outline"></ion-icon>
+            </div>
+            <span class="option-label">Guía y tutorial</span>
+            <ion-icon name="chevron-forward-outline" class="card-arrow"></ion-icon>
+          </div>
+
+          <div class="profile-option-row" (click)="confirmLogout()">
+            <div class="option-icon-box color-danger">
+              <ion-icon name="log-out-outline"></ion-icon>
+            </div>
+            <span class="option-label color-danger">Cerrar sesión</span>
+            <ion-icon name="chevron-forward-outline" class="card-arrow color-danger"></ion-icon>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 13: AYUDA Y ACCESIBILIDAD REAL (8.4)  -->
+      <!-- ============================================== -->
+      <div class="screen-view view-accesibilidad" *ngIf="activeTab === 'accesibilidad'">
+        
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="abrirPerfil()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Ayudas para personas</h2>
+            <p class="screen-desc">Accesibilidad real e inclusión digital</p>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- 4 Ayudas Reales Conectadas -->
+        <div class="accessibility-cards-grid">
+          
+          <!-- 1. Lector de pantalla / voz -->
+          <div class="accessibility-card">
+            <div class="acc-header-row">
+              <div class="acc-icon-box">
+                <ion-icon name="volume-high-outline"></ion-icon>
+              </div>
+              <div class="acc-info-col">
+                <h4 class="acc-title">Lector de pantalla</h4>
+                <p class="acc-desc">Síntesis de voz activa para leer preguntas y contenidos en voz alta.</p>
+              </div>
+              <input type="checkbox" [checked]="accesibilidad.lectorPantallaVoz" (change)="toggleLectorVoz()" class="custom-toggle">
+            </div>
+            <button type="button" class="acc-action-btn" (click)="leerTextoEnVozAlta('SaberStyle: la plataforma donde aprendes jugando y superas retos galácticos.')">
+              <ion-icon name="play-outline"></ion-icon> Probar lectura por voz
+            </button>
+          </div>
+
+          <!-- 2. Tamaño de letra ajustable -->
+          <div class="accessibility-card">
+            <div class="acc-header-row">
+              <div class="acc-icon-box">
+                <ion-icon name="text-outline"></ion-icon>
+              </div>
+              <div class="acc-info-col">
+                <h4 class="acc-title">Tamaño de letra</h4>
+                <p class="acc-desc">Escala dinámicamente la tipografía en toda la interfaz.</p>
+              </div>
+            </div>
+            <div class="font-scale-pills-row">
+              <button 
+                type="button" 
+                class="font-pill" 
+                [class.font-pill-active]="accesibilidad.tamanoLetra === 'normal'"
+                (click)="setTamanoLetra('normal')">
+                Normal (A)
+              </button>
+              <button 
+                type="button" 
+                class="font-pill" 
+                [class.font-pill-active]="accesibilidad.tamanoLetra === 'grande'"
+                (click)="setTamanoLetra('grande')">
+                Grande (A+)
+              </button>
+              <button 
+                type="button" 
+                class="font-pill" 
+                [class.font-pill-active]="accesibilidad.tamanoLetra === 'muy-grande'"
+                (click)="setTamanoLetra('muy-grande')">
+                Muy grande (A++)
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Alto contraste -->
+          <div class="accessibility-card">
+            <div class="acc-header-row">
+              <div class="acc-icon-box">
+                <ion-icon name="contrast-outline"></ion-icon>
+              </div>
+              <div class="acc-info-col">
+                <h4 class="acc-title">Alto contraste</h4>
+                <p class="acc-desc">Colores con contraste elevado WCAG AAA para baja visión.</p>
+              </div>
+              <input type="checkbox" [checked]="accesibilidad.altoContraste" (change)="toggleAltoContraste()" class="custom-toggle">
+            </div>
+          </div>
+
+          <!-- 4. Modo de enfoque -->
+          <div class="accessibility-card">
+            <div class="acc-header-row">
+              <div class="acc-icon-box">
+                <ion-icon name="scan-outline"></ion-icon>
+              </div>
+              <div class="acc-info-col">
+                <h4 class="acc-title">Modo de enfoque</h4>
+                <p class="acc-desc">Desactiva nebulosas y animaciones distractoras para facilitar la concentración.</p>
+              </div>
+              <input type="checkbox" [checked]="accesibilidad.modoEnfoque" (change)="toggleModoEnfoque()" class="custom-toggle">
+            </div>
+          </div>
+
+        </div>
+
         <div class="section-block">
-          <button type="button" class="back-link-btn" (click)="selectBottomNav('logros')">
-            ← Volver a Logros
+          <button type="button" class="save-avatar-btn" (click)="abrirPerfil()">
+            <span>Guardar y Aplicar Ajustes</span>
           </button>
         </div>
 
       </div>
 
       <!-- ============================================== -->
-      <!-- PANTALLA 10: RULETA INTERACTIVA               -->
+      <!-- PANTALLA 14: GUÍA Y TUTORIAL INTERACTIVO       -->
       <!-- ============================================== -->
-      <div class="screen-view view-ruleta" *ngIf="activeTab === 'ruleta-juego'">
+      <div class="screen-view view-tutorial" *ngIf="activeTab === 'guia-tutorial'">
         
-        <div class="detail-nav-bar">
-          <button type="button" class="back-circle-btn" (click)="selectBottomNav('crear')">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
           </button>
-          <span class="detail-nav-title">Ruleta Saber 11</span>
+          <div class="header-center-info">
+            <h2 class="screen-title">Guía de SaberStyle</h2>
+            <p class="screen-desc">Paso {{ guiaPasoActual }} de 4</p>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="tutorial-card">
+          <div class="tutorial-step" *ngIf="guiaPasoActual === 1">
+            <div class="tutorial-badge-icon">🚀</div>
+            <h3 class="tutorial-title">¡Bienvenido a SaberStyle de Aico!</h3>
+            <p class="tutorial-text">
+              SaberStyle es tu plataforma educativa gamificada. Aquí aprendes jugando, ganas monedas,
+              personalizas tu avatar y participas en dinámicas interactivas junto a tus compañeros y profesores.
+            </p>
+          </div>
+
+          <div class="tutorial-step" *ngIf="guiaPasoActual === 2">
+            <div class="tutorial-badge-icon">🪙</div>
+            <h3 class="tutorial-title">Monedas y Misiones Diarias</h3>
+            <p class="tutorial-text">
+              Cada vez que completas una actividad, quiz o ruleta recibes monedas cósmicas.
+              Cumple las misiones diarias (Bronce, Plata, Oro y Diamante) para desbloquear recompensas especiales.
+            </p>
+          </div>
+
+          <div class="tutorial-step" *ngIf="guiaPasoActual === 3">
+            <div class="tutorial-badge-icon">👕</div>
+            <h3 class="tutorial-title">Tienda y Armario de Avatar</h3>
+            <p class="tutorial-text">
+              Utiliza tus monedas en la Tienda para comprar sudaderas galácticas, peinados, zapatillas
+              y accesorios como el perrito astronauta. Luego pruébatelos y equípalos en tu Armario personal.
+            </p>
+          </div>
+
+          <div class="tutorial-step" *ngIf="guiaPasoActual === 4">
+            <div class="tutorial-badge-icon">📚</div>
+            <h3 class="tutorial-title">Clases y Dinámicas en Vivo</h3>
+            <p class="tutorial-text">
+              Únete a tus clases con el código de tu profesor o explora las actividades asignadas.
+              ¡Compite en vivo o responde a tu propio ritmo!
+            </p>
+          </div>
+
+          <div class="tutorial-actions-row">
+            <button type="button" class="save-avatar-btn" (click)="siguientePasoGuia()">
+              <span>{{ guiaPasoActual === 4 ? '¡Comenzar Experiencia!' : 'Siguiente Paso →' }}</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- PANTALLA 15: MOTORES DE JUEGO JUGABLES         -->
+      <!-- ============================================== -->
+
+      <!-- A) Cuestionario / Quiz Jugable -->
+      <div class="screen-view view-quiz" *ngIf="activeTab === 'juego-quiz'">
+        <div class="quiz-step-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">✕</button>
+          <span>Pregunta {{ quizIndexPregunta + 1 }} de {{ (juegoActivo?.preguntas?.length) || 3 }}</span>
+          <span class="timer-pill">⏱ {{ quizTimerSegundos }}s</span>
+        </div>
+
+        <div class="quiz-question-card" *ngIf="(juegoActivo?.preguntas || savedGames[0].preguntas)[quizIndexPregunta] as q">
+          <h3 class="question-text">{{ q.pregunta }}</h3>
+          
+          <div class="options-grid">
+            <button 
+              type="button" 
+              class="option-btn"
+              *ngFor="let opt of q.opciones; let optIdx = index"
+              [class.opt-selected]="quizOpcionElegida === optIdx"
+              [class.opt-correct]="quizRespondida && optIdx === q.correcta"
+              [class.opt-incorrect]="quizRespondida && quizOpcionElegida === optIdx && optIdx !== q.correcta"
+              (click)="responderQuiz(optIdx)">
+              {{ opt }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- B) Ruleta Interactiva Jugable -->
+      <div class="screen-view view-ruleta" *ngIf="activeTab === 'juego-ruleta'">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">{{ juegoActivo?.titulo || 'Ruleta del Conocimiento' }}</h2>
+            <p class="screen-desc">Gira para seleccionar un tema aleatorio</p>
+          </div>
           <div></div>
         </div>
 
@@ -770,7 +1434,7 @@
           <div class="ruleta-pointer">▼</div>
           <div 
             class="ruleta-wheel" 
-            [style.transform]="'rotate(' + ruletaRotacion + 'deg)'">
+            [style.transform]="'rotate(' + ruletaAngulo + 'deg)'">
             <div class="wheel-sector sector-1">Dominio</div>
             <div class="wheel-sector sector-2">Rango</div>
             <div class="wheel-sector sector-3">Inyectiva</div>
@@ -778,150 +1442,184 @@
             <div class="wheel-sector sector-5">Pendiente</div>
             <div class="wheel-sector sector-6">Parábola</div>
           </div>
-
           <div class="ruleta-center-pin">✦</div>
         </div>
 
-        <div class="ruleta-result-box" *ngIf="ruletaResultado">
-          <span class="result-label">Tema Seleccionado:</span>
-          <h3 class="result-val">{{ ruletaResultado }}</h3>
+        <div class="ruleta-result-box" *ngIf="ruletaSectorSeleccionado">
+          <span class="result-label">Tema seleccionado:</span>
+          <h3 class="result-val">{{ ruletaSectorSeleccionado.tema || ruletaSectorSeleccionado }}</h3>
+          <p class="result-sub" *ngIf="ruletaSectorSeleccionado.pregunta">{{ ruletaSectorSeleccionado.pregunta }}</p>
         </div>
 
         <div class="section-block">
           <button 
             type="button" 
-            class="spin-ruleta-btn" 
+            class="save-avatar-btn" 
             [disabled]="ruletaGirando"
-            (click)="girarRuleta()">
+            (click)="girarRuletaFisica()">
             <span *ngIf="!ruletaGirando">GIRAR RULETA 🎲</span>
             <span *ngIf="ruletaGirando">GIRANDO...</span>
           </button>
         </div>
-
       </div>
 
-      <!-- ============================================== -->
-      <!-- PANTALLA 11: FLUJO DE QUIZ JUGABLE            -->
-      <!-- ============================================== -->
-      <div class="screen-view view-quiz" *ngIf="activeTab === 'quiz-lobby'">
-        <div class="quiz-lobby-card">
-          <span class="quiz-badge">ACTIVIDAD EN VIVO</span>
-          <h2 class="quiz-title">Quiz de Funciones Matemáticas</h2>
-          <p class="quiz-desc">Pon a prueba tus conocimientos sobre dominio, rango y asíntotas.</p>
-          <div class="quiz-meta-row">
-            <span>⏱ 15 preguntas</span>
-            <span>👥 {{ quizJugadores }} participantes</span>
-          </div>
-          <button type="button" class="start-quiz-btn" (click)="iniciarQuiz()">
-            ¡Comenzar Reto!
+      <!-- C) Pregunta Abierta Colaborativa -->
+      <div class="screen-view view-abierta" *ngIf="activeTab === 'juego-abierta'">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">
+            <ion-icon name="arrow-back"></ion-icon>
           </button>
-        </div>
-      </div>
-
-      <div class="screen-view view-quiz-step" *ngIf="activeTab === 'quiz-opcion'">
-        <div class="quiz-step-header">
-          <span>Pregunta 13 de 15</span>
-          <span class="timer-pill">⏱ 15s</span>
-        </div>
-        <div class="quiz-question-card">
-          <h3 class="question-text">¿Cuál es el dominio de la función f(x) = 1 / (x - 3)?</h3>
-          <div class="options-grid">
-            <button type="button" class="option-btn" (click)="seleccionarOpcionQuiz('A')">A. Todos los números reales</button>
-            <button type="button" class="option-btn correct-opt" (click)="seleccionarOpcionQuiz('B')">B. Todos los reales excepto x = 3</button>
-            <button type="button" class="option-btn" (click)="seleccionarOpcionQuiz('C')">C. Solo x > 3</button>
-            <button type="button" class="option-btn" (click)="seleccionarOpcionQuiz('D')">D. x = 0</button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Pregunta Abierta</h2>
+            <p class="screen-desc">Debate colaborativo en directo</p>
           </div>
+          <div></div>
         </div>
-      </div>
 
-      <div class="screen-view view-quiz-step" *ngIf="activeTab === 'quiz-vf'">
-        <div class="quiz-step-header">
-          <span>Pregunta 14 de 15 (Verdadero / Falso)</span>
-        </div>
         <div class="quiz-question-card">
-          <h3 class="question-text">Una función lineal f(x) = mx + b siempre genera una línea recta en el plano cartesiano.</h3>
-          <div class="vf-buttons-row">
-            <button type="button" class="vf-btn vf-v" (click)="seleccionarVF('Verdadero')">Verdadero ✓</button>
-            <button type="button" class="vf-btn vf-f" (click)="seleccionarVF('Falso')">Falso ✕</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="screen-view view-quiz-step" *ngIf="activeTab === 'quiz-abierta'">
-        <div class="quiz-step-header">
-          <span>Pregunta Abierta Colaborativa</span>
-        </div>
-        <div class="quiz-question-card">
-          <h3 class="question-text">En tus propias palabras, define qué es una función matemática:</h3>
+          <h3 class="question-text">Menciona un ejemplo cotidiano donde una variable dependa directamente de otra:</h3>
+          
           <div class="live-feed-box">
-            <div class="feed-item" *ngFor="let resp of quizRespuestasFeed">
-              <b>{{ resp.autor }}:</b> {{ resp.texto }}
+            <div class="feed-item" *ngFor="let item of abiertaFeedRespuestas">
+              <span class="feed-author">{{ item.autor }}:</span>
+              <span class="feed-text">{{ item.texto }}</span>
+              <span class="feed-time">{{ item.timestamp }}</span>
             </div>
           </div>
-          <div class="input-form-row">
+
+          <div class="add-q-row">
             <input 
               type="text" 
-              [(ngModel)]="quizMiRespuestaAbierta" 
-              placeholder="Escribe tu respuesta aquí...">
-            <button type="button" class="send-ans-btn" (click)="enviarRespuestaAbierta()">Enviar</button>
+              [(ngModel)]="abiertaRespuestaUsuario" 
+              placeholder="Escribe tu respuesta aquí..."
+              (keyup.enter)="enviarRespuestaAbierta()">
+            <button type="button" class="add-q-btn" (click)="enviarRespuestaAbierta()">
+              <span>Enviar</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="screen-view view-quiz-win" *ngIf="activeTab === 'quiz-ganar'">
+      <!-- D) Verdadero / Falso Jugable -->
+      <div class="screen-view view-vf" *ngIf="activeTab === 'juego-vf'">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Verdadero / Falso</h2>
+            <p class="screen-desc">Dilema de verificación conceptual</p>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="quiz-question-card">
+          <h3 class="question-text">"Una función lineal f(x) = mx + b siempre genera una línea recta en el plano cartesiano."</h3>
+          
+          <div class="vf-buttons-row">
+            <button 
+              type="button" 
+              class="vf-btn vf-v" 
+              [class.vf-chosen]="vfSeleccion === true"
+              (click)="responderVF(true)">
+              Verdadero ✓
+            </button>
+            <button 
+              type="button" 
+              class="vf-btn vf-f" 
+              [class.vf-chosen]="vfSeleccion === false"
+              (click)="responderVF(false)">
+              Falso ✕
+            </button>
+          </div>
+
+          <div class="vf-feedback-alert" *ngIf="vfFeedbackMostrar">
+            <span *ngIf="vfSeleccion === true">¡Correcto! Una función de grado 1 es una recta de pendiente m.</span>
+            <span *ngIf="vfSeleccion === false">Incorrecto: la gráfica de una función lineal es siempre una recta.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- E) Completar Frase Jugable -->
+      <div class="screen-view view-completar" *ngIf="activeTab === 'juego-completar'">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Completar Frase</h2>
+            <p class="screen-desc">Selecciona el término exacto</p>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="quiz-question-card">
+          <h3 class="question-text">
+            Un triángulo que tiene sus tres lados con la misma longitud se denomina triángulo 
+            <span class="blank-highlight">{{ completarPalabraElegida || '________' }}</span>.
+          </h3>
+
+          <div class="options-grid">
+            <button 
+              type="button" 
+              class="option-btn" 
+              *ngFor="let opt of ['equilátero', 'isósceles', 'escaleno', 'rectángulo']"
+              [class.opt-selected]="completarPalabraElegida === opt"
+              (click)="seleccionarPalabraCompletar(opt)">
+              {{ opt }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- F) Sopa de Letras Jugable -->
+      <div class="screen-view view-sopa" *ngIf="activeTab === 'juego-sopa'">
+        <div class="screen-header">
+          <button type="button" class="back-circle-btn" (click)="selectTab('mis-juegos')">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div class="header-center-info">
+            <h2 class="screen-title">Sopa de Letras</h2>
+            <p class="screen-desc">Toca las letras para encontrar las palabras</p>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- Palabras Objetivo -->
+        <div class="sopa-targets-row">
+          <span 
+            class="sopa-target-pill" 
+            *ngFor="let p of sopaPalabrasObjetivo"
+            [class.target-found]="p.encontrada">
+            {{ p.palabra }} {{ p.encontrada ? '✓' : '' }}
+          </span>
+        </div>
+
+        <!-- Cuadrícula 8x8 de Letras -->
+        <div class="sopa-grid-container">
+          <div class="sopa-row" *ngFor="let row of sopaGrid; let rIdx = index">
+            <button 
+              type="button" 
+              class="sopa-cell-btn" 
+              *ngFor="let cell of row; let cIdx = index"
+              (click)="tocarLetraSopa(rIdx, cIdx, cell)">
+              {{ cell }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- G) Pantalla de Victoria / Finalización -->
+      <div class="screen-view view-victoria" *ngIf="activeTab === 'juego-victoria'">
         <div class="win-card">
           <div class="win-trophy">🏆</div>
-          <h2 class="win-title">¡Partida Completada!</h2>
-          <p class="win-score">14 / 15 Respuestas Correctas</p>
+          <h2 class="win-title">¡Actividad Superada!</h2>
+          <p class="win-score">Has demostrado tus habilidades galácticas</p>
           <div class="reward-pill">+100 🪙 Monedas Ganadas</div>
-          <button type="button" class="claim-btn" (click)="reclamarYTerminarQuiz()">
-            Reclamar e Ir al Inicio
+          <button type="button" class="save-avatar-btn" (click)="reclamarVictoria()">
+            <span>Reclamar e Ir al Inicio</span>
           </button>
         </div>
-      </div>
-
-      <!-- ============================================== -->
-      <!-- PANTALLA 12: CONFIGURACIÓN & PERFIL           -->
-      <!-- ============================================== -->
-      <div class="screen-view view-configuracion" *ngIf="activeTab === 'configuracion'">
-        
-        <div class="screen-header">
-          <h2 class="screen-title">Configuración & Perfil</h2>
-          <p class="screen-desc">Ajusta tus preferencias de interfaz y cuenta</p>
-        </div>
-
-        <div class="config-card">
-          <h4 class="config-section-title">Tema Visual</h4>
-          <div class="theme-buttons-row">
-            <button 
-              type="button" 
-              class="theme-pill" 
-              [class.theme-active]="configTema === 'oscuro'"
-              (click)="setTema('oscuro')">
-              🌙 Modo Galáctico (Oscuro)
-            </button>
-            <button 
-              type="button" 
-              class="theme-pill" 
-              [class.theme-active]="configTema === 'claro'"
-              (click)="setTema('claro')">
-              ☀️ Modo Claro
-            </button>
-          </div>
-
-          <h4 class="config-section-title">Idioma</h4>
-          <button type="button" class="lang-selector-btn" (click)="cambiarIdioma()">
-            <span>Idioma Actual: <b>{{ configIdioma }}</b></span>
-            <ion-icon name="globe-outline"></ion-icon>
-          </button>
-
-          <h4 class="config-section-title">Sesión</h4>
-          <button type="button" class="logout-btn" (click)="confirmLogout()">
-            <ion-icon name="log-out-outline"></ion-icon>
-            <span>Cerrar Sesión</span>
-          </button>
-        </div>
-
       </div>
 
     </div>
@@ -931,7 +1629,7 @@
     <!-- ============================================== -->
     <div class="staile-floating-container">
       
-      <!-- Botón Flotante (Abajo a la derecha, sin tapar) -->
+      <!-- Botón Flotante -->
       <button 
         type="button" 
         class="staile-fab-btn" 
@@ -948,7 +1646,7 @@
             <span class="robot-avatar">🤖</span>
             <div>
               <h4 class="staile-name">StAIle</h4>
-              <span class="staile-status">En línea · Tutor Galáctico</span>
+              <span class="staile-status">Tutor Galáctico · En línea</span>
             </div>
           </div>
           <button type="button" class="staile-close-btn" (click)="toggleStaile()">✕</button>
@@ -998,8 +1696,8 @@
   </ion-content>
 
   <!-- ============================================== -->
-  <!-- BARRA DE NAVEGACIÓN INFERIOR (5 DESTINOS)      -->
-  <!-- 1. Inicio | 2. Clases | 3. Crear | 4. Tienda | 5. Logros -->
+  <!-- BARRA DE NAVEGACIÓN INFERIOR LIQUID GLASS      -->
+  <!-- 5 Destinos Adaptados por Rol                   -->
   <!-- ============================================== -->
   <ion-footer class="ion-no-border cosmic-footer-tabs">
     <div class="five-tabs-container">
@@ -1024,19 +1722,19 @@
         <span class="tab-label">Clases</span>
       </button>
 
-      <!-- 3. Crear (Botón Prominente Central) -->
+      <!-- 3. Botón Central Prominente: Crear (Profesor) / Jugar (Estudiante) -->
       <button 
         type="button" 
         class="tab-dest-btn tab-create-prominent" 
         [class.tab-active]="currentBottomNav === 'crear'"
         (click)="selectBottomNav('crear')">
         <div class="create-circle-glow">
-          <ion-icon name="add"></ion-icon>
+          <ion-icon [name]="currentUser?.role === 'teacher' ? 'add' : 'game-controller'"></ion-icon>
         </div>
-        <span class="tab-label">Crear</span>
+        <span class="tab-label">{{ currentUser?.role === 'teacher' ? 'Crear' : 'Juegos' }}</span>
       </button>
 
-      <!-- 4. Tienda -->
+      <!-- 4. Tienda (Estudiante) / Biblioteca (Profesor) -->
       <button 
         type="button" 
         class="tab-dest-btn" 
@@ -1046,14 +1744,14 @@
         <span class="tab-label">Tienda</span>
       </button>
 
-      <!-- 5. Logros -->
+      <!-- 5. Perfil -->
       <button 
         type="button" 
         class="tab-dest-btn" 
-        [class.tab-active]="currentBottomNav === 'logros'"
-        (click)="selectBottomNav('logros')">
-        <ion-icon name="trophy-outline"></ion-icon>
-        <span class="tab-label">Logros</span>
+        [class.tab-active]="currentBottomNav === 'perfil'"
+        (click)="selectBottomNav('perfil')">
+        <ion-icon name="person-outline"></ion-icon>
+        <span class="tab-label">Perfil</span>
       </button>
 
     </div>

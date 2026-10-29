@@ -112,30 +112,32 @@ export class RegisterPage implements OnInit {
     }
 
     this.isSubmitting = true;
-    const loading = await this.loadingController.create({
-      message: 'Creando tu cuenta en SaberStyle...',
-      spinner: 'crescent'
-    });
-    await loading.present();
 
-    const { name, email, password } = this.registerForm.value;
-    const result = this.authService.register({ 
-      name, 
-      email, 
-      password, 
-      role: this.selectedRole 
-    });
+    setTimeout(async () => {
+      try {
+        const { name, email, password } = this.registerForm.value;
+        const result = this.authService.register({ 
+          name, 
+          email, 
+          password, 
+          role: this.selectedRole,
+          autoLogin: false // Permitir iniciar sesión explícitamente con la nueva cuenta
+        });
 
-    await loading.dismiss();
-    this.isSubmitting = false;
+        this.isSubmitting = false;
 
-    if (result.success) {
-      await this.presentToast(result.message, 'success');
-      this.registerForm.reset();
-      this.router.navigate(['/home'], { replaceUrl: true });
-    } else {
-      await this.presentToast(result.message, 'danger');
-    }
+        if (result.success) {
+          await this.presentToast(result.message + ' Ya puedes iniciar sesión con tus credenciales.', 'success');
+          this.registerForm.reset();
+          this.router.navigate(['/login'], { replaceUrl: true });
+        } else {
+          await this.presentToast(result.message, 'danger');
+        }
+      } catch (err) {
+        this.isSubmitting = false;
+        await this.presentToast('Ocurrió un error al crear la cuenta. Inténtalo de nuevo.', 'danger');
+      }
+    }, 200);
   }
 
 

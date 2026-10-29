@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -14,13 +14,14 @@ export class LoginPage implements OnInit {
   loginForm!: FormGroup;
   showPassword = false;
   isSubmitting = false;
+  selectedRole: 'student' | 'teacher' = 'student';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -42,6 +43,21 @@ export class LoginPage implements OnInit {
     return this.loginForm.get('password');
   }
 
+  setRole(role: 'student' | 'teacher'): void {
+    this.selectedRole = role;
+    if (role === 'student') {
+      this.loginForm.patchValue({
+        email: 'estudiante@saberstyle.com',
+        password: 'password123'
+      });
+    } else {
+      this.loginForm.patchValue({
+        email: 'profesor@saberstyle.com',
+        password: 'password123'
+      });
+    }
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -49,48 +65,79 @@ export class LoginPage implements OnInit {
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
-      await this.presentToast('Por favor completa todos los campos correctamente.', 'warning');
+      await this.presentToast('Por favor completa los campos correctamente.', 'warning');
       return;
     }
 
     this.isSubmitting = true;
-    const loading = await this.loadingController.create({
-      message: 'Iniciando sesión...',
-      spinner: 'crescent'
+
+    // Ejecución inmediata sin overlays pesados para evitar congelamientos
+    setTimeout(async () => {
+      try {
+        const { email, password } = this.loginForm.value;
+        const result = this.authService.login({ email, password });
+
+        this.isSubmitting = false;
+
+        if (result.success) {
+          await this.presentToast(result.message, 'success');
+          this.loginForm.reset();
+          this.router.navigate(['/home'], { replaceUrl: true });
+        } else {
+          await this.presentToast(result.message, 'danger');
+        }
+      } catch (err) {
+        this.isSubmitting = false;
+        await this.presentToast('Ocurrió un error al procesar el inicio de sesión.', 'danger');
+      }
+    }, 200);
+  }
+
+  async forgotPassword(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: '¿Olvidaste tu contraseña?',
+      message: 'Ingresa tu correo registrado y te enviaremos un código de recuperación galáctico:',
+      inputs: [
+        {
+          name: 'recoveryEmail',
+          type: 'email',
+          placeholder: 'correo@ejemplo.com',
+          value: this.loginForm.value.email || ''
+        }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Enviar Enlace',
+          handler: (data) => {
+            if (data.recoveryEmail?.trim()) {
+              this.presentToast(`Enlace enviado a ${data.recoveryEmail.trim()} (o usa contraseña: password123)`, 'success');
+            }
+          }
+        }
+      ]
     });
-    await loading.present();
+    await alert.present();
+  }
 
-    const { email, password } = this.loginForm.value;
-    const result = this.authService.login({ email, password });
-
-    await loading.dismiss();
-    this.isSubmitting = false;
-
-    if (result.success) {
-      await this.presentToast(result.message, 'success');
-      this.loginForm.reset();
+  async loginWithSocial(provider: 'Google' | 'Apple' | 'Gamepad'): Promise<void> {
+    this.isSubmitting = true;
+    setTimeout(async () => {
+      this.isSubmitting = false;
+      const role = this.selectedRole;
+      const demoEmail = role === 'teacher' ? 'profesor@saberstyle.com' : 'estudiante@saberstyle.com';
+      this.authService.login({ email: demoEmail, password: 'password123' });
+      await this.presentToast(`Conectado con éxito mediante ${provider}`, 'success');
       this.router.navigate(['/home'], { replaceUrl: true });
-    } else {
-      await this.presentToast(result.message, 'danger');
-    }
+    }, 300);
   }
 
   fillStudentDemo(): void {
-    this.loginForm.patchValue({
-      email: 'estudiante@saberstyle.com',
-      password: 'password123'
-    });
+    this.setRole('student');
   }
 
   fillTeacherDemo(): void {
-    this.loginForm.patchValue({
-      email: 'profesor@saberstyle.com',
-      password: 'password123'
-    });
-  }
-
-  fillDemoCredentials(): void {
-    this.fillStudentDemo();
+    this.setRole('teacher');
   }
 
   private async presentToast(message: string, color: 'success' | 'danger' | 'warning'): Promise<void> {
@@ -101,7 +148,7 @@ export class LoginPage implements OnInit {
       position: 'top',
       buttons: [
         {
-          text: 'Cerrar',
+          text: '✕',
           role: 'cancel'
         }
       ]

@@ -177,26 +177,47 @@
     <!-- Center Main Content / Login Card Block -->
     <div class="auth-center-block">
 
-      <!-- Header: Logo + Title + Subtitle -->
+      <!-- Header: Brand + Title + Subtitle -->
       <div class="auth-header">
-        <div class="logo-circle-glow">
-          <div class="logo-circle-inner">
-            <ion-icon name="game-controller" class="brand-controller-icon"></ion-icon>
-          </div>
+        <div class="brand-top-row">
+          <span class="sparkle-icon">✦</span>
+          <span class="app-brand-name">SaberStyle</span>
+          <span class="company-tag">Aico</span>
         </div>
+        <p class="brand-slogan">Aprende · Juega · Crece</p>
         
-        <h1 class="brand-title">AICO<sup>+</sup></h1>
-        <h2 class="welcome-heading">¡Bienvenido!</h2>
-        <p class="welcome-subtext">Inicia sesión en tu cuenta AICO</p>
+        <h2 class="welcome-heading">¡Hola, bienvenido!</h2>
+        <p class="welcome-subtext">Inicia sesión para continuar</p>
       </div>
 
       <!-- Main Login Card -->
       <div class="login-card">
+        
+        <!-- Selector de Rol (Estudiante vs Profesor) Estilo Mockup -->
+        <div class="role-toggle-bar">
+          <button 
+            type="button" 
+            class="role-toggle-btn" 
+            [class.role-active]="selectedRole === 'student'"
+            (click)="setRole('student')">
+            <ion-icon name="school-outline"></ion-icon>
+            <span>Estudiante</span>
+          </button>
+          <button 
+            type="button" 
+            class="role-toggle-btn" 
+            [class.role-active]="selectedRole === 'teacher'"
+            (click)="setRole('teacher')">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>Profesor</span>
+          </button>
+        </div>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
           <!-- Email Input Group -->
           <div class="input-box">
-            <label class="field-label">Correo Electrónico</label>
+            <label class="field-label">Correo electrónico</label>
             <div class="input-field-wrapper" [class.field-error]="email?.invalid && (email?.dirty || email?.touched)">
               <div class="icon-prefix">
                 <ion-icon name="mail-outline"></ion-icon>
@@ -210,12 +231,8 @@
               </ion-input>
             </div>
             <div class="error-msg" *ngIf="email?.invalid && (email?.dirty || email?.touched)">
-              <span *ngIf="email?.errors?.['required']">
-                <ion-icon name="alert-circle-outline"></ion-icon> El correo es obligatorio.
-              </span>
-              <span *ngIf="email?.errors?.['email']">
-                <ion-icon name="alert-circle-outline"></ion-icon> Ingresa un correo electrónico válido.
-              </span>
+              <span *ngIf="email?.errors?.['required']">El correo es obligatorio.</span>
+              <span *ngIf="email?.errors?.['email']">Ingresa un correo electrónico válido.</span>
             </div>
           </div>
 
@@ -235,18 +252,22 @@
               <button
                 type="button"
                 class="password-toggle-btn"
-                (click)="togglePasswordVisibility()">
+                (click)="togglePasswordVisibility()"
+                title="Mostrar/ocultar contraseña">
                 <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
               </button>
             </div>
             <div class="error-msg" *ngIf="password?.invalid && (password?.dirty || password?.touched)">
-              <span *ngIf="password?.errors?.['required']">
-                <ion-icon name="alert-circle-outline"></ion-icon> La contraseña es obligatoria.
-              </span>
-              <span *ngIf="password?.errors?.['minlength']">
-                <ion-icon name="alert-circle-outline"></ion-icon> Debe tener al menos 6 caracteres.
-              </span>
+              <span *ngIf="password?.errors?.['required']">La contraseña es obligatoria.</span>
+              <span *ngIf="password?.errors?.['minlength']">Debe tener al menos 6 caracteres.</span>
             </div>
+          </div>
+
+          <!-- Olvidaste contraseña -->
+          <div class="forgot-pass-row">
+            <button type="button" class="forgot-pass-link" (click)="forgotPassword()">
+              ¿Olvidaste tu contraseña?
+            </button>
           </div>
 
           <!-- Submit Button -->
@@ -255,14 +276,32 @@
             class="submit-btn"
             [disabled]="isSubmitting">
             <ion-spinner name="crescent" *ngIf="isSubmitting" class="btn-spinner"></ion-spinner>
-            <span *ngIf="!isSubmitting" class="btn-content">
-              <span class="arrow-icon">➔</span> INICIAR SESIÓN
-            </span>
+            <span *ngIf="!isSubmitting">Iniciar sesión</span>
           </button>
+
+          <!-- Divider o continúa con -->
+          <div class="social-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">o continúa con</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Social Buttons Row (Google, Apple, Gamepad) -->
+          <div class="social-buttons-row">
+            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Google')" title="Iniciar con Google">
+              <span class="social-logo-g">G</span>
+            </button>
+            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Apple')" title="Iniciar con Apple">
+              <ion-icon name="logo-apple"></ion-icon>
+            </button>
+            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Gamepad')" title="Iniciar con Cuenta Gamer">
+              <ion-icon name="game-controller-outline"></ion-icon>
+            </button>
+          </div>
 
           <!-- Quick Fill Demo Buttons -->
           <div class="demo-fill-container">
-            <span class="demo-label">Acceso Rápido de Prueba:</span>
+            <span class="demo-label">Acceso directo de prueba:</span>
             <div class="demo-buttons-row">
               <button type="button" class="demo-fill-btn student-demo-btn" (click)="fillStudentDemo()">
                 <ion-icon name="school-outline"></ion-icon>
@@ -280,11 +319,7 @@
 
       <!-- Footer: Register Prompt with Active Link -->
       <div class="auth-footer">
-        <p class="footer-question">¿No tienes una cuenta aún?</p>
-        <a routerLink="/register" class="register-link-action">
-          <span>Crear Cuenta Nueva</span>
-          <ion-icon name="arrow-forward-outline"></ion-icon>
-        </a>
+        <p class="footer-question">¿No tienes cuenta? <a routerLink="/register" class="register-link-action">Regístrate</a></p>
         <svg class="footer-wave" viewBox="0 0 140 12">
           <path d="M5,6 Q35,12 70,6 T135,6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
         </svg>

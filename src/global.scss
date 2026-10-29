@@ -1,12 +1,6 @@
 /*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
+ * App Global CSS — SaberStyle (Empresa: Aico)
+ * Identidad visual: Gamificada, educativa, amigable y cósmica.
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -18,20 +12,130 @@
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+/* Google Fonts para SaberStyle */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+:root {
+  --ion-font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --app-font-scale: 1;
+
+  /* Colores de Marca SaberStyle / Aico */
+  --saber-purple: #7c3aed;
+  --saber-purple-light: #8b5cf6;
+  --saber-purple-deep: #4c1d95;
+  --saber-pink: #ec4899;
+  --saber-blue: #3b82f6;
+  --saber-cyan: #06b6d4;
+  --saber-gold: #f59e0b;
+  --saber-green: #10b981;
+}
+
+/* ===================================================
+   TEMA CLARO (FIEL AL MOCKUP: BLANCO / LAVANDA SUAVE)
+   =================================================== */
+body.theme-light {
+  --ion-background-color: #f5f3ff;
+  --ion-text-color: #1e1b4b;
+
+  --cosmic-bg: #f5f3ff;
+  --card-bg: #ffffff;
+  --card-bg-translucent: rgba(255, 255, 255, 0.94);
+  --card-border: 1px solid rgba(139, 92, 246, 0.16);
+  --card-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);
+
+  --text-main: #1e1b4b;
+  --text-muted: #64748b;
+  --text-sub: #475569;
+
+  --header-bg: rgba(255, 255, 255, 0.88);
+  --header-border: 1px solid rgba(139, 92, 246, 0.15);
+  --footer-bg: rgba(255, 255, 255, 0.92);
+
+  --input-bg: #ffffff;
+  --input-border: 1px solid rgba(139, 92, 246, 0.25);
+  --input-color: #1e1b4b;
+
+  --pill-bg: rgba(124, 58, 237, 0.08);
+  --pill-text: #6d28d9;
+}
+
+/* ===================================================
+   TEMA OSCURO (GALÁCTICO / MORADO PROFUNDO)
+   =================================================== */
+body.theme-dark,
+body:not(.theme-light) {
+  --ion-background-color: #09051d;
+  --ion-text-color: #ffffff;
+
+  --cosmic-bg: #09051d;
+  --card-bg: rgba(26, 16, 60, 0.72);
+  --card-bg-translucent: rgba(26, 16, 60, 0.75);
+  --card-border: 1px solid rgba(255, 255, 255, 0.12);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-sub: #cbd5e1;
+
+  --header-bg: rgba(15, 9, 41, 0.85);
+  --header-border: 1px solid rgba(255, 255, 255, 0.12);
+  --footer-bg: rgba(15, 9, 41, 0.88);
+
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: 1px solid rgba(255, 255, 255, 0.16);
+  --input-color: #ffffff;
+
+  --pill-bg: rgba(255, 255, 255, 0.1);
+  --pill-text: #ffffff;
+}
+
+/* ===================================================
+   AYUDAS FUNCIONALES DE ACCESIBILIDAD REAL (8.4)
+   =================================================== */
+
+/* 1. Escalado dinámico de tipografía */
+body.font-grande {
+  font-size: 112%;
+  --app-font-scale: 1.12;
+}
+
+body.font-muy-grande {
+  font-size: 125%;
+  --app-font-scale: 1.25;
+}
+
+/* 2. Modo Alto Contraste (WCAG AAA) */
+body.acc-alto-contraste {
+  --card-border: 2px solid #ffffff !important;
+  --text-muted: #ffffff !important;
+  --card-shadow: none !important;
+
+  &.theme-light {
+    --card-border: 2px solid #000000 !important;
+    --text-muted: #000000 !important;
+    --text-main: #000000 !important;
+  }
+
+  button, a, input {
+    border-width: 2px !important;
+    font-weight: 800 !important;
+  }
+}
+
+/* 3. Modo de Enfoque (sin animaciones ni destellos) */
+body.acc-modo-enfoque {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .nebula, .star, .galaxy-backdrop {
+    display: none !important;
+  }
+}
