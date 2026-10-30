@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, ToastController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { AichatService } from '../services/ai-chat.service';
+import { I18nService, SupportedLanguage } from '../services/i18n.service';
 import { User } from '../models/user.model';
 import { Chatmessage } from '../models/chat.model';
 
@@ -24,12 +25,16 @@ export interface SavedGame {
   preguntas: any[];
   fecha: string;
   compartido?: boolean;
+  instrucciones?: string;
+  recompensaMonedas: number;
+  palabras?: string[];
 }
 
 export interface StudentItem {
   id: string;
   name: string;
   avatar: string;
+  avatarImg: string;
   asistencia: number;
   retosCompletados: number;
   promedio: number;
@@ -46,7 +51,7 @@ export interface ClaseItem {
   horario: string;
   studentsCount: number;
   estudiantesList: StudentItem[];
-  actividades: { id: string; titulo: string; tipo: string; estado: 'completado' | 'en-vivo' | 'pendiente'; duracion: string }[];
+  actividades: { id: string; titulo: string; tipo: string; estado: 'completado' | 'en-vivo' | 'pendiente'; duracion: string; recompensa: number }[];
   icon: string;
   color: string;
 }
@@ -61,6 +66,7 @@ export interface StoreItem {
   equipped: boolean;
   icon: string;
   color: string;
+  image: string;
 }
 
 export interface LogroDesafio {
@@ -91,7 +97,7 @@ export interface MisionDiaria {
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   currentUser: User | null = null;
 
   // Pestaña o pantalla activa dentro de la aplicación
@@ -104,6 +110,7 @@ export class HomePage implements OnInit {
     | 'ruleta-config'
     | 'mis-juegos'
     | 'tienda'
+    | 'tienda-monedas'
     | 'closet'
     | 'progreso'
     | 'logros'
@@ -118,8 +125,8 @@ export class HomePage implements OnInit {
     | 'juego-sopa'
     | 'juego-victoria' = 'estudiante';
 
-  // Destino de la barra de navegación inferior
-  currentBottomNav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'perfil' = 'inicio';
+  // Destino de la barra de navegación inferior (Fase 2: Perfil sustituido por Estadísticas)
+  currentBottomNav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'stats' = 'inicio';
 
   // Monedas del usuario
   userCoins: number = 1250;
@@ -127,16 +134,15 @@ export class HomePage implements OnInit {
   // Avatar sincronizado globalmente
   avatarConfig = {
     skinColor: '#f8d9b6',
-    hairId: 'cabello-moderno',
+    hairId: 'corte-fade',
     topId: 'sudadera-estrella',
     bottomId: 'pantalon-urbano',
-    shoesId: 'sneakers-pro',
-    accessoryId: 'mascota-snoopy',
+    shoesId: 'pantalon-urbano',
+    accessoryId: 'gorra-urbana',
     expression: 'Feliz',
     angle: 'Frente'
   };
 
-  // Paleta de tonos de piel (naturales y fantasía cósmica)
   tonosPiel = [
     { color: '#fae7d0', label: 'Porcelana' },
     { color: '#f8d9b6', label: 'Claro Cálido' },
@@ -155,63 +161,265 @@ export class HomePage implements OnInit {
   storeCategoryFilter: 'ropa' | 'pelo' | 'accesorios' | 'zapatos' = 'ropa';
   closetCategoryFilter: 'ropa' | 'pelo' | 'accesorios' | 'zapatos' = 'ropa';
 
-  // Catálogo completo de Tienda e Inventario (inspirado en Roblox/SaberStyle)
+  // Catálogo completo de Tienda usando recursos gráficos originales (PNGs individuales)
   storeItems: StoreItem[] = [
     // Ropa / Tops
-    { id: 'sudadera-estrella', name: 'Sudadera Estrella Violeta', category: 'ropa', price: 350, tag: 'NUEVO', owned: true, equipped: true, icon: 'shirt-outline', color: '#a855f7' },
-    { id: 'hoodie-galaxia', name: 'Hoodie Galaxia con Capucha', category: 'ropa', price: 400, tag: 'POPULAR', owned: true, equipped: false, icon: 'shirt-outline', color: '#6366f1' },
-    { id: 'camiseta-saber', name: 'Camiseta SaberStyle Blanca', category: 'ropa', price: 200, owned: true, equipped: false, icon: 'shirt-outline', color: '#e2e8f0' },
-    { id: 'chaqueta-neon', name: 'Chaqueta Cyber Neón', category: 'ropa', price: 480, tag: 'ÉPICO', owned: false, equipped: false, icon: 'shirt-outline', color: '#ec4899' },
-    { id: 'pantalon-urbano', name: 'Pantalón Urbano Denim', category: 'ropa', price: 280, tag: 'POPULAR', owned: true, equipped: true, icon: 'barcode-outline', color: '#3b82f6' },
-    { id: 'falda-plisada', name: 'Falda Plisada Violeta', category: 'ropa', price: 260, owned: false, equipped: false, icon: 'color-palette-outline', color: '#c084fc' },
-    
-    // Zapatos
-    { id: 'sneakers-pro', name: 'Sneakers Cósmicos Pro', category: 'zapatos', price: 220, owned: true, equipped: true, icon: 'footsteps-outline', color: '#10b981' },
-    { id: 'botas-lunares', name: 'Botas de Gravedad Cero', category: 'zapatos', price: 340, tag: 'ÉPICO', owned: false, equipped: false, icon: 'rocket-outline', color: '#8b5cf6' },
-    { id: 'tenis-runner', name: 'Tenis Runner Galaxia', category: 'zapatos', price: 250, owned: false, equipped: false, icon: 'flash-outline', color: '#f59e0b' },
+    {
+      id: 'sudadera-estrella',
+      name: 'Sudadera Estrella Violeta',
+      category: 'ropa',
+      price: 350,
+      tag: 'NUEVO',
+      owned: true,
+      equipped: true,
+      icon: 'shirt-outline',
+      color: '#a855f7',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/03_Prendas_superiores/prenda_superior_01.png'
+    },
+    {
+      id: 'hoodie-galaxia',
+      name: 'Hoodie Galaxia con Capucha',
+      category: 'ropa',
+      price: 400,
+      tag: 'POPULAR',
+      owned: true,
+      equipped: false,
+      icon: 'shirt-outline',
+      color: '#6366f1',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/03_Prendas_superiores/prenda_superior_02.png'
+    },
+    {
+      id: 'camiseta-saber',
+      name: 'Camiseta SaberStyle Blanca',
+      category: 'ropa',
+      price: 200,
+      owned: true,
+      equipped: false,
+      icon: 'shirt-outline',
+      color: '#e2e8f0',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/03_Prendas_superiores/prenda_superior_03.png'
+    },
+    {
+      id: 'chaqueta-neon',
+      name: 'Chaqueta Cyber Urbana',
+      category: 'ropa',
+      price: 480,
+      tag: 'ÉPICO',
+      owned: false,
+      equipped: false,
+      icon: 'shirt-outline',
+      color: '#ec4899',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/03_Prendas_superiores/prenda_superior_04.png'
+    },
+    {
+      id: 'camiseta-gamer',
+      name: 'Camiseta Gamer Pro',
+      category: 'ropa',
+      price: 260,
+      owned: false,
+      equipped: false,
+      icon: 'shirt-outline',
+      color: '#10b981',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/03_Prendas_superiores/prenda_superior_05.png'
+    },
+    // Pantalones y faldas
+    {
+      id: 'pantalon-urbano',
+      name: 'Pantalón Urbano Denim',
+      category: 'ropa',
+      price: 280,
+      tag: 'POPULAR',
+      owned: true,
+      equipped: true,
+      icon: 'barcode-outline',
+      color: '#3b82f6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/04_Pantalones/pantalon_01.png'
+    },
+    {
+      id: 'pantalon-jogger',
+      name: 'Pantalón Jogger Galaxia',
+      category: 'ropa',
+      price: 320,
+      owned: false,
+      equipped: false,
+      icon: 'barcode-outline',
+      color: '#8b5cf6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/04_Pantalones/pantalon_02.png'
+    },
+    {
+      id: 'falda-plisada',
+      name: 'Falda Plisada Violeta',
+      category: 'ropa',
+      price: 260,
+      owned: false,
+      equipped: false,
+      icon: 'color-palette-outline',
+      color: '#c084fc',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/05_Faldas/falda_01.png'
+    },
+    {
+      id: 'falda-sport',
+      name: 'Falda Deportiva Galáctica',
+      category: 'ropa',
+      price: 270,
+      owned: false,
+      equipped: false,
+      icon: 'color-palette-outline',
+      color: '#ec4899',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/05_Faldas/falda_02.png'
+    },
 
-    // Pelo
-    { id: 'cabello-moderno', name: 'Corte Galáctico Bob', category: 'pelo', price: 180, tag: 'ESTILO', owned: true, equipped: true, icon: 'sparkles-outline', color: '#6366f1' },
-    { id: 'melena-estelar', name: 'Melena Rizada Estelar', category: 'pelo', price: 220, owned: false, equipped: false, icon: 'flower-outline', color: '#f472b6' },
-    { id: 'pelo-spiky', name: 'Peinado Spiky Anime', category: 'pelo', price: 210, owned: false, equipped: false, icon: 'flame-outline', color: '#eab308' },
+    // Pelo / Peinados
+    {
+      id: 'corte-fade',
+      name: 'Corte Fade Moderno',
+      category: 'pelo',
+      price: 180,
+      tag: 'ESTILO',
+      owned: true,
+      equipped: true,
+      icon: 'sparkles-outline',
+      color: '#6366f1',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/02_Peinados/peinado_masculino_01.png'
+    },
+    {
+      id: 'corte-bob',
+      name: 'Corte Galáctico Bob',
+      category: 'pelo',
+      price: 220,
+      tag: 'NUEVO',
+      owned: false,
+      equipped: false,
+      icon: 'sparkles-outline',
+      color: '#8b5cf6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/02_Peinados/peinado_femenino_01.png'
+    },
+    {
+      id: 'melena-rizada',
+      name: 'Melena Ondulada Estelar',
+      category: 'pelo',
+      price: 230,
+      owned: false,
+      equipped: false,
+      icon: 'flower-outline',
+      color: '#f472b6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/02_Peinados/peinado_femenino_02.png'
+    },
+    {
+      id: 'peinado-spiky',
+      name: 'Peinado Spiky Anime',
+      category: 'pelo',
+      price: 210,
+      owned: false,
+      equipped: false,
+      icon: 'flame-outline',
+      color: '#eab308',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/02_Peinados/peinado_masculino_03.png'
+    },
 
     // Accesorios
-    { id: 'mascota-snoopy', name: 'Perrito Astronauta Snoopy', category: 'accesorios', price: 450, tag: 'DESTACADO', owned: true, equipped: true, icon: 'paw-outline', color: '#ec4899' },
-    { id: 'lentes-sol', name: 'Lentes de Sol Cyber Black', category: 'accesorios', price: 190, tag: 'NUEVO', owned: false, equipped: false, icon: 'glasses-outline', color: '#1e293b' },
-    { id: 'gorra-saber', name: 'Gorra SaberStyle Oro', category: 'accesorios', price: 160, owned: false, equipped: false, icon: 'flash-outline', color: '#ffb300' },
-    { id: 'auriculares-gamer', name: 'Auriculares Gamer RGB', category: 'accesorios', price: 380, tag: 'POPULAR', owned: false, equipped: false, icon: 'headset-outline', color: '#06b6d4' }
+    {
+      id: 'gorra-urbana',
+      name: 'Gorra Urbana Saber',
+      category: 'accesorios',
+      price: 250,
+      tag: 'DESTACADO',
+      owned: true,
+      equipped: true,
+      icon: 'star-outline',
+      color: '#3b82f6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/07_Accesorios/accesorio_01_gorra.png'
+    },
+    {
+      id: 'gorro-tejido',
+      name: 'Gorro Cósmico de Lana',
+      category: 'accesorios',
+      price: 220,
+      owned: false,
+      equipped: false,
+      icon: 'snow-outline',
+      color: '#6366f1',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/07_Accesorios/accesorio_02_gorro_tejido.png'
+    },
+    {
+      id: 'gafas-redondas',
+      name: 'Gafas Intelectuales',
+      category: 'accesorios',
+      price: 190,
+      owned: false,
+      equipped: false,
+      icon: 'glasses-outline',
+      color: '#10b981',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/07_Accesorios/accesorio_08_gafas_redondas.png'
+    },
+    {
+      id: 'gafas-sol',
+      name: 'Gafas de Sol Cyber',
+      category: 'accesorios',
+      price: 280,
+      tag: 'ÉPICO',
+      owned: false,
+      equipped: false,
+      icon: 'sunny-outline',
+      color: '#f59e0b',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/07_Accesorios/accesorio_10_gafas_sol.png'
+    },
+    {
+      id: 'mochila-galactica',
+      name: 'Mochila Explorador Galáctico',
+      category: 'accesorios',
+      price: 380,
+      tag: 'POPULAR',
+      owned: false,
+      equipped: false,
+      icon: 'bag-outline',
+      color: '#ec4899',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/07_Accesorios/accesorio_20_mochila.png'
+    },
+
+    // Zapatos
+    {
+      id: 'sneakers-pro',
+      name: 'Sneakers Cósmicos Pro',
+      category: 'zapatos',
+      price: 220,
+      owned: true,
+      equipped: true,
+      icon: 'footsteps-outline',
+      color: '#10b981',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/04_Pantalones/pantalon_05.png'
+    },
+    {
+      id: 'botas-lunares',
+      name: 'Botas de Gravedad Cero',
+      category: 'zapatos',
+      price: 340,
+      tag: 'ÉPICO',
+      owned: false,
+      equipped: false,
+      icon: 'rocket-outline',
+      color: '#8b5cf6',
+      image: 'assets/saber-icons/SaberStyle_PNG_Individuales/04_Pantalones/pantalon_03.png'
+    }
   ];
 
-  // ==========================================
-  // Creación y Gestión de Minijuegos
-  // ==========================================
+  // 6 Tipos de Minijuegos disponibles
+  gameTypes: GameTypeOption[] = [
+    { id: 'quiz', name: 'Cuestionario', desc: 'Preguntas de opción múltiple cronometradas', icon: 'checkbox-outline', badgeColor: '#8b5cf6' },
+    { id: 'ruleta', name: 'Ruleta', desc: 'Gira para seleccionar un tema o pregunta aleatoria', icon: 'disc-outline', badgeColor: '#ec4899' },
+    { id: 'abierta', name: 'Pregunta abierta', desc: 'Respuestas de reflexión y debate colaborativo', icon: 'chatbubbles-outline', badgeColor: '#3b82f6' },
+    { id: 'verdadero-falso', name: 'Verdadero o falso', desc: 'Evaluación rápida de conceptos con retroalimentación', icon: 'thumbs-up-outline', badgeColor: '#10b981' },
+    { id: 'completar', name: 'Completar frase', desc: 'Identifica la palabra clave para completar el enunciado', icon: 'create-outline', badgeColor: '#f59e0b' },
+    { id: 'sopa-letras', name: 'Sopa de letras', desc: 'Encuentra las palabras clave en la cuadrícula', icon: 'grid-outline', badgeColor: '#06b6d4' }
+  ];
+
   selectedGameType: 'quiz' | 'ruleta' | 'abierta' | 'verdadero-falso' | 'completar' | 'sopa-letras' = 'quiz';
-  selectedParticipationMode: 'en-vivo' | 'individual' = 'en-vivo';
-  nuevoJuegoTitulo: string = '';
-  nuevoJuegoMateria: string = 'Matemáticas';
+  selectedParticipationMode: 'en-vivo' | 'individual' = 'individual';
+
+  // Biblioteca de Minijuegos
   juegosFiltroTab: 'mis-juegos' | 'compartidos' = 'mis-juegos';
   juegosSearchQuery: string = '';
 
-  gameTypes: GameTypeOption[] = [
-    { id: 'quiz', name: 'Cuestionario', desc: 'Preguntas de opción múltiple con puntajes inmediatos', icon: 'checkbox-outline', badgeColor: '#8b5cf6' },
-    { id: 'ruleta', name: 'Ruleta', desc: 'Rueda aleatoria para elegir conceptos y preguntas al azar', icon: 'disc-outline', badgeColor: '#ec4899' },
-    { id: 'abierta', name: 'Pregunta abierta', desc: 'Debates y respuestas escritas colaborativas en directo', icon: 'chatbubbles-outline', badgeColor: '#3b82f6' },
-    { id: 'verdadero-falso', name: 'Verdadero / falso', desc: 'Comprobaciones conceptuales ágiles con retroalimentación', icon: 'checkmark-circle-outline', badgeColor: '#10b981' },
-    { id: 'completar', name: 'Completar frase', desc: 'Rellena los espacios vacíos con los términos correctos', icon: 'create-outline', badgeColor: '#f59e0b' },
-    { id: 'sopa-letras', name: 'Sopa de letras', desc: 'Búsqueda de términos clave en cuadrícula interactiva', icon: 'grid-outline', badgeColor: '#06b6d4' }
-  ];
-
-  // Editor de Ruleta
-  ruletaConfigTitulo: string = 'La ruleta del conocimiento';
-  ruletaConfigPreguntas: string[] = [
-    '¿Cuál es la función inversa de f(x) = 2x + 4?',
-    '¿Qué representa la asíntota vertical en una función racional?',
-    'Define el concepto de dominio y rango de f(x) = √x',
-    'Explica la diferencia entre función inyectiva y sobreyectiva'
-  ];
-  nuevaPreguntaRuletaInput: string = '';
-
-  // Biblioteca de Juegos Guardados
   savedGames: SavedGame[] = [
     {
       id: 'g1',
@@ -220,8 +428,10 @@ export class HomePage implements OnInit {
       tipoLabel: 'Cuestionario',
       modo: 'en-vivo',
       materia: 'Matemáticas',
-      preguntasCount: 10,
+      preguntasCount: 3,
       fecha: 'Hoy',
+      instrucciones: 'Selecciona la opción correcta antes de que expire el tiempo.',
+      recompensaMonedas: 100,
       preguntas: [
         {
           pregunta: '¿Cuál es el dominio de la función f(x) = 1 / (x - 3)?',
@@ -249,6 +459,8 @@ export class HomePage implements OnInit {
       materia: 'General',
       preguntasCount: 6,
       fecha: 'Ayer',
+      instrucciones: 'Gira la ruleta y responde el tema seleccionado.',
+      recompensaMonedas: 80,
       preguntas: [
         { tema: 'Dominio', pregunta: '¿Qué valores de x hacen indefinida a f(x) = 1/x?' },
         { tema: 'Rango', pregunta: '¿Cuál es el rango de una función seno?' },
@@ -260,13 +472,15 @@ export class HomePage implements OnInit {
     },
     {
       id: 'g3',
-      titulo: 'Verdadero o falso',
+      titulo: 'Verdadero o falso de ciencias',
       tipo: 'verdadero-falso',
       tipoLabel: 'Verdadero / falso',
       modo: 'individual',
       materia: 'Ciencias',
-      preguntasCount: 12,
+      preguntasCount: 3,
       fecha: '18 Oct',
+      instrucciones: 'Indica si cada afirmación es verdadera o falsa.',
+      recompensaMonedas: 90,
       preguntas: [
         { afirmacion: 'Una función lineal f(x) = mx + b siempre genera una línea recta.', esVerdadero: true, explicacion: 'Correcto: una función polinomial de grado 1 representa siempre una recta con pendiente m.' },
         { afirmacion: 'El dominio de f(x) = √x incluye todos los números reales negativos.', esVerdadero: false, explicacion: 'Falso: en los números reales no existe raíz cuadrada de un número negativo.' },
@@ -280,8 +494,10 @@ export class HomePage implements OnInit {
       tipoLabel: 'Pregunta abierta',
       modo: 'individual',
       materia: 'Matemáticas',
-      preguntasCount: 3,
+      preguntasCount: 1,
       fecha: '15 Oct',
+      instrucciones: 'Escribe tu respuesta y reflexiona con tus compañeros.',
+      recompensaMonedas: 70,
       preguntas: [
         { consigna: 'Menciona un ejemplo cotidiano donde una variable dependa directamente de otra:' }
       ]
@@ -293,21 +509,26 @@ export class HomePage implements OnInit {
       tipoLabel: 'Completar frase',
       modo: 'individual',
       materia: 'Matemáticas',
-      preguntasCount: 5,
+      preguntasCount: 1,
       fecha: '14 Oct',
+      instrucciones: 'Selecciona la palabra que completa la oración correctamente.',
+      recompensaMonedas: 75,
       preguntas: [
         { fraseAntes: 'Un triángulo que tiene sus tres lados con la misma longitud se denomina triángulo', palabraCorrecta: 'equilátero', opciones: ['equilátero', 'isósceles', 'escaleno', 'rectángulo'] }
       ]
     },
     {
       id: 'g6',
-      titulo: 'Sopa de letras',
+      titulo: 'Sopa de letras matemática',
       tipo: 'sopa-letras',
       tipoLabel: 'Sopa de letras',
       modo: 'individual',
-      materia: 'Lengua',
-      preguntasCount: 10,
+      materia: 'Lengua y Matemáticas',
+      preguntasCount: 5,
       fecha: '12 Oct',
+      instrucciones: 'Toca las letras para encontrar las palabras escondidas.',
+      recompensaMonedas: 120,
+      palabras: ['DOMINIO', 'RANGO', 'FUNCION', 'LIMITE', 'RECTA'],
       preguntas: [
         { palabras: ['DOMINIO', 'RANGO', 'FUNCION', 'LIMITE', 'RECTA'] }
       ]
@@ -315,9 +536,45 @@ export class HomePage implements OnInit {
   ];
 
   // ==========================================
+  // Editor Completo de Minijuegos (Fase 2)
+  // ==========================================
+  editingGameId: string | null = null;
+  editorTitulo: string = '';
+  editorMateria: string = 'Matemáticas';
+  editorInstrucciones: string = '';
+  editorRecompensa: number = 100;
+  editorModo: 'en-vivo' | 'individual' = 'individual';
+  editorTipo: 'quiz' | 'ruleta' | 'abierta' | 'verdadero-falso' | 'completar' | 'sopa-letras' = 'quiz';
+
+  // Sub-editores específicos por modalidad
+  editorQuizPreguntas: { pregunta: string; opciones: string[]; correcta: number }[] = [];
+  nuevaPreguntaQuizTexto: string = '';
+  nuevaPreguntaQuizOpciones: string[] = ['', '', '', ''];
+  nuevaPreguntaQuizCorrecta: number = 0;
+
+  editorRuletaPreguntas: string[] = [];
+  nuevaPreguntaRuletaInput: string = '';
+
+  editorSopaPalabras: string[] = [];
+  nuevaPalabraSopaInput: string = '';
+
+  editorVFPreguntas: { afirmacion: string; esVerdadero: boolean; explicacion: string }[] = [];
+  nuevaVFAfirmacion: string = '';
+  nuevaVFEsVerdadero: boolean = true;
+  nuevaVFExplicacion: string = '';
+
+  editorAbiertaConsigna: string = '';
+
+  editorCompletarFrases: { fraseAntes: string; palabraCorrecta: string; opciones: string[] }[] = [];
+  nuevaCompletarFrase: string = '';
+  nuevaCompletarPalabra: string = '';
+  nuevaCompletarOpciones: string = '';
+
+  // ==========================================
   // Motores de Juego Activo
   // ==========================================
   juegoActivo: SavedGame | null = null;
+  recompensaReclamada: boolean = false;
   quizIndexPregunta: number = 0;
   quizScoreCorrectas: number = 0;
   quizTimerSegundos: number = 20;
@@ -329,6 +586,7 @@ export class HomePage implements OnInit {
   ruletaAngulo: number = 0;
   ruletaGirando: boolean = false;
   ruletaSectorSeleccionado: any = null;
+  ruletaSectores: { tema: string; pregunta: string }[] = [];
 
   // Pregunta Abierta
   abiertaRespuestaUsuario: string = '';
@@ -348,27 +606,12 @@ export class HomePage implements OnInit {
   completarCorrecta: boolean | null = null;
 
   // Sopa de Letras
-  sopaGrid: string[][] = [
-    ['D', 'O', 'M', 'I', 'N', 'I', 'O', 'S'],
-    ['F', 'U', 'N', 'C', 'I', 'O', 'N', 'A'],
-    ['L', 'I', 'M', 'I', 'T', 'E', 'P', 'B'],
-    ['R', 'A', 'N', 'G', 'O', 'X', 'Y', 'E'],
-    ['R', 'E', 'C', 'T', 'A', 'K', 'L', 'R'],
-    ['A', 'S', 'I', 'N', 'T', 'O', 'T', 'A'],
-    ['V', 'E', 'R', 'T', 'I', 'C', 'A', 'L'],
-    ['S', 'A', 'B', 'E', 'R', 'S', 'E', 'P']
-  ];
-  sopaPalabrasObjetivo = [
-    { palabra: 'DOMINIO', encontrada: false },
-    { palabra: 'FUNCION', encontrada: false },
-    { palabra: 'RANGO', encontrada: false },
-    { palabra: 'LIMITE', encontrada: false },
-    { palabra: 'RECTA', encontrada: false }
-  ];
+  sopaGrid: string[][] = [];
+  sopaPalabrasObjetivo: { palabra: string; encontrada: boolean }[] = [];
   sopaLetrasSeleccionadas: { row: number; col: number; letra: string }[] = [];
 
   // ==========================================
-  // Clases y Roster de Estudiantes
+  // Clases y Roster de Estudiantes con Avatares Reales
   // ==========================================
   claseSearchQuery: string = '';
   claseDetalleTab: 'info' | 'estudiantes' | 'actividades' = 'info';
@@ -388,17 +631,17 @@ export class HomePage implements OnInit {
       icon: 'calculator-outline',
       color: '#8b5cf6',
       estudiantesList: [
-        { id: 's1', name: 'Juan Pérez', avatar: '👨‍🎓', asistencia: 96, retosCompletados: 10, promedio: 88 },
-        { id: 's2', name: 'Sofia Morales', avatar: '👩‍🎓', asistencia: 92, retosCompletados: 12, promedio: 94 },
-        { id: 's3', name: 'Mateo Gómez', avatar: '👨‍🎓', asistencia: 88, retosCompletados: 8, promedio: 79 },
-        { id: 's4', name: 'Valeria Torres', avatar: '👩‍🎓', asistencia: 100, retosCompletados: 14, promedio: 97 },
-        { id: 's5', name: 'Lucas Ramírez', avatar: '👨‍🎓', asistencia: 84, retosCompletados: 9, promedio: 75 },
-        { id: 's6', name: 'Camila Rojas', avatar: '👩‍🎓', asistencia: 90, retosCompletados: 11, promedio: 85 }
+        { id: 's1', name: 'Juan Pérez', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_01.png', asistencia: 96, retosCompletados: 10, promedio: 88 },
+        { id: 's2', name: 'Sofia Morales', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_02.png', asistencia: 92, retosCompletados: 12, promedio: 94 },
+        { id: 's3', name: 'Mateo Gómez', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_03.png', asistencia: 88, retosCompletados: 8, promedio: 79 },
+        { id: 's4', name: 'Valeria Torres', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_02.png', asistencia: 100, retosCompletados: 14, promedio: 97 },
+        { id: 's5', name: 'Lucas Ramírez', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_01.png', asistencia: 84, retosCompletados: 9, promedio: 75 },
+        { id: 's6', name: 'Camila Rojas', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_03.png', asistencia: 90, retosCompletados: 11, promedio: 85 }
       ],
       actividades: [
-        { id: 'act1', titulo: 'Quiz de funciones', tipo: 'Cuestionario', estado: 'completado', duracion: '10 min' },
-        { id: 'act2', titulo: 'Ruleta de números', tipo: 'Ruleta', estado: 'en-vivo', duracion: '15 min' },
-        { id: 'act3', titulo: 'Debate de Asíntotas', tipo: 'Pregunta abierta', estado: 'pendiente', duracion: '20 min' }
+        { id: 'act1', titulo: 'Quiz de funciones', tipo: 'Cuestionario', estado: 'completado', duracion: '10 min', recompensa: 100 },
+        { id: 'act2', titulo: 'Ruleta del conocimiento', tipo: 'Ruleta', estado: 'en-vivo', duracion: '15 min', recompensa: 80 },
+        { id: 'act3', titulo: 'Pregunta abierta: Funciones en la vida real', tipo: 'Pregunta abierta', estado: 'pendiente', duracion: '20 min', recompensa: 70 }
       ]
     },
     {
@@ -414,12 +657,12 @@ export class HomePage implements OnInit {
       icon: 'book-outline',
       color: '#3b82f6',
       estudiantesList: [
-        { id: 's7', name: 'Andrés López', avatar: '👨‍🎓', asistencia: 91, retosCompletados: 9, promedio: 82 },
-        { id: 's8', name: 'Daniela Castro', avatar: '👩‍🎓', asistencia: 95, retosCompletados: 11, promedio: 90 }
+        { id: 's7', name: 'Andrés López', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_01.png', asistencia: 91, retosCompletados: 9, promedio: 82 },
+        { id: 's8', name: 'Daniela Castro', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_02.png', asistencia: 95, retosCompletados: 11, promedio: 90 }
       ],
       actividades: [
-        { id: 'act4', titulo: 'Sopa de letras literaria', tipo: 'Sopa de letras', estado: 'completado', duracion: '15 min' },
-        { id: 'act5', titulo: 'Pregunta abierta: Figuras retóricas', tipo: 'Pregunta abierta', estado: 'pendiente', duracion: '10 min' }
+        { id: 'act4', titulo: 'Sopa de letras matemática', tipo: 'Sopa de letras', estado: 'completado', duracion: '15 min', recompensa: 120 },
+        { id: 'act5', titulo: 'Completar frase de geometría', tipo: 'Completar frase', estado: 'pendiente', duracion: '10 min', recompensa: 75 }
       ]
     },
     {
@@ -435,33 +678,35 @@ export class HomePage implements OnInit {
       icon: 'flask-outline',
       color: '#ec4899',
       estudiantesList: [
-        { id: 's9', name: 'Martín Vega', avatar: '👨‍🎓', asistencia: 89, retosCompletados: 7, promedio: 78 }
+        { id: 's9', name: 'Martín Vega', avatar: 'Estudiante', avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_03.png', asistencia: 89, retosCompletados: 7, promedio: 78 }
       ],
       actividades: [
-        { id: 'act6', titulo: 'Verdadero o falso: Leyes de Newton', tipo: 'Verdadero / falso', estado: 'completado', duracion: '8 min' }
+        { id: 'act6', titulo: 'Verdadero o falso de ciencias', tipo: 'Verdadero / falso', estado: 'completado', duracion: '8 min', recompensa: 90 }
       ]
     }
   ];
 
   // ==========================================
-  // Progreso y Estadísticas Explicadas
+  // Estadísticas Dinámicas del Estudiante (Fase 2)
+  // Estado inicial en 0, actualización automática, 4 categorías
   // ==========================================
-  progresoTab: 'general' | 'juegos' | 'clases' = 'general';
+  progresoTab: 'general' | 'juegos' | 'clases' | 'funcion' = 'general';
+
   statsEstudiante = {
-    clasesAsistidas: 13,
-    juegosCompletados: 10,
-    juegosFallados: 3,
-    totalPartidas: 13,
-    porcentajePromedio: 78 // (10 / 13) * 100 = 76.9% ≈ 78%
+    clasesUnidas: 0,
+    actividadesRealizadas: 0,
+    juegosCompletados: 0,
+    juegosFallados: 0,
+    totalPartidas: 0,
+    porcentajePromedio: 0,
+    monedasGanadas: 0,
+    iaConsultas: 0,
+    armarioCambios: 0,
+    tiendaVisitas: 0,
+    accesibilidadUsos: 0
   };
 
-  // Puntos del gráfico de evolución (Sep, Oct, Nov, Dic)
-  evolucionPuntos = [
-    { mes: 'Sep', porcentaje: 65, cx: 30, cy: 95 },
-    { mes: 'Oct', porcentaje: 72, cx: 100, cy: 75 },
-    { mes: 'Nov', porcentaje: 75, cx: 170, cy: 65 },
-    { mes: 'Dic', porcentaje: 88, cx: 240, cy: 35 }
-  ];
+  evolucionPuntos: { mes: string; porcentaje: number; cx: number; cy: number }[] = [];
 
   // ==========================================
   // Logros y Misiones Diarias
@@ -470,42 +715,46 @@ export class HomePage implements OnInit {
 
   logros: LogroDesafio[] = [
     { id: 1, title: 'Creador de partidas', desc: 'Nivel 1: Diseña tu primera actividad educativa.', medal: 'bronze', completed: true, recompensa: 50, claimed: true },
-    { id: 2, title: 'Explorador', desc: 'Completa 5 juegos en cualquier modalidad.', medal: 'silver', completed: true, recompensa: 100, claimed: true },
+    { id: 2, title: 'Explorador', desc: 'Completa 5 juegos en cualquier modalidad.', medal: 'silver', completed: false, recompensa: 100, claimed: false },
     { id: 3, title: 'Maestro del quiz', desc: 'Completa 20 juegos con más del 80% de aciertos.', medal: 'gold', completed: false, recompensa: 250, claimed: false },
-    { id: 4, title: 'Racha de fuego', desc: 'Ingresa y supera un reto diario 3 días seguidos.', medal: 'silver', completed: true, recompensa: 120, claimed: false },
-    { id: 5, title: 'Coleccionista de estilo', desc: 'Adquiere 4 prendas o accesorios para tu avatar.', medal: 'gold', completed: true, recompensa: 200, claimed: false }
+    { id: 4, title: 'Racha de fuego', desc: 'Ingresa y supera un reto diario 3 días seguidos.', medal: 'silver', completed: false, recompensa: 120, claimed: false },
+    { id: 5, title: 'Coleccionista de estilo', desc: 'Adquiere 4 prendas o accesorios para tu avatar.', medal: 'gold', completed: false, recompensa: 200, claimed: false }
   ];
 
   misionesDiarias: MisionDiaria[] = [
-    { id: 1, nivel: 'bronce', title: 'Misión Bronce', desc: 'Completa 1 juego en vivo o individual.', recompensa: 50, progreso: 1, meta: 1, completed: true, claimed: false },
-    { id: 2, nivel: 'plata', title: 'Misión Plata', desc: 'Completa 3 juegos y gana al menos 80 puntos.', recompensa: 100, progreso: 2, meta: 3, completed: false, claimed: false },
-    { id: 3, nivel: 'oro', title: 'Misión Oro', desc: 'Obtén puntaje perfecto (100%) en cualquier dinámica.', recompensa: 200, progreso: 1, meta: 1, completed: true, claimed: false },
-    { id: 4, nivel: 'diamante', title: 'Misión Diamante Rara', desc: 'Supera 5 retos consecutivos sin equivocarte.', recompensa: 500, progreso: 3, meta: 5, completed: false, claimed: false }
+    { id: 1, nivel: 'bronce', title: 'Misión Bronce', desc: 'Completa 1 juego en vivo o individual.', recompensa: 50, progreso: 0, meta: 1, completed: false, claimed: false },
+    { id: 2, nivel: 'plata', title: 'Misión Plata', desc: 'Completa 3 juegos y gana al menos 80 puntos.', recompensa: 100, progreso: 0, meta: 3, completed: false, claimed: false },
+    { id: 3, nivel: 'oro', title: 'Misión Oro', desc: 'Obtén puntaje perfecto (100%) en cualquier dinámica.', recompensa: 200, progreso: 0, meta: 1, completed: false, claimed: false },
+    { id: 4, nivel: 'diamante', title: 'Misión Diamante Rara', desc: 'Supera 5 retos consecutivos sin equivocarte.', recompensa: 500, progreso: 0, meta: 5, completed: false, claimed: false }
   ];
 
   // ==========================================
   // Idioma, Tema, Accesibilidad y Perfil
   // ==========================================
-  configIdioma: 'Español' | 'English' = 'Español';
+  configIdioma: SupportedLanguage = 'Español';
   configTema: 'claro' | 'oscuro' = 'oscuro';
   
-  // Perfil editable
+  // Perfil editable con email y contraseña (Fase 2)
   perfilEditando: boolean = false;
   perfilNombreInput: string = '';
   perfilBioInput: string = 'Apasionado por las matemáticas y la física galáctica.';
-  perfilGradoInput: string = '10°A';
+  perfilEmailInput: string = '';
+  perfilPasswordInput: string = '';
+  mostrarPasswordPerfil: boolean = false;
 
   // Privacidad
   privacidadPerfil: 'publico' | 'privado' = 'publico';
   privacidadJuegos: 'publico' | 'amigos' | 'privado' = 'amigos';
 
-  // Ayudas funcionales de inclusión (Accesibilidad Real 8.4)
+  // Ayudas funcionales de inclusión
   accesibilidad = {
     lectorPantallaVoz: false,
     tamanoLetra: 'normal' as 'normal' | 'grande' | 'muy-grande',
     altoContraste: false,
     modoEnfoque: false
   };
+
+  private screenReaderClickListener: ((e: MouseEvent) => void) | null = null;
 
   // Tutorial / Guía interactiva
   guiaPasoActual: number = 1;
@@ -532,16 +781,16 @@ export class HomePage implements OnInit {
   constructor(
     private authService: AuthService,
     private aiChatService: AichatService,
+    public i18n: I18nService,
     private alertController: AlertController,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController
   ) {}
 
   ngOnInit() {
-    // 1. Cargar preferencias guardadas en localStorage
+    this.configIdioma = this.i18n.currentLanguage;
     this.cargarPreferenciasGuardadas();
 
-    // 2. Suscribirse a la sesión de usuario
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
       if (user) {
@@ -551,31 +800,35 @@ export class HomePage implements OnInit {
         if (user.avatarConfig) {
           this.avatarConfig = { ...this.avatarConfig, ...user.avatarConfig };
         }
-        this.perfilNombreInput = user.name || 'Juan Pérez';
-        
-        // Asignación correcta de pantalla según rol
-        if (user.role === 'teacher') {
-          this.activeTab = 'profesor';
-        } else {
-          this.activeTab = 'estudiante';
-        }
-        this.currentBottomNav = 'inicio';
+        this.perfilNombreInput = user.name || '';
+        this.perfilEmailInput = user.email || '';
+        this.cargarEstadisticasEstudiante();
       }
     });
+
+    this.cargarJuegosGuardados();
+    this.actualizarLectorActivo();
   }
 
-  private cargarPreferenciasGuardadas(): void {
-    try {
-      const temaGuardado = localStorage.getItem('saberstyle_theme') as 'claro' | 'oscuro';
-      if (temaGuardado === 'claro' || temaGuardado === 'oscuro') {
-        this.aplicarTema(temaGuardado, false);
-      } else {
-        this.aplicarTema('oscuro', false);
-      }
+  ngOnDestroy() {
+    if (this.screenReaderClickListener) {
+      document.removeEventListener('click', this.screenReaderClickListener, true);
+    }
+    clearInterval(this.quizTimerInterval);
+  }
 
-      const idiomaGuardado = localStorage.getItem('saberstyle_lang') as 'Español' | 'English';
-      if (idiomaGuardado) {
-        this.configIdioma = idiomaGuardado;
+  // Traducción rápida reactiva
+  t(key: string): string {
+    return this.i18n.t(key);
+  }
+
+  private cargarPreferenciasGuardadas() {
+    try {
+      const temaGuardado = localStorage.getItem('saberstyle_theme') as 'claro' | 'oscuro' | null;
+      if (temaGuardado) {
+        this.setTema(temaGuardado, false);
+      } else {
+        this.setTema('oscuro', false);
       }
 
       const accGuardada = localStorage.getItem('saberstyle_accessibility');
@@ -589,9 +842,9 @@ export class HomePage implements OnInit {
   }
 
   // ==========================================
-  // Navegación Principal y Roles
+  // Navegación Principal y Roles (Fase 2)
   // ==========================================
-  selectBottomNav(nav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'perfil') {
+  selectBottomNav(nav: 'inicio' | 'clases' | 'crear' | 'tienda' | 'stats') {
     this.currentBottomNav = nav;
     const esProfesor = this.currentUser?.role === 'teacher';
 
@@ -604,17 +857,18 @@ export class HomePage implements OnInit {
         break;
       case 'crear':
         if (esProfesor) {
-          this.activeTab = 'crear-juego';
+          this.abrirCrearJuego();
         } else {
-          // Estudiante: va directo a biblioteca / jugar
           this.activeTab = 'mis-juegos';
         }
         break;
       case 'tienda':
         this.activeTab = 'tienda';
+        this.statsEstudiante.tiendaVisitas++;
+        this.guardarEstadisticasEstudiante();
         break;
-      case 'perfil':
-        this.activeTab = 'perfil';
+      case 'stats':
+        this.abrirProgreso();
         break;
     }
   }
@@ -627,10 +881,10 @@ export class HomePage implements OnInit {
       this.currentBottomNav = 'clases';
     } else if (tab === 'crear-juego' || tab === 'ruleta-config') {
       this.currentBottomNav = 'crear';
-    } else if (tab === 'tienda') {
+    } else if (tab === 'tienda' || tab === 'tienda-monedas') {
       this.currentBottomNav = 'tienda';
-    } else if (tab === 'perfil' || tab === 'closet') {
-      this.currentBottomNav = 'perfil';
+    } else if (tab === 'progreso') {
+      this.currentBottomNav = 'stats';
     }
   }
 
@@ -640,26 +894,36 @@ export class HomePage implements OnInit {
 
   abrirVestuario() {
     this.activeTab = 'closet';
-    this.currentBottomNav = 'perfil';
+    this.currentBottomNav = 'tienda';
   }
 
   abrirTienda() {
     this.activeTab = 'tienda';
     this.currentBottomNav = 'tienda';
+    this.statsEstudiante.tiendaVisitas++;
+    this.guardarEstadisticasEstudiante();
+  }
+
+  abrirTiendaMonedas() {
+    this.activeTab = 'tienda-monedas';
+    this.currentBottomNav = 'tienda';
   }
 
   abrirCrearJuego() {
     if (this.currentUser?.role !== 'teacher') {
-      this.mostrarToast('Función exclusiva para profesores. Explora los juegos disponibles para jugar.');
+      this.mostrarToast(this.configIdioma === 'English' ? 'Feature exclusive for teachers. Explore available games to play.' : 'Función exclusiva para profesores. Explora los juegos disponibles para jugar.');
       this.activeTab = 'mis-juegos';
       return;
     }
+    this.prepararEditorJuego('quiz');
     this.activeTab = 'crear-juego';
     this.currentBottomNav = 'crear';
   }
 
   abrirProgreso() {
     this.activeTab = 'progreso';
+    this.currentBottomNav = 'stats';
+    this.cargarEstadisticasEstudiante();
   }
 
   abrirLogros() {
@@ -668,7 +932,13 @@ export class HomePage implements OnInit {
 
   abrirPerfil() {
     this.activeTab = 'perfil';
-    this.currentBottomNav = 'perfil';
+    this.perfilEditando = false;
+  }
+
+  abrirConfiguracion() {
+    // Menú tres puntos: va directo a configuración/perfil sin menús intermedios
+    this.activeTab = 'perfil';
+    this.perfilEditando = false;
   }
 
   // ==========================================
@@ -698,27 +968,33 @@ export class HomePage implements OnInit {
 
     if (this.userCoins < item.price) {
       const alert = await this.alertController.create({
-        header: 'Monedas Insuficientes',
-        message: `Necesitas ${item.price} monedas para adquirir "${item.name}". Tu saldo actual es de 🪙 ${this.userCoins}. ¡Supera retos y misiones para conseguir más!`,
-        buttons: ['Entendido']
+        header: this.configIdioma === 'English' ? 'Insufficient Coins' : 'Monedas Insuficientes',
+        message: this.configIdioma === 'English' 
+          ? `You need ${item.price} coins to buy "${item.name}". Current balance: 🪙 ${this.userCoins}. Win challenges to get more!`
+          : `Necesitas ${item.price} monedas para adquirir "${item.name}". Tu saldo actual es de 🪙 ${this.userCoins}. ¡Supera retos y misiones para conseguir más!`,
+        buttons: [this.configIdioma === 'English' ? 'Understood' : 'Entendido']
       });
       await alert.present();
       return;
     }
 
     const alert = await this.alertController.create({
-      header: 'Confirmar Compra',
-      message: `¿Deseas comprar "${item.name}" por 🪙 ${item.price} monedas?`,
+      header: this.configIdioma === 'English' ? 'Confirm Purchase' : 'Confirmar Compra',
+      message: this.configIdioma === 'English' 
+        ? `Do you want to buy "${item.name}" for 🪙 ${item.price} coins?`
+        : `¿Deseas comprar "${item.name}" por 🪙 ${item.price} monedas?`,
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Comprar',
+          text: this.configIdioma === 'English' ? 'Buy' : 'Comprar',
           handler: () => {
             this.userCoins -= item.price;
             item.owned = true;
             this.equiparPrenda(item);
             this.sincronizarUsuario();
-            this.mostrarToast(`¡Genial! Has comprado y equipado "${item.name}". Ya está en tu armario.`);
+            this.mostrarToast(this.configIdioma === 'English' 
+              ? `Awesome! You bought and equipped "${item.name}". Added to your wardrobe.`
+              : `¡Genial! Has comprado y equipado "${item.name}". Ya está en tu armario.`);
           }
         }
       ]
@@ -727,14 +1003,12 @@ export class HomePage implements OnInit {
   }
 
   equiparPrenda(item: StoreItem) {
-    // Desequipar otras prendas de la misma categoría
     this.storeItems
       .filter(i => i.category === item.category && i.id !== item.id)
       .forEach(i => (i.equipped = false));
 
     item.equipped = true;
 
-    // Actualizar configuración del avatar
     if (item.category === 'ropa') {
       if (item.id.includes('pantalon') || item.id.includes('falda')) {
         this.avatarConfig.bottomId = item.id;
@@ -749,8 +1023,32 @@ export class HomePage implements OnInit {
       this.avatarConfig.accessoryId = item.id;
     }
 
+    this.statsEstudiante.armarioCambios++;
+    this.guardarEstadisticasEstudiante();
     this.sincronizarUsuario();
     this.mostrarToast(`"${item.name}" equipada en tu avatar.`);
+  }
+
+  // Tienda de Monedas (Opciones honestas)
+  async consultarPaqueteMonedas(nombre: string, monedas: number) {
+    const alert = await this.alertController.create({
+      header: `🪙 ${nombre} (${monedas} Monedas)`,
+      subHeader: this.configIdioma === 'English' ? 'Payment Integration Status' : 'Estado de la Pasarela de Pagos',
+      message: this.configIdioma === 'English'
+        ? `SaberStyle is in Phase 2. Real payment transactions are intentionally disabled. You can earn all your coins 100% free by completing quizzes, roulette games, and daily missions!`
+        : `SaberStyle se encuentra en Fase 2. Las pasarelas de cobro no están activas por seguridad y transparencia. ¡Puedes conseguir todas tus monedas gratis jugando y completando misiones educativas!`,
+      buttons: [
+        {
+          text: this.configIdioma === 'English' ? 'Go to Games' : 'Ir a Jugar',
+          handler: () => { this.activeTab = 'mis-juegos'; }
+        },
+        {
+          text: this.configIdioma === 'English' ? 'Close' : 'Cerrar',
+          role: 'cancel'
+        }
+      ]
+    });
+    await alert.present();
   }
 
   // ==========================================
@@ -772,7 +1070,7 @@ export class HomePage implements OnInit {
 
   guardarCambiosVestuario() {
     this.sincronizarUsuario();
-    this.mostrarToast('¡Estilo guardado y sincronizado con tu perfil e inicio!');
+    this.mostrarToast(this.configIdioma === 'English' ? 'Style saved and synchronized!' : '¡Estilo guardado y sincronizado con tu perfil e inicio!');
     this.volverAInicio();
   }
 
@@ -785,83 +1083,254 @@ export class HomePage implements OnInit {
   }
 
   // ==========================================
-  // Creación y Edición de Minijuegos
+  // Creación y Edición Real de Minijuegos (Fase 2)
   // ==========================================
   selectGameType(id: 'quiz' | 'ruleta' | 'abierta' | 'verdadero-falso' | 'completar' | 'sopa-letras') {
     this.selectedGameType = id;
+    this.editorTipo = id;
   }
 
   setParticipationMode(mode: 'en-vivo' | 'individual') {
     this.selectedParticipationMode = mode;
+    this.editorModo = mode;
   }
 
-  continuarCreacionJuego() {
-    if (this.selectedGameType === 'ruleta') {
-      this.ruletaConfigTitulo = this.nuevoJuegoTitulo.trim() || 'La ruleta de la historia';
-      this.activeTab = 'ruleta-config';
-    } else {
-      this.guardarNuevoJuegoGenerico();
+  prepararEditorJuego(tipo: 'quiz' | 'ruleta' | 'abierta' | 'verdadero-falso' | 'completar' | 'sopa-letras') {
+    this.editingGameId = null;
+    this.selectedGameType = tipo;
+    this.editorTipo = tipo;
+    this.editorTitulo = '';
+    this.editorMateria = 'Matemáticas';
+    this.editorInstrucciones = 'Completa la actividad respondiendo con atención.';
+    this.editorRecompensa = 100;
+    this.editorModo = 'individual';
+
+    // Inicializar sub-editores con plantilla limpia y editable
+    this.editorQuizPreguntas = [
+      {
+        pregunta: '¿Cuál es el concepto principal de este tema?',
+        opciones: ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+        correcta: 0
+      }
+    ];
+
+    this.editorRuletaPreguntas = ['Tema 1', 'Tema 2', 'Tema 3', 'Tema 4'];
+    this.editorSopaPalabras = ['SABER', 'STYLE', 'APRENDE', 'JUEGA'];
+    this.editorVFPreguntas = [
+      { afirmacion: 'Esta afirmación es verdadera y describe el concepto clave.', esVerdadero: true, explicacion: 'Explicación del concepto.' }
+    ];
+    this.editorAbiertaConsigna = 'Escribe tu opinión y análisis reflexivo sobre la temática:';
+    this.editorCompletarFrases = [
+      { fraseAntes: 'En matemáticas, una función asigna a cada elemento un', palabraCorrecta: 'único', opciones: ['único', 'múltiple', 'infinito', 'cero'] }
+    ];
+  }
+
+  cargarJuegoEnEditor(juego: SavedGame) {
+    this.editingGameId = juego.id;
+    this.selectedGameType = juego.tipo;
+    this.editorTipo = juego.tipo;
+    this.editorTitulo = juego.titulo;
+    this.editorMateria = juego.materia || 'General';
+    this.editorInstrucciones = juego.instrucciones || 'Completa la actividad con atención.';
+    this.editorRecompensa = juego.recompensaMonedas || 100;
+    this.editorModo = juego.modo;
+
+    if (juego.tipo === 'quiz') {
+      this.editorQuizPreguntas = (juego.preguntas && juego.preguntas.length > 0) 
+        ? JSON.parse(JSON.stringify(juego.preguntas))
+        : [{ pregunta: 'Pregunta 1', opciones: ['A', 'B', 'C', 'D'], correcta: 0 }];
+    } else if (juego.tipo === 'ruleta') {
+      this.editorRuletaPreguntas = (juego.preguntas && juego.preguntas.length > 0)
+        ? juego.preguntas.map(p => p.pregunta || p.tema || p)
+        : ['Tema 1', 'Tema 2', 'Tema 3', 'Tema 4'];
+    } else if (juego.tipo === 'sopa-letras') {
+      this.editorSopaPalabras = (juego.palabras && juego.palabras.length > 0)
+        ? [...juego.palabras]
+        : (juego.preguntas?.[0]?.palabras || ['SABER', 'STYLE', 'RETO']);
+    } else if (juego.tipo === 'verdadero-falso') {
+      this.editorVFPreguntas = (juego.preguntas && juego.preguntas.length > 0)
+        ? JSON.parse(JSON.stringify(juego.preguntas))
+        : [{ afirmacion: 'Afirmación de prueba', esVerdadero: true, explicacion: 'Detalle' }];
+    } else if (juego.tipo === 'abierta') {
+      this.editorAbiertaConsigna = juego.preguntas?.[0]?.consigna || 'Consigna de reflexión:';
+    } else if (juego.tipo === 'completar') {
+      this.editorCompletarFrases = (juego.preguntas && juego.preguntas.length > 0)
+        ? JSON.parse(JSON.stringify(juego.preguntas))
+        : [{ fraseAntes: 'Frase con espacio para completar:', palabraCorrecta: 'clave', opciones: ['clave', 'incorrecta'] }];
     }
   }
 
-  agregarPreguntaRuleta() {
+  // Métodos de edición por modalidad
+  agregarPreguntaQuizEditor() {
+    const texto = this.nuevaPreguntaQuizTexto.trim();
+    if (!texto) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please enter the question text.' : 'Por favor ingresa el texto de la pregunta.');
+      return;
+    }
+    const ops = this.nuevaPreguntaQuizOpciones.map((o, idx) => o.trim() || `Opción ${idx + 1}`);
+    this.editorQuizPreguntas.push({
+      pregunta: texto,
+      opciones: ops,
+      correcta: this.nuevaPreguntaQuizCorrecta
+    });
+    this.nuevaPreguntaQuizTexto = '';
+    this.nuevaPreguntaQuizOpciones = ['', '', '', ''];
+    this.nuevaPreguntaQuizCorrecta = 0;
+    this.mostrarToast(this.configIdioma === 'English' ? 'Question added to quiz.' : 'Pregunta agregada al cuestionario.');
+  }
+
+  eliminarPreguntaQuizEditor(index: number) {
+    if (this.editorQuizPreguntas.length <= 1) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Quiz must have at least 1 question.' : 'El cuestionario debe tener al menos 1 pregunta.');
+      return;
+    }
+    this.editorQuizPreguntas.splice(index, 1);
+  }
+
+  agregarPreguntaRuletaEditor() {
     const texto = this.nuevaPreguntaRuletaInput.trim();
     if (!texto) {
-      this.mostrarToast('Por favor escribe la pregunta o concepto.');
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please enter the roulette topic.' : 'Por favor escribe el tema o pregunta de la ruleta.');
       return;
     }
-    this.ruletaConfigPreguntas.push(texto);
+    this.editorRuletaPreguntas.push(texto);
     this.nuevaPreguntaRuletaInput = '';
-    this.mostrarToast('Pregunta añadida a la ruleta.');
   }
 
-  eliminarPreguntaRuleta(index: number) {
-    if (this.ruletaConfigPreguntas.length <= 2) {
-      this.mostrarToast('La ruleta debe tener al menos 2 preguntas.');
+  eliminarPreguntaRuletaEditor(index: number) {
+    if (this.editorRuletaPreguntas.length <= 2) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Roulette must have at least 2 topics.' : 'La ruleta debe tener al menos 2 temas.');
       return;
     }
-    this.ruletaConfigPreguntas.splice(index, 1);
+    this.editorRuletaPreguntas.splice(index, 1);
   }
 
-  guardarConfigRuleta() {
-    const titulo = this.ruletaConfigTitulo.trim() || 'Ruleta de Repaso';
-    const nueva: SavedGame = {
-      id: 'g_' + Date.now(),
-      titulo,
-      tipo: 'ruleta',
-      tipoLabel: 'Ruleta',
-      modo: this.selectedParticipationMode,
-      materia: 'General',
-      preguntasCount: this.ruletaConfigPreguntas.length,
-      fecha: 'Ahora',
-      preguntas: this.ruletaConfigPreguntas.map(p => ({ tema: p.substring(0, 12), pregunta: p }))
-    };
-
-    this.savedGames.unshift(nueva);
-    this.mostrarToast(`¡Ruleta "${titulo}" creada con éxito!`);
-    this.activeTab = 'mis-juegos';
+  agregarPalabraSopaEditor() {
+    const palabra = this.nuevaPalabraSopaInput.trim().toUpperCase().replace(/[^A-Z]/g, '');
+    if (!palabra || palabra.length < 3) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Word must have at least 3 letters.' : 'La palabra debe tener al menos 3 letras.');
+      return;
+    }
+    if (this.editorSopaPalabras.includes(palabra)) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Word already exists.' : 'Esta palabra ya está en la lista.');
+      return;
+    }
+    this.editorSopaPalabras.push(palabra);
+    this.nuevaPalabraSopaInput = '';
   }
 
-  guardarNuevoJuegoGenerico() {
-    const tipoObj = this.gameTypes.find(g => g.id === this.selectedGameType);
-    const titulo = this.nuevoJuegoTitulo.trim() || `Actividad de ${tipoObj?.name || 'Práctica'}`;
+  eliminarPalabraSopaEditor(index: number) {
+    if (this.editorSopaPalabras.length <= 2) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Word search must have at least 2 words.' : 'La sopa de letras debe tener al menos 2 palabras.');
+      return;
+    }
+    this.editorSopaPalabras.splice(index, 1);
+  }
 
-    const nuevo: SavedGame = {
-      id: 'g_' + Date.now(),
+  agregarVFEditor() {
+    const afirmacion = this.nuevaVFAfirmacion.trim();
+    if (!afirmacion) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please write the statement.' : 'Escribe la afirmación.');
+      return;
+    }
+    this.editorVFPreguntas.push({
+      afirmacion,
+      esVerdadero: this.nuevaVFEsVerdadero,
+      explicacion: this.nuevaVFExplicacion.trim() || (this.nuevaVFEsVerdadero ? 'Correcto.' : 'Falso.')
+    });
+    this.nuevaVFAfirmacion = '';
+    this.nuevaVFExplicacion = '';
+  }
+
+  eliminarVFEditor(index: number) {
+    if (this.editorVFPreguntas.length <= 1) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Must have at least 1 statement.' : 'Debe tener al menos 1 afirmación.');
+      return;
+    }
+    this.editorVFPreguntas.splice(index, 1);
+  }
+
+  guardarJuegoDesdeEditor() {
+    const titulo = this.editorTitulo.trim();
+    if (!titulo) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please enter a title for the activity.' : 'Por favor introduce un título para la actividad.');
+      return;
+    }
+
+    const tipoObj = this.gameTypes.find(g => g.id === this.editorTipo);
+    let preguntasFinales: any[] = [];
+    let count = 0;
+    let palabrasFinales: string[] | undefined = undefined;
+
+    if (this.editorTipo === 'quiz') {
+      preguntasFinales = [...this.editorQuizPreguntas];
+      count = preguntasFinales.length;
+    } else if (this.editorTipo === 'ruleta') {
+      preguntasFinales = this.editorRuletaPreguntas.map(p => ({ tema: p.substring(0, 14), pregunta: p }));
+      count = preguntasFinales.length;
+    } else if (this.editorTipo === 'sopa-letras') {
+      palabrasFinales = [...this.editorSopaPalabras];
+      preguntasFinales = [{ palabras: palabrasFinales }];
+      count = palabrasFinales.length;
+    } else if (this.editorTipo === 'verdadero-falso') {
+      preguntasFinales = [...this.editorVFPreguntas];
+      count = preguntasFinales.length;
+    } else if (this.editorTipo === 'abierta') {
+      preguntasFinales = [{ consigna: this.editorAbiertaConsigna.trim() || 'Debate de reflexión:' }];
+      count = 1;
+    } else if (this.editorTipo === 'completar') {
+      preguntasFinales = [...this.editorCompletarFrases];
+      count = preguntasFinales.length;
+    }
+
+    const juegoGuardar: SavedGame = {
+      id: this.editingGameId || ('g_' + Date.now()),
       titulo,
-      tipo: this.selectedGameType,
+      tipo: this.editorTipo,
       tipoLabel: tipoObj?.name || 'Actividad',
-      modo: this.selectedParticipationMode,
-      materia: this.nuevoJuegoMateria,
-      preguntasCount: 8,
-      fecha: 'Ahora',
-      preguntas: []
+      modo: this.editorModo,
+      materia: this.editorMateria.trim() || 'General',
+      preguntasCount: count,
+      preguntas: preguntasFinales,
+      fecha: 'Hoy',
+      instrucciones: this.editorInstrucciones.trim(),
+      recompensaMonedas: Number(this.editorRecompensa) || 100,
+      palabras: palabrasFinales
     };
 
-    this.savedGames.unshift(nuevo);
-    this.nuevoJuegoTitulo = '';
-    this.mostrarToast(`¡"${nuevo.titulo}" guardado (${nuevo.modo === 'en-vivo' ? 'En vivo' : 'Individual'})!`);
+    if (this.editingGameId) {
+      const idx = this.savedGames.findIndex(g => g.id === this.editingGameId);
+      if (idx !== -1) {
+        this.savedGames[idx] = juegoGuardar;
+      } else {
+        this.savedGames.unshift(juegoGuardar);
+      }
+      this.mostrarToast(this.configIdioma === 'English' ? `"${titulo}" updated successfully.` : `¡"${titulo}" actualizado con éxito!`);
+    } else {
+      this.savedGames.unshift(juegoGuardar);
+      this.mostrarToast(this.configIdioma === 'English' ? `"${titulo}" created successfully.` : `¡"${titulo}" creado con éxito!`);
+    }
+
+    this.guardarJuegosEnStorage();
     this.activeTab = 'mis-juegos';
+  }
+
+  private guardarJuegosEnStorage() {
+    try {
+      localStorage.setItem('saberstyle_saved_games', JSON.stringify(this.savedGames));
+    } catch {}
+  }
+
+  private cargarJuegosGuardados() {
+    try {
+      const saved = localStorage.getItem('saberstyle_saved_games');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.savedGames = parsed;
+        }
+      }
+    } catch {}
   }
 
   get filteredSavedGames(): SavedGame[] {
@@ -878,6 +1347,7 @@ export class HomePage implements OnInit {
 
   jugarActividad(juego: SavedGame) {
     this.juegoActivo = juego;
+    this.recompensaReclamada = false;
 
     switch (juego.tipo) {
       case 'quiz':
@@ -903,50 +1373,32 @@ export class HomePage implements OnInit {
     }
   }
 
-  async editarActividad(juego: SavedGame) {
-    if (juego.tipo === 'ruleta') {
-      this.ruletaConfigTitulo = juego.titulo;
-      this.ruletaConfigPreguntas = juego.preguntas?.map(p => p.pregunta || p) || ['Pregunta 1', 'Pregunta 2'];
-      this.activeTab = 'ruleta-config';
+  editarActividad(juego: SavedGame) {
+    if (this.currentUser?.role !== 'teacher') {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Only teachers can edit activities.' : 'Solo los profesores pueden editar actividades.');
       return;
     }
-
-    const alert = await this.alertController.create({
-      header: 'Editar Actividad',
-      subHeader: juego.tipoLabel,
-      inputs: [
-        { name: 'titulo', type: 'text', value: juego.titulo, placeholder: 'Título del juego' },
-        { name: 'materia', type: 'text', value: juego.materia, placeholder: 'Materia' }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Guardar',
-          handler: (data) => {
-            if (data.titulo?.trim()) {
-              juego.titulo = data.titulo.trim();
-              juego.materia = data.materia?.trim() || juego.materia;
-              this.mostrarToast('Actividad actualizada.');
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
+    this.cargarJuegoEnEditor(juego);
+    this.activeTab = 'crear-juego';
   }
 
   async renombrarActividad(juego: SavedGame) {
+    if (this.currentUser?.role !== 'teacher') {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Only teachers can rename activities.' : 'Solo los profesores pueden renombrar actividades.');
+      return;
+    }
     const alert = await this.alertController.create({
-      header: 'Renombrar Actividad',
+      header: this.configIdioma === 'English' ? 'Rename Activity' : 'Renombrar Actividad',
       inputs: [{ name: 'titulo', type: 'text', value: juego.titulo, placeholder: 'Nuevo nombre' }],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Renombrar',
+          text: this.configIdioma === 'English' ? 'Save' : 'Guardar',
           handler: (data) => {
             if (data.titulo?.trim()) {
               juego.titulo = data.titulo.trim();
-              this.mostrarToast('Nombre actualizado.');
+              this.guardarJuegosEnStorage();
+              this.mostrarToast(this.configIdioma === 'English' ? 'Name updated.' : 'Nombre actualizado.');
             }
           }
         }
@@ -956,17 +1408,24 @@ export class HomePage implements OnInit {
   }
 
   async eliminarActividad(juego: SavedGame) {
+    if (this.currentUser?.role !== 'teacher') {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Only teachers can delete activities.' : 'Solo los profesores pueden eliminar actividades.');
+      return;
+    }
     const alert = await this.alertController.create({
-      header: '¿Eliminar Actividad?',
-      message: `¿Estás seguro de eliminar "${juego.titulo}"?`,
+      header: this.configIdioma === 'English' ? 'Delete Activity' : 'Eliminar Actividad',
+      message: this.configIdioma === 'English' 
+        ? `Are you sure you want to delete "${juego.titulo}"?`
+        : `¿Estás seguro de que deseas eliminar "${juego.titulo}"?`,
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Eliminar',
+          text: this.configIdioma === 'English' ? 'Delete' : 'Eliminar',
           role: 'destructive',
           handler: () => {
             this.savedGames = this.savedGames.filter(g => g.id !== juego.id);
-            this.mostrarToast('Actividad eliminada.');
+            this.guardarJuegosEnStorage();
+            this.mostrarToast(this.configIdioma === 'English' ? 'Activity deleted.' : 'Actividad eliminada.');
           }
         }
       ]
@@ -980,58 +1439,71 @@ export class HomePage implements OnInit {
   iniciarQuizFlow() {
     this.quizIndexPregunta = 0;
     this.quizScoreCorrectas = 0;
-    this.quizOpcionElegida = null;
     this.quizRespondida = false;
-    this.quizTimerSegundos = 15;
+    this.quizOpcionElegida = null;
     this.activeTab = 'juego-quiz';
-    this.startQuizTimer();
+    this.iniciarQuizTimer();
   }
 
-  private startQuizTimer() {
+  iniciarQuizTimer() {
     clearInterval(this.quizTimerInterval);
-    this.quizTimerSegundos = 15;
+    this.quizTimerSegundos = 20;
     this.quizTimerInterval = setInterval(() => {
       if (this.quizTimerSegundos > 0) {
         this.quizTimerSegundos--;
       } else {
         clearInterval(this.quizTimerInterval);
-        if (!this.quizRespondida) {
-          this.responderQuiz(-1);
-        }
+        this.responderQuiz(-1);
       }
     }, 1000);
   }
 
-  responderQuiz(opcionIndex: number) {
+  responderQuiz(opcionIdx: number) {
     if (this.quizRespondida) return;
     this.quizRespondida = true;
-    this.quizOpcionElegida = opcionIndex;
+    this.quizOpcionElegida = opcionIdx;
     clearInterval(this.quizTimerInterval);
 
-    const quizJuego = this.juegoActivo || this.savedGames[0];
-    const preguntas = quizJuego.preguntas || [];
-    const correcta = preguntas[this.quizIndexPregunta]?.correcta ?? 1;
+    const questions = this.juegoActivo?.preguntas || this.savedGames[0].preguntas;
+    const actual = questions[this.quizIndexPregunta];
 
-    if (opcionIndex === correcta) {
+    if (opcionIdx === actual?.correcta) {
       this.quizScoreCorrectas++;
     }
 
     setTimeout(() => {
-      if (this.quizIndexPregunta + 1 < (preguntas.length || 3)) {
+      if (this.quizIndexPregunta + 1 < questions.length) {
         this.quizIndexPregunta++;
         this.quizRespondida = false;
         this.quizOpcionElegida = null;
-        this.startQuizTimer();
+        this.iniciarQuizTimer();
       } else {
-        this.finalizarJuegoExitoso(100);
+        const reward = this.juegoActivo?.recompensaMonedas || 100;
+        this.finalizarJuegoExitoso(reward);
       }
     }, 1200);
   }
 
   iniciarRuletaFlow() {
-    this.ruletaAngulo = 0;
     this.ruletaGirando = false;
     this.ruletaSectorSeleccionado = null;
+    this.ruletaAngulo = 0;
+
+    const items = this.juegoActivo?.preguntas;
+    if (items && items.length > 0) {
+      this.ruletaSectores = items.map(p => ({
+        tema: p.tema || (typeof p === 'string' ? p : 'Tema'),
+        pregunta: p.pregunta || (typeof p === 'string' ? p : 'Pregunta del reto')
+      }));
+    } else {
+      this.ruletaSectores = [
+        { tema: 'Dominio', pregunta: '¿Qué valores de x hacen indefinida a la función?' },
+        { tema: 'Rango', pregunta: '¿Cuál es el conjunto de valores de salida de la función?' },
+        { tema: 'Asíntota', pregunta: '¿Qué es una recta a la que la gráfica se aproxima indefinidamente?' },
+        { tema: 'Pendiente', pregunta: '¿Qué representa m en la ecuación y = mx + b?' }
+      ];
+    }
+
     this.activeTab = 'juego-ruleta';
   }
 
@@ -1040,21 +1512,24 @@ export class HomePage implements OnInit {
     this.ruletaGirando = true;
     this.ruletaSectorSeleccionado = null;
 
-    const vueltas = 5 + Math.floor(Math.random() * 4);
-    const anguloOffset = Math.floor(Math.random() * 360);
-    const totalGiro = this.ruletaAngulo + (vueltas * 360) + anguloOffset;
-    this.ruletaAngulo = totalGiro;
+    const numSectores = this.ruletaSectores.length;
+    const selectedIdx = Math.floor(Math.random() * numSectores);
+    const sectorAngle = 360 / numSectores;
+    const vueltasCompletas = 360 * 5;
+    const targetAngle = vueltasCompletas + (selectedIdx * sectorAngle) + (sectorAngle / 2);
 
-    const preguntas = this.juegoActivo?.preguntas || this.savedGames[1].preguntas;
+    this.ruletaAngulo += targetAngle;
 
     setTimeout(() => {
       this.ruletaGirando = false;
-      const index = Math.floor((totalGiro % 360) / (360 / preguntas.length));
-      this.ruletaSectorSeleccionado = preguntas[index] || preguntas[0];
-      this.userCoins += 60;
-      this.sincronizarUsuario();
-      this.mostrarToast(`¡La ruleta cayó en "${this.ruletaSectorSeleccionado.tema || 'Pregunta'}"! +60 monedas.`);
+      this.ruletaSectorSeleccionado = this.ruletaSectores[selectedIdx];
+      this.mostrarToast(`¡Tema seleccionado: "${this.ruletaSectorSeleccionado.tema}"!`);
     }, 3200);
+  }
+
+  completarRetoRuleta() {
+    const reward = this.juegoActivo?.recompensaMonedas || 80;
+    this.finalizarJuegoExitoso(reward);
   }
 
   iniciarAbiertaFlow() {
@@ -1063,24 +1538,28 @@ export class HomePage implements OnInit {
   }
 
   enviarRespuestaAbierta() {
-    const texto = this.abiertaRespuestaUsuario.trim();
-    if (!texto) {
-      this.mostrarToast('Por favor escribe tu respuesta.');
+    const txt = this.abiertaRespuestaUsuario.trim();
+    if (!txt) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please write your response.' : 'Por favor escribe tu respuesta.');
       return;
     }
+    const autor = this.currentUser?.name || 'Tú';
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-    this.abiertaFeedRespuestas.unshift({
-      autor: (this.currentUser?.name || 'Estudiante') + ' (Tú)',
-      rol: this.currentUser?.role === 'teacher' ? 'profesor' : 'estudiante',
-      texto,
-      timestamp: 'Ahora'
+    this.abiertaFeedRespuestas.push({
+      autor,
+      rol: this.currentUser?.role || 'student',
+      texto: txt,
+      timestamp: timeStr
     });
-
     this.abiertaRespuestaUsuario = '';
-    this.mostrarToast('Respuesta compartida con la clase.');
+    this.mostrarToast(this.configIdioma === 'English' ? 'Answer shared with class.' : '¡Respuesta compartida en el muro de clase!');
+    
     setTimeout(() => {
-      this.finalizarJuegoExitoso(80);
-    }, 900);
+      const reward = this.juegoActivo?.recompensaMonedas || 70;
+      this.finalizarJuegoExitoso(reward);
+    }, 1500);
   }
 
   iniciarVFFlow() {
@@ -1091,14 +1570,19 @@ export class HomePage implements OnInit {
   }
 
   responderVF(eleccion: boolean) {
-    if (this.vfFeedbackMostrar) return;
     this.vfSeleccion = eleccion;
     this.vfFeedbackMostrar = true;
 
     setTimeout(() => {
       this.vfFeedbackMostrar = false;
       this.vfSeleccion = null;
-      this.finalizarJuegoExitoso(90);
+      const questions = this.juegoActivo?.preguntas || this.savedGames[2].preguntas;
+      if (this.vfIndexPregunta + 1 < questions.length) {
+        this.vfIndexPregunta++;
+      } else {
+        const reward = this.juegoActivo?.recompensaMonedas || 90;
+        this.finalizarJuegoExitoso(reward);
+      }
     }, 1400);
   }
 
@@ -1110,17 +1594,47 @@ export class HomePage implements OnInit {
 
   seleccionarPalabraCompletar(palabra: string) {
     this.completarPalabraElegida = palabra;
-    this.completarCorrecta = (palabra.toLowerCase() === 'equilátero');
+    const target = this.juegoActivo?.preguntas?.[0]?.palabraCorrecta || 'equilátero';
+    this.completarCorrecta = (palabra.toLowerCase() === target.toLowerCase());
 
     setTimeout(() => {
-      this.finalizarJuegoExitoso(100);
+      const reward = this.juegoActivo?.recompensaMonedas || 75;
+      this.finalizarJuegoExitoso(reward);
     }, 1200);
   }
 
   iniciarSopaFlow() {
     this.sopaLetrasSeleccionadas = [];
-    this.sopaPalabrasObjetivo.forEach(p => (p.encontrada = false));
+    const palabrasRaw = this.juegoActivo?.palabras || this.juegoActivo?.preguntas?.[0]?.palabras || ['DOMINIO', 'RANGO', 'FUNCION', 'RECTA'];
+    this.sopaPalabrasObjetivo = palabrasRaw.map((p: string) => ({ palabra: p.toUpperCase(), encontrada: false }));
+
+    this.construirGridSopa(palabrasRaw);
     this.activeTab = 'juego-sopa';
+  }
+
+  private construirGridSopa(palabras: string[]) {
+    const size = 8;
+    const grid: string[][] = Array(size).fill(null).map(() => Array(size).fill(''));
+    const alphabet = 'ABCDEFGHIJKLMNPRSTUVXYZ';
+
+    // Insertar palabras horizontalmente en filas consecutivas
+    palabras.slice(0, size).forEach((pal, rIdx) => {
+      const p = pal.toUpperCase();
+      const startCol = Math.max(0, Math.floor((size - p.length) / 2));
+      for (let i = 0; i < p.length && (startCol + i) < size; i++) {
+        grid[rIdx][startCol + i] = p[i];
+      }
+    });
+
+    // Rellenar celdas vacías con letras aleatorias
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (!grid[r][c]) {
+          grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+      }
+    }
+    this.sopaGrid = grid;
   }
 
   tocarLetraSopa(row: number, col: number, letra: string) {
@@ -1131,7 +1645,6 @@ export class HomePage implements OnInit {
       this.sopaLetrasSeleccionadas.push({ row, col, letra });
     }
 
-    // Verificar palabra formada
     const palabra = this.sopaLetrasSeleccionadas.map(l => l.letra).join('');
     const palabraInvertida = this.sopaLetrasSeleccionadas.map(l => l.letra).reverse().join('');
 
@@ -1142,141 +1655,211 @@ export class HomePage implements OnInit {
     if (target) {
       target.encontrada = true;
       this.sopaLetrasSeleccionadas = [];
-      this.userCoins += 40;
-      this.sincronizarUsuario();
-      this.mostrarToast(`¡Palabra "${target.palabra}" encontrada! +40 monedas.`);
+      this.mostrarToast(`¡Palabra "${target.palabra}" encontrada! ✓`);
 
-      // Si encontró todas
       if (this.sopaPalabrasObjetivo.every(p => p.encontrada)) {
-        setTimeout(() => this.finalizarJuegoExitoso(120), 800);
+        const reward = this.juegoActivo?.recompensaMonedas || 120;
+        setTimeout(() => this.finalizarJuegoExitoso(reward), 800);
       }
     }
   }
 
+  isCellSelected(row: number, col: number): boolean {
+    return this.sopaLetrasSeleccionadas.some(l => l.row === row && l.col === col);
+  }
+
   finalizarJuegoExitoso(monedasGanadas: number) {
+    if (this.recompensaReclamada) return;
+    this.recompensaReclamada = true;
     clearInterval(this.quizTimerInterval);
+
     this.userCoins += monedasGanadas;
     this.statsEstudiante.juegosCompletados++;
     this.statsEstudiante.totalPartidas++;
+    this.statsEstudiante.monedasGanadas += monedasGanadas;
     this.statsEstudiante.porcentajePromedio = Math.round(
       (this.statsEstudiante.juegosCompletados / this.statsEstudiante.totalPartidas) * 100
     );
 
-    // Actualizar progreso en misiones diarias
-    const mision1 = this.misionesDiarias[0];
-    if (mision1) mision1.completed = true;
-    const mision2 = this.misionesDiarias[1];
-    if (mision2 && mision2.progreso < mision2.meta) mision2.progreso++;
-    if (mision2 && mision2.progreso >= mision2.meta) mision2.completed = true;
-
+    this.guardarEstadisticasEstudiante();
     this.sincronizarUsuario();
+
+    // Actualizar misiones diarias
+    const m1 = this.misionesDiarias[0];
+    if (m1) {
+      m1.progreso = Math.min(m1.meta, m1.progreso + 1);
+      if (m1.progreso >= m1.meta) m1.completed = true;
+    }
+
     this.activeTab = 'juego-victoria';
   }
 
   reclamarVictoria() {
-    this.mostrarToast('¡Recompensa guardada en tu cuenta!');
+    this.mostrarToast(this.configIdioma === 'English' ? 'Reward saved to your account!' : '¡Recompensa guardada en tu cuenta!');
     this.volverAInicio();
   }
 
   // ==========================================
-  // Clases y Roster
+  // Estadísticas Reales (Cero inicial, 4 categorías, persistencia)
+  // ==========================================
+  cargarEstadisticasEstudiante() {
+    const userId = this.currentUser?.id || 'guest_user';
+    const key = 'saberstyle_stats_' + userId;
+    try {
+      const data = localStorage.getItem(key);
+      if (data) {
+        this.statsEstudiante = { ...this.statsEstudiante, ...JSON.parse(data) };
+      } else {
+        this.statsEstudiante = {
+          clasesUnidas: 0,
+          actividadesRealizadas: 0,
+          juegosCompletados: 0,
+          juegosFallados: 0,
+          totalPartidas: 0,
+          porcentajePromedio: 0,
+          monedasGanadas: 0,
+          iaConsultas: 0,
+          armarioCambios: 0,
+          tiendaVisitas: 0,
+          accesibilidadUsos: 0
+        };
+      }
+    } catch {
+      // fallback
+    }
+    this.actualizarEvolucionGrafico();
+  }
+
+  guardarEstadisticasEstudiante() {
+    const userId = this.currentUser?.id || 'guest_user';
+    const key = 'saberstyle_stats_' + userId;
+    try {
+      localStorage.setItem(key, JSON.stringify(this.statsEstudiante));
+    } catch {}
+    this.actualizarEvolucionGrafico();
+  }
+
+  actualizarEvolucionGrafico() {
+    if (this.statsEstudiante.totalPartidas === 0) {
+      this.evolucionPuntos = [];
+      return;
+    }
+
+    const prom = this.statsEstudiante.porcentajePromedio;
+    this.evolucionPuntos = [
+      { mes: 'Inicio', porcentaje: Math.max(10, prom - 25), cx: 30, cy: Math.max(30, 110 - (prom - 25)) },
+      { mes: 'Semana 1', porcentaje: Math.max(20, prom - 15), cx: 100, cy: Math.max(30, 110 - (prom - 15)) },
+      { mes: 'Semana 2', porcentaje: Math.max(30, prom - 5), cx: 170, cy: Math.max(30, 110 - (prom - 5)) },
+      { mes: 'Actual', porcentaje: prom, cx: 240, cy: Math.max(20, 110 - prom) }
+    ];
+  }
+
+  // ==========================================
+  // Clases y Roster de Estudiantes
   // ==========================================
   get clasesFiltradas(): ClaseItem[] {
     if (!this.claseSearchQuery.trim()) return this.clases;
     const q = this.claseSearchQuery.toLowerCase();
-    return this.clases.filter(c => c.name.toLowerCase().includes(q) || c.codigo.toLowerCase().includes(q));
+    return this.clases.filter(c => c.name.toLowerCase().includes(q) || c.codigo.toLowerCase().includes(q) || c.materia.toLowerCase().includes(q));
   }
 
   verDetalleClase(clase: ClaseItem) {
     this.claseSeleccionada = clase;
     this.claseDetalleTab = 'info';
     this.activeTab = 'clase-detalle';
-    this.currentBottomNav = 'clases';
   }
 
-  async copiarCodigoClase(codigo: string) {
+  copiarCodigoClase(codigo: string) {
     if (navigator?.clipboard) {
-      await navigator.clipboard.writeText(codigo);
+      navigator.clipboard.writeText(codigo);
     }
-    this.mostrarToast(`Código "${codigo}" copiado al portapapeles.`);
+    this.mostrarToast(this.configIdioma === 'English' ? `Class code ${codigo} copied!` : `¡Código de clase ${codigo} copiado al portapapeles!`);
   }
 
   async compartirCodigoClase(clase: ClaseItem) {
-    const texto = `Únete a mi clase de SaberStyle "${clase.name}" con el código: ${clase.codigo}`;
-    if (navigator.share) {
+    if (navigator?.share) {
       try {
-        await navigator.share({ title: 'SaberStyle - Código de Clase', text: texto });
-        return;
+        await navigator.share({
+          title: clase.name,
+          text: `Únete a mi clase en SaberStyle con el código: ${clase.codigo}`,
+          url: window.location.href
+        });
       } catch {}
+    } else {
+      this.copiarCodigoClase(clase.codigo);
     }
-    await this.copiarCodigoClase(clase.codigo);
   }
 
   async invitarEstudiante() {
+    if (this.currentUser?.role !== 'teacher') {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Only teachers can invite students.' : 'Solo los profesores pueden invitar alumnos.');
+      return;
+    }
     const alert = await this.alertController.create({
-      header: 'Invitar Estudiante',
-      message: 'Ingresa el correo del estudiante para matricularlo:',
-      inputs: [{ name: 'email', type: 'email', placeholder: 'estudiante@institucion.edu.co' }],
+      header: this.configIdioma === 'English' ? 'Invite Students' : 'Invitar Estudiantes',
+      subHeader: this.claseSeleccionada?.name,
+      message: this.configIdioma === 'English'
+        ? `Share code ${this.claseSeleccionada?.codigo} with your students so they can join.`
+        : `Comparte el código ${this.claseSeleccionada?.codigo} con tus alumnos para que se unan directamente desde su app.`,
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
         {
-          text: 'Invitar',
-          handler: (data) => {
-            if (data.email?.trim()) {
-              if (this.claseSeleccionada) {
-                this.claseSeleccionada.estudiantesList.push({
-                  id: 's_' + Date.now(),
-                  name: data.email.split('@')[0],
-                  avatar: '👨‍🎓',
-                  asistencia: 100,
-                  retosCompletados: 0,
-                  promedio: 100
-                });
-                this.claseSeleccionada.studentsCount = this.claseSeleccionada.estudiantesList.length;
-              }
-              this.mostrarToast(`Invitación enviada a ${data.email.trim()}`);
+          text: this.configIdioma === 'English' ? 'Copy Code' : 'Copiar Código',
+          handler: () => {
+            if (this.claseSeleccionada) {
+              this.copiarCodigoClase(this.claseSeleccionada.codigo);
             }
           }
-        }
+        },
+        { text: this.configIdioma === 'English' ? 'Done' : 'Listo', role: 'cancel' }
       ]
     });
     await alert.present();
   }
 
   async crearNuevaClaseModal() {
+    if (this.currentUser?.role !== 'teacher') return;
+
     const alert = await this.alertController.create({
-      header: 'Crear Nueva Clase',
+      header: this.configIdioma === 'English' ? 'Create New Class' : 'Crear Nueva Clase',
       inputs: [
-        { name: 'nombre', type: 'text', placeholder: 'Nombre (Ej: Matemáticas 11°B)' },
-        { name: 'grado', type: 'text', placeholder: 'Grado (Ej: 11°B)' },
-        { name: 'materia', type: 'text', placeholder: 'Materia (Ej: Cálculo)' }
+        { name: 'nombre', type: 'text', placeholder: 'Nombre (ej: Física 11°B)' },
+        { name: 'materia', type: 'text', placeholder: 'Materia (ej: Ciencias)' },
+        { name: 'grado', type: 'text', placeholder: 'Grado (ej: 11°B)' }
       ],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Crear',
+          text: this.configIdioma === 'English' ? 'Create' : 'Crear',
           handler: (data) => {
             if (data.nombre?.trim()) {
-              const codigoAleatorio = Math.random().toString(36).substring(2, 8).toUpperCase();
-              const nueva: ClaseItem = {
+              const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+              const nuevaClase: ClaseItem = {
                 id: Date.now(),
                 name: data.nombre.trim(),
                 grado: data.grado?.trim() || '10°A',
-                codigo: codigoAleatorio,
+                codigo: code,
                 docente: this.currentUser?.name || 'Profesor',
                 materia: data.materia?.trim() || 'General',
-                descripcion: 'Aula virtual creada para dinámicas y actividades SaberStyle.',
-                horario: 'Lunes a Viernes',
+                descripcion: 'Clase interactiva en SaberStyle.',
+                horario: 'Por definir',
                 studentsCount: 1,
                 icon: 'school-outline',
                 color: '#8b5cf6',
                 estudiantesList: [
-                  { id: 's_me', name: 'Juan Pérez', avatar: '👨‍🎓', asistencia: 100, retosCompletados: 0, promedio: 100 }
+                  {
+                    id: 's_creator',
+                    name: this.currentUser?.name || 'Profesor',
+                    avatar: 'Docente',
+                    avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_01.png',
+                    asistencia: 100,
+                    retosCompletados: 0,
+                    promedio: 100
+                  }
                 ],
                 actividades: []
               };
-              this.clases.unshift(nueva);
-              this.mostrarToast(`Clase "${nueva.name}" creada con código ${codigoAleatorio}`);
+              this.clases.unshift(nuevaClase);
+              this.mostrarToast(this.configIdioma === 'English' ? `Class "${nuevaClase.name}" created with code ${code}!` : `¡Clase "${nuevaClase.name}" creada con código ${code}!`);
             }
           }
         }
@@ -1287,23 +1870,42 @@ export class HomePage implements OnInit {
 
   async unirseAClaseModal() {
     const alert = await this.alertController.create({
-      header: 'Unirte a una Clase',
-      message: 'Ingresa el código proporcionado por tu profesor (ej: 8F3DSX):',
-      inputs: [{ name: 'codigo', type: 'text', placeholder: 'Código de clase' }],
+      header: this.configIdioma === 'English' ? 'Join a Class' : 'Unirse a una Clase',
+      message: this.configIdioma === 'English' ? 'Enter the class code provided by your teacher:' : 'Ingresa el código proporcionado por tu profesor:',
+      inputs: [
+        { name: 'codigo', type: 'text', placeholder: 'Ej: 8F3DSX' }
+      ],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Unirme',
+          text: this.configIdioma === 'English' ? 'Join' : 'Unirme',
           handler: (data) => {
             const cod = data.codigo?.trim().toUpperCase();
-            if (cod) {
-              const encontrada = this.clases.find(c => c.codigo.toUpperCase() === cod);
-              if (encontrada) {
-                this.mostrarToast(`¡Te has unido con éxito a "${encontrada.name}"!`);
+            if (!cod) return;
+            const encontrada = this.clases.find(c => c.codigo.toUpperCase() === cod);
+            if (encontrada) {
+              const yaEsta = encontrada.estudiantesList.some(e => e.name === (this.currentUser?.name || 'Estudiante'));
+              if (!yaEsta) {
+                encontrada.studentsCount++;
+                encontrada.estudiantesList.push({
+                  id: 's_' + Date.now(),
+                  name: this.currentUser?.name || 'Estudiante',
+                  avatar: 'Estudiante',
+                  avatarImg: 'assets/saber-icons/SaberStyle_PNG_Individuales/01_Cuerpos/cuerpo_base_01.png',
+                  asistencia: 100,
+                  retosCompletados: 0,
+                  promedio: 100
+                });
+                this.statsEstudiante.clasesUnidas++;
+                this.guardarEstadisticasEstudiante();
+                this.mostrarToast(this.configIdioma === 'English' ? `Joined ${encontrada.name}!` : `¡Te has unido con éxito a ${encontrada.name}!`);
                 this.verDetalleClase(encontrada);
               } else {
-                this.mostrarToast(`Código ${cod} no encontrado. Verifica con tu docente.`);
+                this.mostrarToast(this.configIdioma === 'English' ? 'You are already in this class.' : 'Ya estás inscrito en esta clase.');
+                this.verDetalleClase(encontrada);
               }
+            } else {
+              this.mostrarToast(this.configIdioma === 'English' ? 'Class code not found.' : 'Código de clase no encontrado. Verifica con tu docente.');
             }
           }
         }
@@ -1312,33 +1914,56 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
+  async abandonarClase(clase: ClaseItem) {
+    const alert = await this.alertController.create({
+      header: this.configIdioma === 'English' ? 'Leave Class' : 'Abandonar Clase',
+      message: this.configIdioma === 'English' 
+        ? `Are you sure you want to leave ${clase.name}?`
+        : `¿Estás seguro de que deseas salir de ${clase.name}?`,
+      buttons: [
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
+        {
+          text: this.configIdioma === 'English' ? 'Leave' : 'Abandonar',
+          role: 'destructive',
+          handler: () => {
+            clase.estudiantesList = clase.estudiantesList.filter(e => e.name !== this.currentUser?.name);
+            clase.studentsCount = Math.max(0, clase.studentsCount - 1);
+            if (this.statsEstudiante.clasesUnidas > 0) {
+              this.statsEstudiante.clasesUnidas--;
+              this.guardarEstadisticasEstudiante();
+            }
+            this.mostrarToast(this.configIdioma === 'English' ? 'You left the class.' : 'Has abandonado la clase.');
+            this.activeTab = 'clases';
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   // ==========================================
-  // Reclamar Misiones y Logros
+  // Logros y Misiones
   // ==========================================
   reclamarMision(mision: MisionDiaria) {
-    if (mision.claimed || !mision.completed) return;
+    if (!mision.completed || mision.claimed) return;
     mision.claimed = true;
     this.userCoins += mision.recompensa;
     this.sincronizarUsuario();
-    this.mostrarToast(`¡Misión reclamada! +🪙 ${mision.recompensa} monedas.`);
+    this.mostrarToast(`¡+${mision.recompensa} monedas reclamadas!`);
   }
 
   reclamarLogro(logro: LogroDesafio) {
-    if (logro.claimed || !logro.completed) return;
+    if (!logro.completed || logro.claimed) return;
     logro.claimed = true;
     this.userCoins += logro.recompensa;
     this.sincronizarUsuario();
-    this.mostrarToast(`¡Logro desbloqueado! +🪙 ${logro.recompensa} monedas.`);
+    this.mostrarToast(`¡Logro "${logro.title}" reclamado! +${logro.recompensa} monedas.`);
   }
 
   // ==========================================
-  // Idioma y Tema Claro/Oscuro
+  // Tema, Idioma y Accesibilidad
   // ==========================================
-  setTema(tema: 'claro' | 'oscuro') {
-    this.aplicarTema(tema, true);
-  }
-
-  private aplicarTema(tema: 'claro' | 'oscuro', notificar: boolean) {
+  setTema(tema: 'claro' | 'oscuro', notificar: boolean = true) {
     this.configTema = tema;
     localStorage.setItem('saberstyle_theme', tema);
 
@@ -1358,20 +1983,20 @@ export class HomePage implements OnInit {
 
   async cambiarIdioma() {
     const alert = await this.alertController.create({
-      header: 'Seleccionar Idioma',
+      header: this.configIdioma === 'English' ? 'Select Language' : 'Seleccionar Idioma',
       inputs: [
         { name: 'idioma', type: 'radio', label: 'Español 🇪🇸', value: 'Español', checked: this.configIdioma === 'Español' },
         { name: 'idioma', type: 'radio', label: 'English 🇺🇸', value: 'English', checked: this.configIdioma === 'English' }
       ],
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Guardar',
+          text: this.configIdioma === 'English' ? 'Save' : 'Guardar',
           handler: (val) => {
             if (val) {
               this.configIdioma = val;
-              localStorage.setItem('saberstyle_lang', val);
-              this.mostrarToast(`Idioma cambiado a ${val}.`);
+              this.i18n.setLanguage(val);
+              this.mostrarToast(val === 'English' ? 'Language switched to English.' : 'Idioma cambiado a Español.');
             }
           }
         }
@@ -1380,20 +2005,44 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  // ==========================================
-  // Accesibilidad Real (8.4)
-  // ==========================================
   abrirAccesibilidad() {
     this.activeTab = 'accesibilidad';
+    this.statsEstudiante.accesibilidadUsos++;
+    this.guardarEstadisticasEstudiante();
   }
 
   toggleLectorVoz() {
     this.accesibilidad.lectorPantallaVoz = !this.accesibilidad.lectorPantallaVoz;
     this.guardarAccesibilidad();
+    this.actualizarLectorActivo();
     if (this.accesibilidad.lectorPantallaVoz) {
-      this.leerTextoEnVozAlta('Lector de pantalla por voz activado en SaberStyle.');
+      this.leerTextoEnVozAlta(this.configIdioma === 'English' ? 'Screen reader voice narrator enabled.' : 'Lector de pantalla por voz activado en SaberStyle.');
     } else {
-      this.mostrarToast('Lector de voz desactivado.');
+      this.mostrarToast(this.configIdioma === 'English' ? 'Voice narrator disabled.' : 'Lector de voz desactivado.');
+    }
+  }
+
+  private actualizarLectorActivo() {
+    if (this.accesibilidad.lectorPantallaVoz) {
+      if (!this.screenReaderClickListener) {
+        this.screenReaderClickListener = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          if (!target) return;
+          const elem = target.closest('button, [role="button"], a, input, h1, h2, h3, h4, .tab-dest-btn, .saved-game-card, .class-card-compact, .product-glass-card') as HTMLElement;
+          if (elem) {
+            const textToSpeak = elem.getAttribute('aria-label') || elem.getAttribute('title') || elem.innerText || elem.getAttribute('placeholder');
+            if (textToSpeak && textToSpeak.trim().length > 0) {
+              this.leerTextoEnVozAlta(textToSpeak.trim());
+            }
+          }
+        };
+        document.addEventListener('click', this.screenReaderClickListener, true);
+      }
+    } else {
+      if (this.screenReaderClickListener) {
+        document.removeEventListener('click', this.screenReaderClickListener, true);
+        this.screenReaderClickListener = null;
+      }
     }
   }
 
@@ -1415,7 +2064,7 @@ export class HomePage implements OnInit {
     this.accesibilidad.modoEnfoque = !this.accesibilidad.modoEnfoque;
     this.guardarAccesibilidad();
     this.aplicarClasesAccesibilidad();
-    this.mostrarToast(this.accesibilidad.modoEnfoque ? 'Modo Enfoque activado: animaciones reducidas.' : 'Animaciones normales activadas.');
+    this.mostrarToast(this.accesibilidad.modoEnfoque ? 'Modo Enfoque activado.' : 'Animaciones normales activadas.');
   }
 
   private guardarAccesibilidad() {
@@ -1442,19 +2091,43 @@ export class HomePage implements OnInit {
   }
 
   // ==========================================
-  // Perfil y Edición
+  // Perfil y Edición de Datos (Fase 2: Cambio de correo y contraseña)
   // ==========================================
+  iniciarEdicionPerfil() {
+    this.perfilEditando = true;
+    this.perfilNombreInput = this.currentUser?.name || '';
+    this.perfilEmailInput = this.currentUser?.email || '';
+    this.perfilPasswordInput = '';
+    this.mostrarPasswordPerfil = false;
+  }
+
   guardarEdicionPerfil() {
     const nuevoNombre = this.perfilNombreInput.trim();
+    const nuevoEmail = this.perfilEmailInput.trim().toLowerCase();
+    const nuevaPassword = this.perfilPasswordInput.trim();
+
     if (!nuevoNombre) {
-      this.mostrarToast('El nombre no puede estar vacío.');
+      this.mostrarToast(this.configIdioma === 'English' ? 'Name cannot be empty.' : 'El nombre no puede estar vacío.');
       return;
     }
-    this.authService.updateCurrentUser({
-      name: nuevoNombre
-    });
+
+    if (nuevoEmail && !/^[^s@]+@[^s@]+.[^s@]+$/.test(nuevoEmail)) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please enter a valid email address.' : 'Ingresa un correo electrónico válido.');
+      return;
+    }
+
+    if (nuevaPassword && nuevaPassword.length < 6) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Password must be at least 6 characters.' : 'La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    const updates: Partial<User> = { name: nuevoNombre };
+    if (nuevoEmail) updates.email = nuevoEmail;
+    if (nuevaPassword) updates.password = nuevaPassword;
+
+    this.authService.updateCurrentUser(updates);
     this.perfilEditando = false;
-    this.mostrarToast('Perfil actualizado correctamente.');
+    this.mostrarToast(this.configIdioma === 'English' ? 'Profile updated successfully.' : 'Perfil actualizado correctamente.');
   }
 
   // ==========================================
@@ -1489,6 +2162,8 @@ export class HomePage implements OnInit {
 
     this.staileInput = '';
     this.staileLoading = true;
+    this.statsEstudiante.iaConsultas++;
+    this.guardarEstadisticasEstudiante();
 
     this.aiChatService.sendMessage(query).subscribe({
       next: () => {
@@ -1502,65 +2177,19 @@ export class HomePage implements OnInit {
   }
 
   // ==========================================
-  // Menú Superior y Cierre de Sesión
+  // Utilidades y Notificaciones
   // ==========================================
-  async presentHeaderMenu() {
-    const esProfe = this.currentUser?.role === 'teacher';
-    const buttons: any[] = [
-      {
-        text: 'Mi Perfil',
-        icon: 'person-outline',
-        handler: () => { this.abrirPerfil(); }
-      },
-      {
-        text: 'Ayuda y Accesibilidad',
-        icon: 'accessibility-outline',
-        handler: () => { this.abrirAccesibilidad(); }
-      },
-      {
-        text: 'Guía y Tutorial',
-        icon: 'help-circle-outline',
-        handler: () => { this.abrirGuiaTutorial(); }
-      }
-    ];
-
-    if (!esProfe) {
-      buttons.unshift({
-        text: 'Mi Armario y Vestuario',
-        icon: 'shirt-outline',
-        handler: () => { this.abrirVestuario(); }
-      });
-    }
-
-    buttons.push({
-      text: 'Cerrar Sesión',
-      role: 'destructive',
-      icon: 'log-out-outline',
-      handler: () => { this.confirmLogout(); }
-    });
-
-    buttons.push({
-      text: 'Cancelar',
-      role: 'cancel',
-      icon: 'close'
-    });
-
-    const actionSheet = await this.actionSheetController.create({
-      header: 'SaberStyle · Aico',
-      buttons
-    });
-    await actionSheet.present();
-  }
-
-  async confirmLogout(): Promise<void> {
+  async confirmLogout() {
     const alert = await this.alertController.create({
-      header: 'Cerrar Sesión',
-      message: '¿Estás seguro de que deseas salir de SaberStyle?',
+      header: this.configIdioma === 'English' ? 'Log Out' : 'Cerrar Sesión',
+      message: this.configIdioma === 'English' 
+        ? 'Are you sure you want to log out of SaberStyle?' 
+        : '¿Estás seguro de que deseas cerrar sesión en SaberStyle?',
       buttons: [
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.configIdioma === 'English' ? 'Cancel' : 'Cancelar', role: 'cancel' },
         {
-          text: 'Sí, Salir',
-          role: 'confirm',
+          text: this.configIdioma === 'English' ? 'Log Out' : 'Cerrar Sesión',
+          role: 'destructive',
           handler: () => {
             this.authService.logout();
           }
@@ -1570,12 +2199,12 @@ export class HomePage implements OnInit {
     await alert.present();
   }
 
-  private async mostrarToast(mensaje: string) {
+  async mostrarToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
-      duration: 2500,
+      duration: 2200,
       position: 'bottom',
-      color: 'dark'
+      cssClass: 'cosmic-toast'
     });
     await toast.present();
   }

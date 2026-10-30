@@ -1,0 +1,283 @@
+{
+  "project": "SaberStyle — Crear juegos",
+  "brand": "AICO",
+  "count": 30,
+  "canvas": "24x24; transparent; white #FFFFFF",
+  "categories": [
+    "create-games",
+    "publishing",
+    "editing"
+  ],
+  "icons": [
+    {
+      "id": 1,
+      "category": "create-games",
+      "name": "quiz",
+      "label_es": "Quiz",
+      "function": "Hoja de quiz con pregunta y opción seleccionada.",
+      "svg": "create-games/quiz.svg",
+      "png": "create-games/quiz.png"
+    },
+    {
+      "id": 2,
+      "category": "create-games",
+      "name": "true-false",
+      "label_es": "Verdadero o falso",
+      "function": "Dos opciones con marca y rechazo claramente distintos.",
+      "svg": "create-games/true-false.svg",
+      "png": "create-games/true-false.png"
+    },
+    {
+      "id": 3,
+      "category": "create-games",
+      "name": "open-question",
+      "label_es": "Pregunta abierta",
+      "function": "Bocadillo abierto con línea de respuesta.",
+      "svg": "create-games/open-question.svg",
+      "png": "create-games/open-question.png"
+    },
+    {
+      "id": 4,
+      "category": "create-games",
+      "name": "random-wheel",
+      "label_es": "Ruleta aleatoria",
+      "function": "Ruleta seccionada con puntero superior.",
+      "svg": "create-games/random-wheel.svg",
+      "png": "create-games/random-wheel.png"
+    },
+    {
+      "id": 5,
+      "category": "create-games",
+      "name": "word-search",
+      "label_es": "Sopa de letras",
+      "function": "Cuadrícula con recorrido de búsqueda resaltado.",
+      "svg": "create-games/word-search.svg",
+      "png": "create-games/word-search.png"
+    },
+    {
+      "id": 6,
+      "category": "create-games",
+      "name": "complete-word",
+      "label_es": "Completar la palabra",
+      "function": "Fragmento de palabra con un espacio vacío.",
+      "svg": "create-games/complete-word.svg",
+      "png": "create-games/complete-word.png"
+    },
+    {
+      "id": 7,
+      "category": "create-games",
+      "name": "matching-pairs",
+      "label_es": "Unir parejas",
+      "function": "Dos columnas de elementos unidos por correspondencias.",
+      "svg": "create-games/matching-pairs.svg",
+      "png": "create-games/matching-pairs.png"
+    },
+    {
+      "id": 8,
+      "category": "create-games",
+      "name": "sequence-ordering",
+      "label_es": "Ordenar secuencias",
+      "function": "Pasos enlazados en una secuencia vertical reordenable.",
+      "svg": "create-games/sequence-ordering.svg",
+      "png": "create-games/sequence-ordering.png"
+    },
+    {
+      "id": 9,
+      "category": "create-games",
+      "name": "memory",
+      "label_es": "Memoria",
+      "function": "Tarjetas emparejables con símbolo común.",
+      "svg": "create-games/memory.svg",
+      "png": "create-games/memory.png"
+    },
+    {
+      "id": 10,
+      "category": "create-games",
+      "name": "crossword",
+      "label_es": "Crucigrama",
+      "function": "Cuadrícula de crucigrama con entradas cruzadas.",
+      "svg": "create-games/crossword.svg",
+      "png": "create-games/crossword.png"
+    },
+    {
+      "id": 11,
+      "category": "create-games",
+      "name": "guess-image",
+      "label_es": "Adivina la imagen",
+      "function": "Imagen con lupa para identificar el objeto.",
+      "svg": "create-games/guess-image.svg",
+      "png": "create-games/guess-image.png"
+    },
+    {
+      "id": 12,
+      "category": "create-games",
+      "name": "lightning-challenge",
+      "label_es": "Desafío relámpago",
+      "function": "Rayo de rapidez y desafío.",
+      "svg": "create-games/lightning-challenge.svg",
+      "png": "create-games/lightning-challenge.png"
+    },
+    {
+      "id": 13,
+      "category": "create-games",
+      "name": "classify",
+      "label_es": "Clasificar",
+      "function": "Elementos encaminados hacia categorías distintas.",
+      "svg": "create-games/classify.svg",
+      "png": "create-games/classify.png"
+    },
+    {
+      "id": 14,
+      "category": "create-games",
+      "name": "flashcards",
+      "label_es": "Tarjetas de estudio",
+      "function": "Tarjetas superpuestas con señal de estudio.",
+      "svg": "create-games/flashcards.svg",
+      "png": "create-games/flashcards.png"
+    },
+    {
+      "id": 15,
+      "category": "create-games",
+      "name": "question-maze",
+      "label_es": "Laberinto de preguntas",
+      "function": "Recorrido de laberinto con destino interrogativo.",
+      "svg": "create-games/question-maze.svg",
+      "png": "create-games/question-maze.png"
+    },
+    {
+      "id": 16,
+      "category": "create-games",
+      "name": "level-challenge",
+      "label_es": "Reto por niveles",
+      "function": "Escalones ascendentes con bandera de meta.",
+      "svg": "create-games/level-challenge.svg",
+      "png": "create-games/level-challenge.png"
+    },
+    {
+      "id": 17,
+      "category": "publishing",
+      "name": "live-game",
+      "label_es": "Jugar en vivo",
+      "function": "Antena de transmisión con ondas de emisión.",
+      "svg": "publishing/live-game.svg",
+      "png": "publishing/live-game.png"
+    },
+    {
+      "id": 18,
+      "category": "publishing",
+      "name": "save-to-cloud",
+      "label_es": "Guardar en la nube",
+      "function": "Nube con flecha de subida.",
+      "svg": "publishing/save-to-cloud.svg",
+      "png": "publishing/save-to-cloud.png"
+    },
+    {
+      "id": 19,
+      "category": "publishing",
+      "name": "schedule-assignment",
+      "label_es": "Asignar para después",
+      "function": "Calendario con reloj para programar una actividad.",
+      "svg": "publishing/schedule-assignment.svg",
+      "png": "publishing/schedule-assignment.png"
+    },
+    {
+      "id": 20,
+      "category": "publishing",
+      "name": "save-draft",
+      "label_es": "Guardar como borrador",
+      "function": "Símbolo de guardado tipo disquete.",
+      "svg": "publishing/save-draft.svg",
+      "png": "publishing/save-draft.png"
+    },
+    {
+      "id": 21,
+      "category": "publishing",
+      "name": "share-game",
+      "label_es": "Compartir juego",
+      "function": "Tres nodos conectados.",
+      "svg": "publishing/share-game.svg",
+      "png": "publishing/share-game.png"
+    },
+    {
+      "id": 22,
+      "category": "publishing",
+      "name": "group-play",
+      "label_es": "Jugar en grupo",
+      "function": "Siluetas de participantes en grupo.",
+      "svg": "publishing/group-play.svg",
+      "png": "publishing/group-play.png"
+    },
+    {
+      "id": 23,
+      "category": "publishing",
+      "name": "publish-activity",
+      "label_es": "Publicar actividad",
+      "function": "Documento con símbolo de publicación.",
+      "svg": "publishing/publish-activity.svg",
+      "png": "publishing/publish-activity.png"
+    },
+    {
+      "id": 24,
+      "category": "publishing",
+      "name": "copy-code-link",
+      "label_es": "Copiar código o enlace",
+      "function": "Dos páginas superpuestas que representan una copia.",
+      "svg": "publishing/copy-code-link.svg",
+      "png": "publishing/copy-code-link.png"
+    },
+    {
+      "id": 25,
+      "category": "editing",
+      "name": "add-question",
+      "label_es": "Añadir pregunta",
+      "function": "Signo más junto a una tarjeta de pregunta.",
+      "svg": "editing/add-question.svg",
+      "png": "editing/add-question.png"
+    },
+    {
+      "id": 26,
+      "category": "editing",
+      "name": "edit-question",
+      "label_es": "Editar pregunta",
+      "function": "Lápiz junto a un documento de pregunta.",
+      "svg": "editing/edit-question.svg",
+      "png": "editing/edit-question.png"
+    },
+    {
+      "id": 27,
+      "category": "editing",
+      "name": "delete-question",
+      "label_es": "Eliminar pregunta",
+      "function": "Papelera con tapa para quitar una pregunta.",
+      "svg": "editing/delete-question.svg",
+      "png": "editing/delete-question.png"
+    },
+    {
+      "id": 28,
+      "category": "editing",
+      "name": "reorder-questions",
+      "label_es": "Reordenar preguntas",
+      "function": "Flechas verticales en sentidos opuestos.",
+      "svg": "editing/reorder-questions.svg",
+      "png": "editing/reorder-questions.png"
+    },
+    {
+      "id": 29,
+      "category": "editing",
+      "name": "preview",
+      "label_es": "Vista previa",
+      "function": "Ojo para previsualizar el juego.",
+      "svg": "editing/preview.svg",
+      "png": "editing/preview.png"
+    },
+    {
+      "id": 30,
+      "category": "editing",
+      "name": "game-settings",
+      "label_es": "Configurar juego",
+      "function": "Engranaje para configurar el juego.",
+      "svg": "editing/game-settings.svg",
+      "png": "editing/game-settings.png"
+    }
+  ]
+}

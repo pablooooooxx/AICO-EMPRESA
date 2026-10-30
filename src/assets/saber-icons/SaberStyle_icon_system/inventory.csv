@@ -1,0 +1,113 @@
+﻿id,category,name,label_es,function,svg,png
+1,navigation,home,Inicio,Casa moderna y minimalista.,navigation/home.svg,navigation/home.png
+2,shop,shop,Tienda,Bolsa de compras estilizada.,shop/shop.svg,shop/shop.png
+3,navigation,create,Crear,Signo más claramente reconocible.,navigation/create.svg,navigation/create.png
+4,navigation,classes,Mis clases,Libro abierto de aprendizaje.,navigation/classes.svg,navigation/classes.png
+5,achievements,achievements,Logros,Trofeo de progreso y recompensas.,achievements/achievements.svg,achievements/achievements.png
+6,avatar,wardrobe,Vestuario,Prenda colgada para personalizar el avatar.,avatar/wardrobe.svg,avatar/wardrobe.png
+7,shop,coins,Monedas,Moneda con una S estilizada.,shop/coins.svg,shop/coins.png
+8,avatar,avatar,Avatar o personaje,Personaje personalizable minimalista.,avatar/avatar.svg,avatar/avatar.png
+9,avatar,hair,Cabello,Silueta de cabello para personalizar el avatar.,avatar/hair.svg,avatar/hair.png
+10,avatar,clothing,Ropa,Camiseta para prendas del avatar.,avatar/clothing.svg,avatar/clothing.png
+11,avatar,pants,Pantalones,Pantalón estilizado.,avatar/pants.svg,avatar/pants.png
+12,avatar,shoes,Zapatos,Calzado deportivo.,avatar/shoes.svg,avatar/shoes.png
+13,avatar,accessories,Accesorios,Gafas estilizadas como accesorio representativo.,avatar/accessories.svg,avatar/accessories.png
+14,shop,inventory,Inventario,Caja abierta con objetos guardados.,shop/inventory.svg,shop/inventory.png
+15,shop,purchase,Comprar,Carrito de compra diferenciado de la bolsa de tienda.,shop/purchase.svg,shop/purchase.png
+16,navigation,profile,Perfil,Cabeza y hombros de una persona.,navigation/profile.svg,navigation/profile.png
+17,navigation,games,Juegos,Mando de videojuegos.,navigation/games.svg,navigation/games.png
+18,settings,settings,Configuración,Engranaje de ajustes.,settings/settings.svg,settings/settings.png
+19,navigation,menu,Menú,Tres líneas horizontales.,navigation/menu.svg,navigation/menu.png
+20,navigation,notifications,Notificaciones,Campana con punto de alerta.,navigation/notifications.svg,navigation/notifications.png
+21,navigation,help,Ayuda,Signo de interrogación dentro de una forma circular.,navigation/help.svg,navigation/help.png
+22,navigation,back,Volver,Flecha hacia la izquierda.,navigation/back.svg,navigation/back.png
+23,navigation,close,Cerrar,Símbolo X.,navigation/close.svg,navigation/close.png
+24,navigation,more-options,Más opciones,Tres puntos horizontales.,navigation/more-options.svg,navigation/more-options.png
+25,navigation,search,Buscar,Lupa.,navigation/search.svg,navigation/search.png
+26,navigation,edit,Editar,Lápiz.,navigation/edit.svg,navigation/edit.png
+27,navigation,save,Guardar,Símbolo de guardado tipo disquete.,navigation/save.svg,navigation/save.png
+28,navigation,share,Compartir,Tres nodos conectados.,navigation/share.svg,navigation/share.png
+29,navigation,add-user,Agregar usuario,Silueta de persona con signo más.,navigation/add-user.svg,navigation/add-user.png
+30,navigation,logout,Cerrar sesión,Puerta con flecha de salida.,navigation/logout.svg,navigation/logout.png
+31,classes,create-class,Crear clase,Libro con signo más.,classes/create-class.svg,classes/create-class.png
+32,classes,join-class,Unirse a una clase,Puerta con flecha de entrada.,classes/join-class.svg,classes/join-class.png
+33,classes,class-code,Código de clase,Tarjeta de código con símbolo hash.,classes/class-code.svg,classes/class-code.png
+34,classes,students,Estudiantes,Grupo de tres estudiantes.,classes/students.svg,classes/students.png
+35,classes,teacher,Docente,Persona acompañada de un libro.,classes/teacher.svg,classes/teacher.png
+36,classes,activities,Actividades,Portapapeles con lista de tareas.,classes/activities.svg,classes/activities.png
+37,classes,quizzes,Cuestionarios,Hoja de preguntas y respuestas.,classes/quizzes.svg,classes/quizzes.png
+38,classes,assign-activity,Asignar actividad,Documento con flecha de envío.,classes/assign-activity.svg,classes/assign-activity.png
+39,classes,live-activity,Actividad en directo,Pantalla con reproducción y señal en directo.,classes/live-activity.svg,classes/live-activity.png
+40,classes,invite-participants,Invitar participantes,Grupo de personas con signo más.,classes/invite-participants.svg,classes/invite-participants.png
+41,classes,student-list,Lista de estudiantes,Lista con siluetas.,classes/student-list.svg,classes/student-list.png
+42,classes,class-details,Detalles de clase,Libro abierto con símbolo de información.,classes/class-details.svg,classes/class-details.png
+43,games,create-game,Crear juego,Mando de videojuegos con signo más.,games/create-game.svg,games/create-game.png
+44,games,quiz-game,Cuestionario,Hoja con signos de pregunta.,games/quiz-game.svg,games/quiz-game.png
+45,games,wheel,Ruleta,Rueda dividida en secciones.,games/wheel.svg,games/wheel.png
+46,games,open-question,Pregunta abierta,Bocadillo de diálogo para pregunta abierta.,games/open-question.svg,games/open-question.png
+47,games,true-false,Verdadero o falso,Dos símbolos diferenciados de validación y rechazo.,games/true-false.svg,games/true-false.png
+48,games,fill-blanks,Completar espacios,Líneas de texto con espacio vacío.,games/fill-blanks.svg,games/fill-blanks.png
+49,games,word-search,Sopa de letras,Cuadrícula de letras con palabra resaltada geométricamente.,games/word-search.svg,games/word-search.png
+50,games,play,Jugar,Triángulo de reproducción.,games/play.svg,games/play.png
+51,games,pause,Pausar,Dos barras verticales.,games/pause.svg,games/pause.png
+52,games,resume,Reanudar,Triángulo de reproducción dentro de un arco de reanudación.,games/resume.svg,games/resume.png
+53,games,timer,Tiempo,Reloj con corona de temporizador.,games/timer.svg,games/timer.png
+54,games,correct-answer,Respuesta correcta,Marca de verificación.,games/correct-answer.svg,games/correct-answer.png
+55,games,incorrect-answer,Respuesta incorrecta,X para respuesta no válida.,games/incorrect-answer.svg,games/incorrect-answer.png
+56,games,leaderboard,Clasificación,Podio de posiciones.,games/leaderboard.svg,games/leaderboard.png
+57,games,participants,Participantes,Grupo de personas participantes.,games/participants.svg,games/participants.png
+58,games,results,Resultados,Hoja con gráfico de resultados.,games/results.svg,games/results.png
+59,games,next-question,Pregunta siguiente,Flecha hacia la derecha.,games/next-question.svg,games/next-question.png
+60,games,end-game,Finalizar juego,Bandera de finalización.,games/end-game.svg,games/end-game.png
+61,achievements,statistics,Estadísticas,Gráfico de barras.,achievements/statistics.svg,achievements/statistics.png
+62,achievements,progress,Progreso,Círculo de progreso con avance ascendente.,achievements/progress.svg,achievements/progress.png
+63,achievements,experience,Experiencia,Estrella estilizada de experiencia.,achievements/experience.svg,achievements/experience.png
+64,achievements,level,Nivel,Insignia con estrella.,achievements/level.svg,achievements/level.png
+65,achievements,daily-mission,Misión diaria,Calendario con marca de verificación.,achievements/daily-mission.svg,achievements/daily-mission.png
+66,achievements,reward,Recompensa,Caja de regalo.,achievements/reward.svg,achievements/reward.png
+67,achievements,bronze-medal,Medalla de bronce,Medalla circular con bordes festoneados y dos cintas.,achievements/bronze-medal.svg,achievements/bronze-medal.png
+68,achievements,silver-medal,Medalla de plata,Medalla octagonal de doble borde con cintas.,achievements/silver-medal.svg,achievements/silver-medal.png
+69,achievements,gold-medal,Medalla de oro,Medalla solar con corona y estrella central.,achievements/gold-medal.svg,achievements/gold-medal.png
+70,achievements,diamond,Diamante,Piedra preciosa geométrica.,achievements/diamond.svg,achievements/diamond.png
+71,achievements,streak,Racha,Llama estilizada.,achievements/streak.svg,achievements/streak.png
+72,achievements,time-remaining,Tiempo restante,Reloj de arena.,achievements/time-remaining.svg,achievements/time-remaining.png
+73,achievements,unlocked,Desbloqueado,Candado abierto.,achievements/unlocked.svg,achievements/unlocked.png
+74,achievements,locked,Bloqueado,Candado cerrado.,achievements/locked.svg,achievements/locked.png
+75,achievements,achievement-collection,Colección de logros,Vitrina con conjunto de insignias.,achievements/achievement-collection.svg,achievements/achievement-collection.png
+76,accessibility,accessibility,Accesibilidad general,Figura humana con brazos extendidos.,accessibility/accessibility.svg,accessibility/accessibility.png
+77,accessibility,color-correction,Corrección de colores,Círculo dividido en segmentos geométricos.,accessibility/color-correction.svg,accessibility/color-correction.png
+78,accessibility,contrast,Contraste,Círculo dividido entre blanco y transparencia.,accessibility/contrast.svg,accessibility/contrast.png
+79,accessibility,color-blindness,Daltonismo,Símbolo de percepción visual geométrica.,accessibility/color-blindness.svg,accessibility/color-blindness.png
+80,accessibility,read-aloud,Lectura en voz alta,Libro acompañado de ondas sonoras.,accessibility/read-aloud.svg,accessibility/read-aloud.png
+81,accessibility,audio,Audio,Altavoz con ondas para control de audio.,accessibility/audio.svg,accessibility/audio.png
+82,accessibility,subtitles,Subtítulos,Bocadillo con líneas de subtítulo.,accessibility/subtitles.svg,accessibility/subtitles.png
+83,accessibility,highlight-text,Resaltar texto,Letra acompañada de un marcador visual.,accessibility/highlight-text.svg,accessibility/highlight-text.png
+84,accessibility,text-size,Tamaño del texto,Letra A con indicadores de tamaño.,accessibility/text-size.svg,accessibility/text-size.png
+85,accessibility,language,Idioma,Globo terráqueo con meridianos.,accessibility/language.svg,accessibility/language.png
+86,accessibility,simplified-reading,Lectura simplificada,Documento con líneas cortas y espaciadas.,accessibility/simplified-reading.svg,accessibility/simplified-reading.png
+87,assistant,staile-assistant,Asistente StAIle,Cabeza de asistente IA con una estrella identificadora.,assistant/staile-assistant.svg,assistant/staile-assistant.png
+88,assistant,chat,Chat,Dos bocadillos de diálogo.,assistant/chat.svg,assistant/chat.png
+89,assistant,send-message,Enviar mensaje,Flecha de envío tipo avión de papel.,assistant/send-message.svg,assistant/send-message.png
+90,assistant,microphone,Micrófono,Símbolo de entrada por voz.,assistant/microphone.svg,assistant/microphone.png
+91,assistant,listen-response,Escuchar respuesta,Altavoz con ondas y destello de asistente.,assistant/listen-response.svg,assistant/listen-response.png
+92,assistant,simplify-text,Simplificar texto,Documento con estrella.,assistant/simplify-text.svg,assistant/simplify-text.png
+93,assistant,generate-content,Generar contenido,Documento con símbolo de creación.,assistant/generate-content.svg,assistant/generate-content.png
+94,assistant,smart-help,Ayuda inteligente,Estrella acompañada de un signo de interrogación.,assistant/smart-help.svg,assistant/smart-help.png
+95,assistant,close-assistant,Cerrar asistente,Símbolo X de cierre del asistente.,assistant/close-assistant.svg,assistant/close-assistant.png
+96,settings,light-theme,Tema claro,Sol para el tema claro.,settings/light-theme.svg,settings/light-theme.png
+97,settings,dark-theme,Tema oscuro,Luna creciente para el tema oscuro.,settings/dark-theme.svg,settings/dark-theme.png
+98,settings,sound-on,Sonido activado,Altavoz con ondas para estado de sonido activo.,settings/sound-on.svg,settings/sound-on.png
+99,settings,sound-off,Sonido desactivado,Altavoz con símbolo de silencio.,settings/sound-off.svg,settings/sound-off.png
+100,settings,vibration,Vibración,Teléfono con ondas de vibración.,settings/vibration.svg,settings/vibration.png
+101,settings,privacy,Privacidad,Escudo con candado.,settings/privacy.svg,settings/privacy.png
+102,settings,security,Seguridad,Escudo con marca de verificación.,settings/security.svg,settings/security.png
+103,system,information,Información,Letra i dentro de una forma circular.,system/information.svg,system/information.png
+104,system,refresh,Actualizar,Flechas circulares.,system/refresh.svg,system/refresh.png
+105,system,offline,Sin conexión,Símbolo de conexión interrumpida.,system/offline.svg,system/offline.png
+106,system,connection,Conexión,Enlace de conexión activa.,system/connection.svg,system/connection.png
+107,system,upload,Cargar,Flecha hacia arriba desde una bandeja.,system/upload.svg,system/upload.png
+108,system,download,Descargar,Flecha hacia abajo a una bandeja.,system/download.svg,system/download.png
+109,system,no-results,Sin resultados,Lupa con símbolo de ausencia de resultados.,system/no-results.svg,system/no-results.png
+110,system,error,Error,Signo de exclamación.,system/error.svg,system/error.png
+111,system,success,Éxito,Marca de verificación de éxito.,system/success.svg,system/success.png
+112,system,warning,Advertencia,Triángulo con signo de exclamación.,system/warning.svg,system/warning.png

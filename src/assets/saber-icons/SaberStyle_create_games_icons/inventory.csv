@@ -1,0 +1,31 @@
+﻿id,category,name,label_es,function,svg,png
+1,create-games,quiz,Quiz,Hoja de quiz con pregunta y opción seleccionada.,create-games/quiz.svg,create-games/quiz.png
+2,create-games,true-false,Verdadero o falso,Dos opciones con marca y rechazo claramente distintos.,create-games/true-false.svg,create-games/true-false.png
+3,create-games,open-question,Pregunta abierta,Bocadillo abierto con línea de respuesta.,create-games/open-question.svg,create-games/open-question.png
+4,create-games,random-wheel,Ruleta aleatoria,Ruleta seccionada con puntero superior.,create-games/random-wheel.svg,create-games/random-wheel.png
+5,create-games,word-search,Sopa de letras,Cuadrícula con recorrido de búsqueda resaltado.,create-games/word-search.svg,create-games/word-search.png
+6,create-games,complete-word,Completar la palabra,Fragmento de palabra con un espacio vacío.,create-games/complete-word.svg,create-games/complete-word.png
+7,create-games,matching-pairs,Unir parejas,Dos columnas de elementos unidos por correspondencias.,create-games/matching-pairs.svg,create-games/matching-pairs.png
+8,create-games,sequence-ordering,Ordenar secuencias,Pasos enlazados en una secuencia vertical reordenable.,create-games/sequence-ordering.svg,create-games/sequence-ordering.png
+9,create-games,memory,Memoria,Tarjetas emparejables con símbolo común.,create-games/memory.svg,create-games/memory.png
+10,create-games,crossword,Crucigrama,Cuadrícula de crucigrama con entradas cruzadas.,create-games/crossword.svg,create-games/crossword.png
+11,create-games,guess-image,Adivina la imagen,Imagen con lupa para identificar el objeto.,create-games/guess-image.svg,create-games/guess-image.png
+12,create-games,lightning-challenge,Desafío relámpago,Rayo de rapidez y desafío.,create-games/lightning-challenge.svg,create-games/lightning-challenge.png
+13,create-games,classify,Clasificar,Elementos encaminados hacia categorías distintas.,create-games/classify.svg,create-games/classify.png
+14,create-games,flashcards,Tarjetas de estudio,Tarjetas superpuestas con señal de estudio.,create-games/flashcards.svg,create-games/flashcards.png
+15,create-games,question-maze,Laberinto de preguntas,Recorrido de laberinto con destino interrogativo.,create-games/question-maze.svg,create-games/question-maze.png
+16,create-games,level-challenge,Reto por niveles,Escalones ascendentes con bandera de meta.,create-games/level-challenge.svg,create-games/level-challenge.png
+17,publishing,live-game,Jugar en vivo,Antena de transmisión con ondas de emisión.,publishing/live-game.svg,publishing/live-game.png
+18,publishing,save-to-cloud,Guardar en la nube,Nube con flecha de subida.,publishing/save-to-cloud.svg,publishing/save-to-cloud.png
+19,publishing,schedule-assignment,Asignar para después,Calendario con reloj para programar una actividad.,publishing/schedule-assignment.svg,publishing/schedule-assignment.png
+20,publishing,save-draft,Guardar como borrador,Símbolo de guardado tipo disquete.,publishing/save-draft.svg,publishing/save-draft.png
+21,publishing,share-game,Compartir juego,Tres nodos conectados.,publishing/share-game.svg,publishing/share-game.png
+22,publishing,group-play,Jugar en grupo,Siluetas de participantes en grupo.,publishing/group-play.svg,publishing/group-play.png
+23,publishing,publish-activity,Publicar actividad,Documento con símbolo de publicación.,publishing/publish-activity.svg,publishing/publish-activity.png
+24,publishing,copy-code-link,Copiar código o enlace,Dos páginas superpuestas que representan una copia.,publishing/copy-code-link.svg,publishing/copy-code-link.png
+25,editing,add-question,Añadir pregunta,Signo más junto a una tarjeta de pregunta.,editing/add-question.svg,editing/add-question.png
+26,editing,edit-question,Editar pregunta,Lápiz junto a un documento de pregunta.,editing/edit-question.svg,editing/edit-question.png
+27,editing,delete-question,Eliminar pregunta,Papelera con tapa para quitar una pregunta.,editing/delete-question.svg,editing/delete-question.png
+28,editing,reorder-questions,Reordenar preguntas,Flechas verticales en sentidos opuestos.,editing/reorder-questions.svg,editing/reorder-questions.png
+29,editing,preview,Vista previa,Ojo para previsualizar el juego.,editing/preview.svg,editing/preview.png
+30,editing,game-settings,Configurar juego,Engranaje para configurar el juego.,editing/game-settings.svg,editing/game-settings.png

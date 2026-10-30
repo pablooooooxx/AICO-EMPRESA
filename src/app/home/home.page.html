@@ -1,26 +1,20 @@
 <div class="ion-page" id="main-content">
 
-  <!-- ============================================== -->
-  <!-- CABECERA PRINCIPAL LIQUID GLASS "SABERSTYLE"   -->
-  <!-- ============================================== -->
   <ion-header class="ion-no-border cosmic-header">
     <div class="header-glass-bar">
       
-      <!-- Brand Logo con Isotipo -->
       <div class="header-brand" (click)="volverAInicio()" title="Volver al inicio">
         <span class="sparkle-bullet">✦</span>
         <span class="brand-name">SaberStyle</span>
-        <span class="company-badge-inline">Aico</span>
+        <span class="company-badge-inline">InConic</span>
       </div>
 
-      <!-- Saldo de Monedas Cósmicas -->
       <div class="coins-pill" (click)="abrirTienda()" title="Tienda de Avatar">
         <span class="coin-symbol">🪙</span>
         <span class="coin-amount">{{ userCoins | number }}</span>
         <button type="button" class="coin-add-btn" title="Conseguir más monedas">+</button>
       </div>
 
-      <!-- Perfil / Avatar Badge y Menú -->
       <div class="header-user-actions">
         <div class="user-avatar-badge" (click)="abrirPerfil()" [title]="currentUser?.name || 'Mi Perfil'">
           <div class="mini-avatar-face" [style.background-color]="avatarConfig.skinColor">
@@ -30,7 +24,7 @@
           </div>
         </div>
 
-        <button type="button" class="header-menu-btn" (click)="presentHeaderMenu()" title="Menú de opciones">
+        <button type="button" class="header-menu-btn" (click)="abrirConfiguracion()" title="Menú de opciones">
           <ion-icon name="ellipsis-vertical"></ion-icon>
         </button>
       </div>
@@ -38,9 +32,6 @@
     </div>
   </ion-header>
 
-  <!-- ============================================== -->
-  <!-- CONTENEDOR PRINCIPAL CON FONDO DINÁMICO        -->
-  <!-- ============================================== -->
   <ion-content class="cosmic-content">
     
     <!-- Fondo Galáctico con Nebulosas y Estrellas (se oculta en Modo Enfoque) -->
@@ -68,7 +59,6 @@
           <p class="welcome-subtitle">¿Listo para aprender jugando?</p>
         </div>
 
-        <!-- Tarjeta "TU AVENTURA" (Referencia Visual Aprobada) -->
         <div class="adventure-glass-card">
           <div class="adventure-content">
             <span class="card-eyebrow">TU AVENTURA</span>
@@ -554,7 +544,7 @@
           <div class="input-form-box">
             <input 
               type="text" 
-              [(ngModel)]="nuevoJuegoTitulo" 
+              [(ngModel)]="editorTitulo" 
               placeholder="Ej: La ruleta de la historia o Quiz de álgebra...">
           </div>
         </div>
@@ -587,17 +577,17 @@
         <div class="section-block">
           <h4 class="step-label">Título del juego</h4>
           <div class="input-form-box">
-            <input type="text" [(ngModel)]="ruletaConfigTitulo" placeholder="La ruleta de la historia">
+            <input type="text" [(ngModel)]="editarTitulo" placeholder="La ruleta de la historia">
           </div>
         </div>
 
         <div class="section-block">
-          <h4 class="step-label">Contenido de la ruleta ({{ ruletaConfigPreguntas.length }} preguntas)</h4>
+          <h4 class="step-label">Contenido de la ruleta ({{ editorRuletaPreguntas.length }} preguntas)</h4>
           <div class="ruleta-questions-list">
-            <div class="ruleta-question-row" *ngFor="let p of ruletaConfigPreguntas; let i = index">
+            <div class="ruleta-question-row" *ngFor="let p of editorRuletaPreguntas; let i = index">
               <span class="q-number">Pregunta {{ i + 1 }}</span>
               <span class="q-text">{{ p }}</span>
-              <button type="button" class="q-delete-btn" (click)="eliminarPreguntaRuleta(i)" title="Eliminar">✕</button>
+              <button type="button" class="q-delete-btn" (click)="eliminarPreguntaRuletaEditor(i)" title="Eliminar">✕</button>
             </div>
           </div>
 
@@ -607,8 +597,8 @@
               type="text" 
               [(ngModel)]="nuevaPreguntaRuletaInput" 
               placeholder="Escribe una nueva pregunta..."
-              (keyup.enter)="agregarPreguntaRuleta()">
-            <button type="button" class="add-q-btn" (click)="agregarPreguntaRuleta()">
+              (keyup.enter)="agregarPreguntaRuletaEditor()">
+            <button type="button" class="add-q-btn" (click)="agregarPreguntaRuletaEditor()">
               <ion-icon name="add"></ion-icon>
               <span>Añadir</span>
             </button>
@@ -957,7 +947,7 @@
         <!-- 3 Cifras Estadísticas Explicadas -->
         <div class="three-stats-row">
           <div class="stat-pill-box">
-            <span class="stat-box-num">{{ statsEstudiante.clasesAsistidas }}</span>
+            <span class="stat-box-num">{{ statsEstudiante.clasesUnidas }}</span>
             <span class="stat-box-lbl">Clases asistidas</span>
           </div>
           <div class="stat-pill-box">
@@ -1136,8 +1126,6 @@
             <input type="text" [(ngModel)]="perfilBioInput" placeholder="Biografía o materia">
           </div>
           <div class="input-form-box">
-            <input type="text" [(ngModel)]="perfilGradoInput" placeholder="Grado o aula">
-          </div>
           <div class="two-col-grid" style="margin-top: 10px;">
             <button type="button" class="teacher-btn-secondary" (click)="perfilEditando = false">Cancelar</button>
             <button type="button" class="save-avatar-btn" (click)="guardarEdicionPerfil()">Guardar</button>
@@ -1622,11 +1610,8 @@
         </div>
       </div>
 
-    </div>
 
-    <!-- ============================================== -->
-    <!-- WIDGET FLOTANTE DE IA: StAIle                  -->
-    <!-- ============================================== -->
+  
     <div class="staile-floating-container">
       
       <!-- Botón Flotante -->
@@ -1744,14 +1729,13 @@
         <span class="tab-label">Tienda</span>
       </button>
 
-      <!-- 5. Perfil -->
       <button 
         type="button" 
         class="tab-dest-btn" 
-        [class.tab-active]="currentBottomNav === 'perfil'"
-        (click)="selectBottomNav('perfil')">
-        <ion-icon name="person-outline"></ion-icon>
-        <span class="tab-label">Perfil</span>
+        [class.tab-active]="currentBottomNav === 'stats'"
+        (click)="selectBottomNav('stats')">
+        <ion-icon name="stats-chart-outline"></ion-icon>
+        <span class="tab-label">Estadísticas</span>
       </button>
 
     </div>

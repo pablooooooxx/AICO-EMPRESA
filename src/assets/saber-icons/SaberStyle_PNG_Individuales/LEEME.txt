@@ -1,0 +1,14 @@
+SABERSTYLE — PNG INDIVIDUALES
+
+Este paquete contiene recortes individuales en PNG organizados por categoría:
+- 3 cuerpos base
+- 10 peinados
+- 5 prendas superiores
+- 5 pantalones
+- 3 faldas
+- 5 prendas de ropa interior
+- 25 recortes de accesorios
+- 8 expresiones faciales
+
+Se eliminó el patrón de cuadrícula del exterior de los recortes para crear transparencia alfa.
+IMPORTANTE: los recortes proceden de una lámina compuesta generada, por lo que algunos bordes pueden necesitar revisión y ciertos accesorios están aproximados por su posición. No todos los elementos tienen todavía anclajes de juego validados; conviene revisar cada PNG antes de integrarlo en el editor.

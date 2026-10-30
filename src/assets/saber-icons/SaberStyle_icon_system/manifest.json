@@ -1,0 +1,1016 @@
+{
+  "project": "SaberStyle icon system",
+  "brand": "AICO",
+  "count": 112,
+  "canvas": "24x24 viewBox; transparent background; white #FFFFFF geometry",
+  "icons": [
+    {
+      "id": 1,
+      "category": "navigation",
+      "name": "home",
+      "label_es": "Inicio",
+      "function": "Casa moderna y minimalista.",
+      "svg": "navigation/home.svg",
+      "png": "navigation/home.png"
+    },
+    {
+      "id": 2,
+      "category": "shop",
+      "name": "shop",
+      "label_es": "Tienda",
+      "function": "Bolsa de compras estilizada.",
+      "svg": "shop/shop.svg",
+      "png": "shop/shop.png"
+    },
+    {
+      "id": 3,
+      "category": "navigation",
+      "name": "create",
+      "label_es": "Crear",
+      "function": "Signo más claramente reconocible.",
+      "svg": "navigation/create.svg",
+      "png": "navigation/create.png"
+    },
+    {
+      "id": 4,
+      "category": "navigation",
+      "name": "classes",
+      "label_es": "Mis clases",
+      "function": "Libro abierto de aprendizaje.",
+      "svg": "navigation/classes.svg",
+      "png": "navigation/classes.png"
+    },
+    {
+      "id": 5,
+      "category": "achievements",
+      "name": "achievements",
+      "label_es": "Logros",
+      "function": "Trofeo de progreso y recompensas.",
+      "svg": "achievements/achievements.svg",
+      "png": "achievements/achievements.png"
+    },
+    {
+      "id": 6,
+      "category": "avatar",
+      "name": "wardrobe",
+      "label_es": "Vestuario",
+      "function": "Prenda colgada para personalizar el avatar.",
+      "svg": "avatar/wardrobe.svg",
+      "png": "avatar/wardrobe.png"
+    },
+    {
+      "id": 7,
+      "category": "shop",
+      "name": "coins",
+      "label_es": "Monedas",
+      "function": "Moneda con una S estilizada.",
+      "svg": "shop/coins.svg",
+      "png": "shop/coins.png"
+    },
+    {
+      "id": 8,
+      "category": "avatar",
+      "name": "avatar",
+      "label_es": "Avatar o personaje",
+      "function": "Personaje personalizable minimalista.",
+      "svg": "avatar/avatar.svg",
+      "png": "avatar/avatar.png"
+    },
+    {
+      "id": 9,
+      "category": "avatar",
+      "name": "hair",
+      "label_es": "Cabello",
+      "function": "Silueta de cabello para personalizar el avatar.",
+      "svg": "avatar/hair.svg",
+      "png": "avatar/hair.png"
+    },
+    {
+      "id": 10,
+      "category": "avatar",
+      "name": "clothing",
+      "label_es": "Ropa",
+      "function": "Camiseta para prendas del avatar.",
+      "svg": "avatar/clothing.svg",
+      "png": "avatar/clothing.png"
+    },
+    {
+      "id": 11,
+      "category": "avatar",
+      "name": "pants",
+      "label_es": "Pantalones",
+      "function": "Pantalón estilizado.",
+      "svg": "avatar/pants.svg",
+      "png": "avatar/pants.png"
+    },
+    {
+      "id": 12,
+      "category": "avatar",
+      "name": "shoes",
+      "label_es": "Zapatos",
+      "function": "Calzado deportivo.",
+      "svg": "avatar/shoes.svg",
+      "png": "avatar/shoes.png"
+    },
+    {
+      "id": 13,
+      "category": "avatar",
+      "name": "accessories",
+      "label_es": "Accesorios",
+      "function": "Gafas estilizadas como accesorio representativo.",
+      "svg": "avatar/accessories.svg",
+      "png": "avatar/accessories.png"
+    },
+    {
+      "id": 14,
+      "category": "shop",
+      "name": "inventory",
+      "label_es": "Inventario",
+      "function": "Caja abierta con objetos guardados.",
+      "svg": "shop/inventory.svg",
+      "png": "shop/inventory.png"
+    },
+    {
+      "id": 15,
+      "category": "shop",
+      "name": "purchase",
+      "label_es": "Comprar",
+      "function": "Carrito de compra diferenciado de la bolsa de tienda.",
+      "svg": "shop/purchase.svg",
+      "png": "shop/purchase.png"
+    },
+    {
+      "id": 16,
+      "category": "navigation",
+      "name": "profile",
+      "label_es": "Perfil",
+      "function": "Cabeza y hombros de una persona.",
+      "svg": "navigation/profile.svg",
+      "png": "navigation/profile.png"
+    },
+    {
+      "id": 17,
+      "category": "navigation",
+      "name": "games",
+      "label_es": "Juegos",
+      "function": "Mando de videojuegos.",
+      "svg": "navigation/games.svg",
+      "png": "navigation/games.png"
+    },
+    {
+      "id": 18,
+      "category": "settings",
+      "name": "settings",
+      "label_es": "Configuración",
+      "function": "Engranaje de ajustes.",
+      "svg": "settings/settings.svg",
+      "png": "settings/settings.png"
+    },
+    {
+      "id": 19,
+      "category": "navigation",
+      "name": "menu",
+      "label_es": "Menú",
+      "function": "Tres líneas horizontales.",
+      "svg": "navigation/menu.svg",
+      "png": "navigation/menu.png"
+    },
+    {
+      "id": 20,
+      "category": "navigation",
+      "name": "notifications",
+      "label_es": "Notificaciones",
+      "function": "Campana con punto de alerta.",
+      "svg": "navigation/notifications.svg",
+      "png": "navigation/notifications.png"
+    },
+    {
+      "id": 21,
+      "category": "navigation",
+      "name": "help",
+      "label_es": "Ayuda",
+      "function": "Signo de interrogación dentro de una forma circular.",
+      "svg": "navigation/help.svg",
+      "png": "navigation/help.png"
+    },
+    {
+      "id": 22,
+      "category": "navigation",
+      "name": "back",
+      "label_es": "Volver",
+      "function": "Flecha hacia la izquierda.",
+      "svg": "navigation/back.svg",
+      "png": "navigation/back.png"
+    },
+    {
+      "id": 23,
+      "category": "navigation",
+      "name": "close",
+      "label_es": "Cerrar",
+      "function": "Símbolo X.",
+      "svg": "navigation/close.svg",
+      "png": "navigation/close.png"
+    },
+    {
+      "id": 24,
+      "category": "navigation",
+      "name": "more-options",
+      "label_es": "Más opciones",
+      "function": "Tres puntos horizontales.",
+      "svg": "navigation/more-options.svg",
+      "png": "navigation/more-options.png"
+    },
+    {
+      "id": 25,
+      "category": "navigation",
+      "name": "search",
+      "label_es": "Buscar",
+      "function": "Lupa.",
+      "svg": "navigation/search.svg",
+      "png": "navigation/search.png"
+    },
+    {
+      "id": 26,
+      "category": "navigation",
+      "name": "edit",
+      "label_es": "Editar",
+      "function": "Lápiz.",
+      "svg": "navigation/edit.svg",
+      "png": "navigation/edit.png"
+    },
+    {
+      "id": 27,
+      "category": "navigation",
+      "name": "save",
+      "label_es": "Guardar",
+      "function": "Símbolo de guardado tipo disquete.",
+      "svg": "navigation/save.svg",
+      "png": "navigation/save.png"
+    },
+    {
+      "id": 28,
+      "category": "navigation",
+      "name": "share",
+      "label_es": "Compartir",
+      "function": "Tres nodos conectados.",
+      "svg": "navigation/share.svg",
+      "png": "navigation/share.png"
+    },
+    {
+      "id": 29,
+      "category": "navigation",
+      "name": "add-user",
+      "label_es": "Agregar usuario",
+      "function": "Silueta de persona con signo más.",
+      "svg": "navigation/add-user.svg",
+      "png": "navigation/add-user.png"
+    },
+    {
+      "id": 30,
+      "category": "navigation",
+      "name": "logout",
+      "label_es": "Cerrar sesión",
+      "function": "Puerta con flecha de salida.",
+      "svg": "navigation/logout.svg",
+      "png": "navigation/logout.png"
+    },
+    {
+      "id": 31,
+      "category": "classes",
+      "name": "create-class",
+      "label_es": "Crear clase",
+      "function": "Libro con signo más.",
+      "svg": "classes/create-class.svg",
+      "png": "classes/create-class.png"
+    },
+    {
+      "id": 32,
+      "category": "classes",
+      "name": "join-class",
+      "label_es": "Unirse a una clase",
+      "function": "Puerta con flecha de entrada.",
+      "svg": "classes/join-class.svg",
+      "png": "classes/join-class.png"
+    },
+    {
+      "id": 33,
+      "category": "classes",
+      "name": "class-code",
+      "label_es": "Código de clase",
+      "function": "Tarjeta de código con símbolo hash.",
+      "svg": "classes/class-code.svg",
+      "png": "classes/class-code.png"
+    },
+    {
+      "id": 34,
+      "category": "classes",
+      "name": "students",
+      "label_es": "Estudiantes",
+      "function": "Grupo de tres estudiantes.",
+      "svg": "classes/students.svg",
+      "png": "classes/students.png"
+    },
+    {
+      "id": 35,
+      "category": "classes",
+      "name": "teacher",
+      "label_es": "Docente",
+      "function": "Persona acompañada de un libro.",
+      "svg": "classes/teacher.svg",
+      "png": "classes/teacher.png"
+    },
+    {
+      "id": 36,
+      "category": "classes",
+      "name": "activities",
+      "label_es": "Actividades",
+      "function": "Portapapeles con lista de tareas.",
+      "svg": "classes/activities.svg",
+      "png": "classes/activities.png"
+    },
+    {
+      "id": 37,
+      "category": "classes",
+      "name": "quizzes",
+      "label_es": "Cuestionarios",
+      "function": "Hoja de preguntas y respuestas.",
+      "svg": "classes/quizzes.svg",
+      "png": "classes/quizzes.png"
+    },
+    {
+      "id": 38,
+      "category": "classes",
+      "name": "assign-activity",
+      "label_es": "Asignar actividad",
+      "function": "Documento con flecha de envío.",
+      "svg": "classes/assign-activity.svg",
+      "png": "classes/assign-activity.png"
+    },
+    {
+      "id": 39,
+      "category": "classes",
+      "name": "live-activity",
+      "label_es": "Actividad en directo",
+      "function": "Pantalla con reproducción y señal en directo.",
+      "svg": "classes/live-activity.svg",
+      "png": "classes/live-activity.png"
+    },
+    {
+      "id": 40,
+      "category": "classes",
+      "name": "invite-participants",
+      "label_es": "Invitar participantes",
+      "function": "Grupo de personas con signo más.",
+      "svg": "classes/invite-participants.svg",
+      "png": "classes/invite-participants.png"
+    },
+    {
+      "id": 41,
+      "category": "classes",
+      "name": "student-list",
+      "label_es": "Lista de estudiantes",
+      "function": "Lista con siluetas.",
+      "svg": "classes/student-list.svg",
+      "png": "classes/student-list.png"
+    },
+    {
+      "id": 42,
+      "category": "classes",
+      "name": "class-details",
+      "label_es": "Detalles de clase",
+      "function": "Libro abierto con símbolo de información.",
+      "svg": "classes/class-details.svg",
+      "png": "classes/class-details.png"
+    },
+    {
+      "id": 43,
+      "category": "games",
+      "name": "create-game",
+      "label_es": "Crear juego",
+      "function": "Mando de videojuegos con signo más.",
+      "svg": "games/create-game.svg",
+      "png": "games/create-game.png"
+    },
+    {
+      "id": 44,
+      "category": "games",
+      "name": "quiz-game",
+      "label_es": "Cuestionario",
+      "function": "Hoja con signos de pregunta.",
+      "svg": "games/quiz-game.svg",
+      "png": "games/quiz-game.png"
+    },
+    {
+      "id": 45,
+      "category": "games",
+      "name": "wheel",
+      "label_es": "Ruleta",
+      "function": "Rueda dividida en secciones.",
+      "svg": "games/wheel.svg",
+      "png": "games/wheel.png"
+    },
+    {
+      "id": 46,
+      "category": "games",
+      "name": "open-question",
+      "label_es": "Pregunta abierta",
+      "function": "Bocadillo de diálogo para pregunta abierta.",
+      "svg": "games/open-question.svg",
+      "png": "games/open-question.png"
+    },
+    {
+      "id": 47,
+      "category": "games",
+      "name": "true-false",
+      "label_es": "Verdadero o falso",
+      "function": "Dos símbolos diferenciados de validación y rechazo.",
+      "svg": "games/true-false.svg",
+      "png": "games/true-false.png"
+    },
+    {
+      "id": 48,
+      "category": "games",
+      "name": "fill-blanks",
+      "label_es": "Completar espacios",
+      "function": "Líneas de texto con espacio vacío.",
+      "svg": "games/fill-blanks.svg",
+      "png": "games/fill-blanks.png"
+    },
+    {
+      "id": 49,
+      "category": "games",
+      "name": "word-search",
+      "label_es": "Sopa de letras",
+      "function": "Cuadrícula de letras con palabra resaltada geométricamente.",
+      "svg": "games/word-search.svg",
+      "png": "games/word-search.png"
+    },
+    {
+      "id": 50,
+      "category": "games",
+      "name": "play",
+      "label_es": "Jugar",
+      "function": "Triángulo de reproducción.",
+      "svg": "games/play.svg",
+      "png": "games/play.png"
+    },
+    {
+      "id": 51,
+      "category": "games",
+      "name": "pause",
+      "label_es": "Pausar",
+      "function": "Dos barras verticales.",
+      "svg": "games/pause.svg",
+      "png": "games/pause.png"
+    },
+    {
+      "id": 52,
+      "category": "games",
+      "name": "resume",
+      "label_es": "Reanudar",
+      "function": "Triángulo de reproducción dentro de un arco de reanudación.",
+      "svg": "games/resume.svg",
+      "png": "games/resume.png"
+    },
+    {
+      "id": 53,
+      "category": "games",
+      "name": "timer",
+      "label_es": "Tiempo",
+      "function": "Reloj con corona de temporizador.",
+      "svg": "games/timer.svg",
+      "png": "games/timer.png"
+    },
+    {
+      "id": 54,
+      "category": "games",
+      "name": "correct-answer",
+      "label_es": "Respuesta correcta",
+      "function": "Marca de verificación.",
+      "svg": "games/correct-answer.svg",
+      "png": "games/correct-answer.png"
+    },
+    {
+      "id": 55,
+      "category": "games",
+      "name": "incorrect-answer",
+      "label_es": "Respuesta incorrecta",
+      "function": "X para respuesta no válida.",
+      "svg": "games/incorrect-answer.svg",
+      "png": "games/incorrect-answer.png"
+    },
+    {
+      "id": 56,
+      "category": "games",
+      "name": "leaderboard",
+      "label_es": "Clasificación",
+      "function": "Podio de posiciones.",
+      "svg": "games/leaderboard.svg",
+      "png": "games/leaderboard.png"
+    },
+    {
+      "id": 57,
+      "category": "games",
+      "name": "participants",
+      "label_es": "Participantes",
+      "function": "Grupo de personas participantes.",
+      "svg": "games/participants.svg",
+      "png": "games/participants.png"
+    },
+    {
+      "id": 58,
+      "category": "games",
+      "name": "results",
+      "label_es": "Resultados",
+      "function": "Hoja con gráfico de resultados.",
+      "svg": "games/results.svg",
+      "png": "games/results.png"
+    },
+    {
+      "id": 59,
+      "category": "games",
+      "name": "next-question",
+      "label_es": "Pregunta siguiente",
+      "function": "Flecha hacia la derecha.",
+      "svg": "games/next-question.svg",
+      "png": "games/next-question.png"
+    },
+    {
+      "id": 60,
+      "category": "games",
+      "name": "end-game",
+      "label_es": "Finalizar juego",
+      "function": "Bandera de finalización.",
+      "svg": "games/end-game.svg",
+      "png": "games/end-game.png"
+    },
+    {
+      "id": 61,
+      "category": "achievements",
+      "name": "statistics",
+      "label_es": "Estadísticas",
+      "function": "Gráfico de barras.",
+      "svg": "achievements/statistics.svg",
+      "png": "achievements/statistics.png"
+    },
+    {
+      "id": 62,
+      "category": "achievements",
+      "name": "progress",
+      "label_es": "Progreso",
+      "function": "Círculo de progreso con avance ascendente.",
+      "svg": "achievements/progress.svg",
+      "png": "achievements/progress.png"
+    },
+    {
+      "id": 63,
+      "category": "achievements",
+      "name": "experience",
+      "label_es": "Experiencia",
+      "function": "Estrella estilizada de experiencia.",
+      "svg": "achievements/experience.svg",
+      "png": "achievements/experience.png"
+    },
+    {
+      "id": 64,
+      "category": "achievements",
+      "name": "level",
+      "label_es": "Nivel",
+      "function": "Insignia con estrella.",
+      "svg": "achievements/level.svg",
+      "png": "achievements/level.png"
+    },
+    {
+      "id": 65,
+      "category": "achievements",
+      "name": "daily-mission",
+      "label_es": "Misión diaria",
+      "function": "Calendario con marca de verificación.",
+      "svg": "achievements/daily-mission.svg",
+      "png": "achievements/daily-mission.png"
+    },
+    {
+      "id": 66,
+      "category": "achievements",
+      "name": "reward",
+      "label_es": "Recompensa",
+      "function": "Caja de regalo.",
+      "svg": "achievements/reward.svg",
+      "png": "achievements/reward.png"
+    },
+    {
+      "id": 67,
+      "category": "achievements",
+      "name": "bronze-medal",
+      "label_es": "Medalla de bronce",
+      "function": "Medalla circular con bordes festoneados y dos cintas.",
+      "svg": "achievements/bronze-medal.svg",
+      "png": "achievements/bronze-medal.png"
+    },
+    {
+      "id": 68,
+      "category": "achievements",
+      "name": "silver-medal",
+      "label_es": "Medalla de plata",
+      "function": "Medalla octagonal de doble borde con cintas.",
+      "svg": "achievements/silver-medal.svg",
+      "png": "achievements/silver-medal.png"
+    },
+    {
+      "id": 69,
+      "category": "achievements",
+      "name": "gold-medal",
+      "label_es": "Medalla de oro",
+      "function": "Medalla solar con corona y estrella central.",
+      "svg": "achievements/gold-medal.svg",
+      "png": "achievements/gold-medal.png"
+    },
+    {
+      "id": 70,
+      "category": "achievements",
+      "name": "diamond",
+      "label_es": "Diamante",
+      "function": "Piedra preciosa geométrica.",
+      "svg": "achievements/diamond.svg",
+      "png": "achievements/diamond.png"
+    },
+    {
+      "id": 71,
+      "category": "achievements",
+      "name": "streak",
+      "label_es": "Racha",
+      "function": "Llama estilizada.",
+      "svg": "achievements/streak.svg",
+      "png": "achievements/streak.png"
+    },
+    {
+      "id": 72,
+      "category": "achievements",
+      "name": "time-remaining",
+      "label_es": "Tiempo restante",
+      "function": "Reloj de arena.",
+      "svg": "achievements/time-remaining.svg",
+      "png": "achievements/time-remaining.png"
+    },
+    {
+      "id": 73,
+      "category": "achievements",
+      "name": "unlocked",
+      "label_es": "Desbloqueado",
+      "function": "Candado abierto.",
+      "svg": "achievements/unlocked.svg",
+      "png": "achievements/unlocked.png"
+    },
+    {
+      "id": 74,
+      "category": "achievements",
+      "name": "locked",
+      "label_es": "Bloqueado",
+      "function": "Candado cerrado.",
+      "svg": "achievements/locked.svg",
+      "png": "achievements/locked.png"
+    },
+    {
+      "id": 75,
+      "category": "achievements",
+      "name": "achievement-collection",
+      "label_es": "Colección de logros",
+      "function": "Vitrina con conjunto de insignias.",
+      "svg": "achievements/achievement-collection.svg",
+      "png": "achievements/achievement-collection.png"
+    },
+    {
+      "id": 76,
+      "category": "accessibility",
+      "name": "accessibility",
+      "label_es": "Accesibilidad general",
+      "function": "Figura humana con brazos extendidos.",
+      "svg": "accessibility/accessibility.svg",
+      "png": "accessibility/accessibility.png"
+    },
+    {
+      "id": 77,
+      "category": "accessibility",
+      "name": "color-correction",
+      "label_es": "Corrección de colores",
+      "function": "Círculo dividido en segmentos geométricos.",
+      "svg": "accessibility/color-correction.svg",
+      "png": "accessibility/color-correction.png"
+    },
+    {
+      "id": 78,
+      "category": "accessibility",
+      "name": "contrast",
+      "label_es": "Contraste",
+      "function": "Círculo dividido entre blanco y transparencia.",
+      "svg": "accessibility/contrast.svg",
+      "png": "accessibility/contrast.png"
+    },
+    {
+      "id": 79,
+      "category": "accessibility",
+      "name": "color-blindness",
+      "label_es": "Daltonismo",
+      "function": "Símbolo de percepción visual geométrica.",
+      "svg": "accessibility/color-blindness.svg",
+      "png": "accessibility/color-blindness.png"
+    },
+    {
+      "id": 80,
+      "category": "accessibility",
+      "name": "read-aloud",
+      "label_es": "Lectura en voz alta",
+      "function": "Libro acompañado de ondas sonoras.",
+      "svg": "accessibility/read-aloud.svg",
+      "png": "accessibility/read-aloud.png"
+    },
+    {
+      "id": 81,
+      "category": "accessibility",
+      "name": "audio",
+      "label_es": "Audio",
+      "function": "Altavoz con ondas para control de audio.",
+      "svg": "accessibility/audio.svg",
+      "png": "accessibility/audio.png"
+    },
+    {
+      "id": 82,
+      "category": "accessibility",
+      "name": "subtitles",
+      "label_es": "Subtítulos",
+      "function": "Bocadillo con líneas de subtítulo.",
+      "svg": "accessibility/subtitles.svg",
+      "png": "accessibility/subtitles.png"
+    },
+    {
+      "id": 83,
+      "category": "accessibility",
+      "name": "highlight-text",
+      "label_es": "Resaltar texto",
+      "function": "Letra acompañada de un marcador visual.",
+      "svg": "accessibility/highlight-text.svg",
+      "png": "accessibility/highlight-text.png"
+    },
+    {
+      "id": 84,
+      "category": "accessibility",
+      "name": "text-size",
+      "label_es": "Tamaño del texto",
+      "function": "Letra A con indicadores de tamaño.",
+      "svg": "accessibility/text-size.svg",
+      "png": "accessibility/text-size.png"
+    },
+    {
+      "id": 85,
+      "category": "accessibility",
+      "name": "language",
+      "label_es": "Idioma",
+      "function": "Globo terráqueo con meridianos.",
+      "svg": "accessibility/language.svg",
+      "png": "accessibility/language.png"
+    },
+    {
+      "id": 86,
+      "category": "accessibility",
+      "name": "simplified-reading",
+      "label_es": "Lectura simplificada",
+      "function": "Documento con líneas cortas y espaciadas.",
+      "svg": "accessibility/simplified-reading.svg",
+      "png": "accessibility/simplified-reading.png"
+    },
+    {
+      "id": 87,
+      "category": "assistant",
+      "name": "staile-assistant",
+      "label_es": "Asistente StAIle",
+      "function": "Cabeza de asistente IA con una estrella identificadora.",
+      "svg": "assistant/staile-assistant.svg",
+      "png": "assistant/staile-assistant.png"
+    },
+    {
+      "id": 88,
+      "category": "assistant",
+      "name": "chat",
+      "label_es": "Chat",
+      "function": "Dos bocadillos de diálogo.",
+      "svg": "assistant/chat.svg",
+      "png": "assistant/chat.png"
+    },
+    {
+      "id": 89,
+      "category": "assistant",
+      "name": "send-message",
+      "label_es": "Enviar mensaje",
+      "function": "Flecha de envío tipo avión de papel.",
+      "svg": "assistant/send-message.svg",
+      "png": "assistant/send-message.png"
+    },
+    {
+      "id": 90,
+      "category": "assistant",
+      "name": "microphone",
+      "label_es": "Micrófono",
+      "function": "Símbolo de entrada por voz.",
+      "svg": "assistant/microphone.svg",
+      "png": "assistant/microphone.png"
+    },
+    {
+      "id": 91,
+      "category": "assistant",
+      "name": "listen-response",
+      "label_es": "Escuchar respuesta",
+      "function": "Altavoz con ondas y destello de asistente.",
+      "svg": "assistant/listen-response.svg",
+      "png": "assistant/listen-response.png"
+    },
+    {
+      "id": 92,
+      "category": "assistant",
+      "name": "simplify-text",
+      "label_es": "Simplificar texto",
+      "function": "Documento con estrella.",
+      "svg": "assistant/simplify-text.svg",
+      "png": "assistant/simplify-text.png"
+    },
+    {
+      "id": 93,
+      "category": "assistant",
+      "name": "generate-content",
+      "label_es": "Generar contenido",
+      "function": "Documento con símbolo de creación.",
+      "svg": "assistant/generate-content.svg",
+      "png": "assistant/generate-content.png"
+    },
+    {
+      "id": 94,
+      "category": "assistant",
+      "name": "smart-help",
+      "label_es": "Ayuda inteligente",
+      "function": "Estrella acompañada de un signo de interrogación.",
+      "svg": "assistant/smart-help.svg",
+      "png": "assistant/smart-help.png"
+    },
+    {
+      "id": 95,
+      "category": "assistant",
+      "name": "close-assistant",
+      "label_es": "Cerrar asistente",
+      "function": "Símbolo X de cierre del asistente.",
+      "svg": "assistant/close-assistant.svg",
+      "png": "assistant/close-assistant.png"
+    },
+    {
+      "id": 96,
+      "category": "settings",
+      "name": "light-theme",
+      "label_es": "Tema claro",
+      "function": "Sol para el tema claro.",
+      "svg": "settings/light-theme.svg",
+      "png": "settings/light-theme.png"
+    },
+    {
+      "id": 97,
+      "category": "settings",
+      "name": "dark-theme",
+      "label_es": "Tema oscuro",
+      "function": "Luna creciente para el tema oscuro.",
+      "svg": "settings/dark-theme.svg",
+      "png": "settings/dark-theme.png"
+    },
+    {
+      "id": 98,
+      "category": "settings",
+      "name": "sound-on",
+      "label_es": "Sonido activado",
+      "function": "Altavoz con ondas para estado de sonido activo.",
+      "svg": "settings/sound-on.svg",
+      "png": "settings/sound-on.png"
+    },
+    {
+      "id": 99,
+      "category": "settings",
+      "name": "sound-off",
+      "label_es": "Sonido desactivado",
+      "function": "Altavoz con símbolo de silencio.",
+      "svg": "settings/sound-off.svg",
+      "png": "settings/sound-off.png"
+    },
+    {
+      "id": 100,
+      "category": "settings",
+      "name": "vibration",
+      "label_es": "Vibración",
+      "function": "Teléfono con ondas de vibración.",
+      "svg": "settings/vibration.svg",
+      "png": "settings/vibration.png"
+    },
+    {
+      "id": 101,
+      "category": "settings",
+      "name": "privacy",
+      "label_es": "Privacidad",
+      "function": "Escudo con candado.",
+      "svg": "settings/privacy.svg",
+      "png": "settings/privacy.png"
+    },
+    {
+      "id": 102,
+      "category": "settings",
+      "name": "security",
+      "label_es": "Seguridad",
+      "function": "Escudo con marca de verificación.",
+      "svg": "settings/security.svg",
+      "png": "settings/security.png"
+    },
+    {
+      "id": 103,
+      "category": "system",
+      "name": "information",
+      "label_es": "Información",
+      "function": "Letra i dentro de una forma circular.",
+      "svg": "system/information.svg",
+      "png": "system/information.png"
+    },
+    {
+      "id": 104,
+      "category": "system",
+      "name": "refresh",
+      "label_es": "Actualizar",
+      "function": "Flechas circulares.",
+      "svg": "system/refresh.svg",
+      "png": "system/refresh.png"
+    },
+    {
+      "id": 105,
+      "category": "system",
+      "name": "offline",
+      "label_es": "Sin conexión",
+      "function": "Símbolo de conexión interrumpida.",
+      "svg": "system/offline.svg",
+      "png": "system/offline.png"
+    },
+    {
+      "id": 106,
+      "category": "system",
+      "name": "connection",
+      "label_es": "Conexión",
+      "function": "Enlace de conexión activa.",
+      "svg": "system/connection.svg",
+      "png": "system/connection.png"
+    },
+    {
+      "id": 107,
+      "category": "system",
+      "name": "upload",
+      "label_es": "Cargar",
+      "function": "Flecha hacia arriba desde una bandeja.",
+      "svg": "system/upload.svg",
+      "png": "system/upload.png"
+    },
+    {
+      "id": 108,
+      "category": "system",
+      "name": "download",
+      "label_es": "Descargar",
+      "function": "Flecha hacia abajo a una bandeja.",
+      "svg": "system/download.svg",
+      "png": "system/download.png"
+    },
+    {
+      "id": 109,
+      "category": "system",
+      "name": "no-results",
+      "label_es": "Sin resultados",
+      "function": "Lupa con símbolo de ausencia de resultados.",
+      "svg": "system/no-results.svg",
+      "png": "system/no-results.png"
+    },
+    {
+      "id": 110,
+      "category": "system",
+      "name": "error",
+      "label_es": "Error",
+      "function": "Signo de exclamación.",
+      "svg": "system/error.svg",
+      "png": "system/error.png"
+    },
+    {
+      "id": 111,
+      "category": "system",
+      "name": "success",
+      "label_es": "Éxito",
+      "function": "Marca de verificación de éxito.",
+      "svg": "system/success.svg",
+      "png": "system/success.png"
+    },
+    {
+      "id": 112,
+      "category": "system",
+      "name": "warning",
+      "label_es": "Advertencia",
+      "function": "Triángulo con signo de exclamación.",
+      "svg": "system/warning.svg",
+      "png": "system/warning.png"
+    }
+  ]
+}

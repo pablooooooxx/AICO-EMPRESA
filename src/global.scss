@@ -100,15 +100,49 @@ body:not(.theme-light) {
    AYUDAS FUNCIONALES DE ACCESIBILIDAD REAL (8.4)
    =================================================== */
 
-/* 1. Escalado dinámico de tipografía */
+/* 1. Escalado dinámico de tipografía compatible con títulos, descripciones, botones y tarjetas */
+body.font-normal {
+  --app-font-scale: 1;
+}
+
 body.font-grande {
-  font-size: 112%;
-  --app-font-scale: 1.12;
+  --app-font-scale: 1.15;
+
+  .screen-title, .welcome-title, h1, h2 {
+    font-size: 1.25rem !important;
+  }
+  .screen-desc, .welcome-subtitle, .adventure-subject, p {
+    font-size: 1.05rem !important;
+  }
+  .card-eyebrow, .tab-label, .mission-tag, .product-tag, .badge-label, span {
+    font-size: 1.02em !important;
+  }
+  button, .submit-btn, .save-avatar-btn, .header-primary-btn, .hero-pill-btn {
+    font-size: 1.08rem !important;
+  }
+  input, textarea {
+    font-size: 1.05rem !important;
+  }
 }
 
 body.font-muy-grande {
-  font-size: 125%;
-  --app-font-scale: 1.25;
+  --app-font-scale: 1.30;
+
+  .screen-title, .welcome-title, h1, h2 {
+    font-size: 1.45rem !important;
+  }
+  .screen-desc, .welcome-subtitle, .adventure-subject, p {
+    font-size: 1.18rem !important;
+  }
+  .card-eyebrow, .tab-label, .mission-tag, .product-tag, .badge-label, span {
+    font-size: 1.14em !important;
+  }
+  button, .submit-btn, .save-avatar-btn, .header-primary-btn, .hero-pill-btn {
+    font-size: 1.20rem !important;
+  }
+  input, textarea {
+    font-size: 1.16rem !important;
+  }
 }
 
 /* 2. Modo Alto Contraste (WCAG AAA) */
