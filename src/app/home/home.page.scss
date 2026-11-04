@@ -2358,6 +2358,14 @@
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
 
+    .staile-robot-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 50%;
+      display: block;
+    }
+
     .staile-fab-pulse {
       position: absolute;
       inset: -4px;

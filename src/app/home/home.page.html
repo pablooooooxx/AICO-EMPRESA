@@ -16,14 +16,6 @@
       </div>
 
       <div class="header-user-actions">
-        <div class="user-avatar-badge" (click)="abrirPerfil()" [title]="currentUser?.name || 'Mi Perfil'">
-          <div class="mini-avatar-face" [style.background-color]="avatarConfig.skinColor">
-            <span class="avatar-hair-emoji">
-              <ion-icon [name]="currentUser?.role === 'teacher' ? 'school' : 'person'"></ion-icon>
-            </span>
-          </div>
-        </div>
-
         <button type="button" class="header-menu-btn" (click)="abrirConfiguracion()" title="Menú de opciones">
           <ion-icon name="ellipsis-vertical"></ion-icon>
         </button>
@@ -1618,7 +1610,7 @@
         class="staile-fab-btn"
         (click)="toggleStaile()"
         title="Pregúntale a StAIle, tu tutor galáctico">
-        <span class="staile-robot-icon">🤖</span>
+        <img src="assets/img/staile-icon.png" alt="StAIle" class="staile-robot-icon">
         <span class="staile-fab-pulse"></span>
       </button>
 

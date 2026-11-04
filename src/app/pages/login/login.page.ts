@@ -75,7 +75,7 @@ export class LoginPage implements OnInit {
     setTimeout(async () => {
       try {
         const { email, password } = this.loginForm.value;
-        const result = this.authService.login({ email, password });
+        const result = await this.authService.login({ email, password });
 
         this.isSubmitting = false;
 
