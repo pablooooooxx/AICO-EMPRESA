@@ -1095,6 +1095,44 @@ export class HomePage implements OnInit, OnDestroy {
     this.editorModo = mode;
   }
 
+  // Transición desde "Crear juego" hacia la pantalla de configuración del tipo elegido.
+  // Valida el título, inicializa los sub-editores con plantillas por defecto y, para la
+  // ruleta, navega a su pantalla de configuración; el resto de tipos se guardan directamente.
+  continuarCreacionJuego() {
+    const titulo = this.editorTitulo.trim();
+    if (!titulo) {
+      this.mostrarToast(this.configIdioma === 'English' ? 'Please enter a title for the activity.' : 'Por favor introduce un título para la actividad.');
+      return;
+    }
+
+    // Inicializar sub-editores con plantillas por defecto según el tipo seleccionado
+    this.editorQuizPreguntas = [
+      { pregunta: '¿Cuál es el concepto principal de este tema?', opciones: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correcta: 0 }
+    ];
+    this.editorRuletaPreguntas = ['Tema 1', 'Tema 2', 'Tema 3', 'Tema 4'];
+    this.editorSopaPalabras = ['SABER', 'STYLE', 'APRENDE', 'JUEGA'];
+    this.editorVFPreguntas = [
+      { afirmacion: 'Esta afirmación es verdadera y describe el concepto clave.', esVerdadero: true, explicacion: 'Explicación del concepto.' }
+    ];
+    this.editorAbiertaConsigna = 'Escribe tu opinión y análisis reflexivo sobre la temática:';
+    this.editorCompletarFrases = [
+      { fraseAntes: 'En matemáticas, una función asigna a cada elemento un', palabraCorrecta: 'único', opciones: ['único', 'múltiple', 'infinito', 'cero'] }
+    ];
+
+    if (this.selectedGameType === 'ruleta') {
+      this.activeTab = 'ruleta-config';
+    } else {
+      // Tipos sin pantalla de configuración dedicada: guardar directamente con plantilla por defecto
+      this.guardarJuegoDesdeEditor();
+    }
+  }
+
+  // Guarda la ruleta configurada desde la pantalla "ruleta-config"
+  guardarConfigRuleta() {
+    this.editorTipo = 'ruleta';
+    this.guardarJuegoDesdeEditor();
+  }
+
   prepararEditorJuego(tipo: 'quiz' | 'ruleta' | 'abierta' | 'verdadero-falso' | 'completar' | 'sopa-letras') {
     this.editingGameId = null;
     this.selectedGameType = tipo;

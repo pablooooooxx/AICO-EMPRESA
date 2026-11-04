@@ -2,7 +2,7 @@
 
   <ion-header class="ion-no-border cosmic-header">
     <div class="header-glass-bar">
-      
+
       <div class="header-brand" (click)="volverAInicio()" title="Volver al inicio">
         <span class="sparkle-bullet">✦</span>
         <span class="brand-name">SaberStyle</span>
@@ -33,7 +33,7 @@
   </ion-header>
 
   <ion-content class="cosmic-content">
-    
+
     <!-- Fondo Galáctico con Nebulosas y Estrellas (se oculta en Modo Enfoque) -->
     <div class="galaxy-backdrop" *ngIf="!accesibilidad.modoEnfoque">
       <div class="nebula nebula-1"></div>
@@ -52,7 +52,7 @@
       <!-- PANTALLA 1: INICIO ESTUDIANTE (MOCKUP SCREEN 5)-->
       <!-- ============================================== -->
       <div class="screen-view view-estudiante" *ngIf="activeTab === 'estudiante'">
-        
+
         <!-- Saludo Personalizado -->
         <div class="welcome-section">
           <h1 class="welcome-title">¡Hola, {{ currentUser?.name || 'Juan' }}!</h1>
@@ -100,7 +100,7 @@
         <div class="section-block">
           <h3 class="section-title">Explora SaberStyle</h3>
           <div class="two-col-grid">
-            
+
             <div class="explore-card" (click)="selectTab('mis-juegos')">
               <div class="explore-icon-circle bg-purple">
                 <ion-icon name="game-controller-outline"></ion-icon>
@@ -143,7 +143,7 @@
       <!-- PANTALLA 2: INICIO PROFESOR (MOCKUP SCREEN 6)  -->
       <!-- ============================================== -->
       <div class="screen-view view-profesor" *ngIf="activeTab === 'profesor'">
-        
+
         <div class="welcome-section">
           <div class="teacher-badge-pill">ESPACIO DOCENTE</div>
           <h1 class="welcome-title">¡Hola, Profe!</h1>
@@ -153,7 +153,7 @@
         <!-- Cuadrícula 2x2 de Accesos Rápidos del Docente -->
         <div class="section-block">
           <div class="two-col-grid">
-            
+
             <div class="explore-card" (click)="abrirCrearJuego()">
               <div class="explore-icon-circle bg-purple">
                 <ion-icon name="add-circle-outline"></ion-icon>
@@ -236,7 +236,7 @@
       <!-- PANTALLA 3: TIENDA DE AVATAR (MOCKUP SCREEN 7) -->
       <!-- ============================================== -->
       <div class="screen-view view-tienda" *ngIf="activeTab === 'tienda'">
-        
+
         <div class="screen-header header-with-close">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -261,30 +261,30 @@
 
         <!-- Categorías (Píldoras inspiradas en Roblox/Mockup) -->
         <div class="categories-scroll-row">
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="storeCategoryFilter === 'ropa'"
             (click)="setStoreCategory('ropa')">
             <span>Ropa</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="storeCategoryFilter === 'pelo'"
             (click)="setStoreCategory('pelo')">
             <span>Pelo</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="storeCategoryFilter === 'accesorios'"
             (click)="setStoreCategory('accesorios')">
             <span>Accesorios</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="storeCategoryFilter === 'zapatos'"
             (click)="setStoreCategory('zapatos')">
             <span>Zapatos</span>
@@ -307,8 +307,8 @@
             </div>
 
             <div class="product-actions-wrap">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="product-action-btn"
                 [class.btn-equipped]="item.equipped"
                 [class.btn-owned]="item.owned && !item.equipped"
@@ -335,7 +335,7 @@
       <!-- PANTALLA 4: MI ARMARIO / VESTUARIO (SCREEN 8)  -->
       <!-- ============================================== -->
       <div class="screen-view view-closet" *ngIf="activeTab === 'closet'">
-        
+
         <div class="screen-header header-with-close">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -349,30 +349,30 @@
 
         <!-- Categorías del Armario -->
         <div class="categories-scroll-row">
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="closetCategoryFilter === 'ropa'"
             (click)="setClosetCategory('ropa')">
             <span>Ropa</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="closetCategoryFilter === 'pelo'"
             (click)="setClosetCategory('pelo')">
             <span>Pelo</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="closetCategoryFilter === 'accesorios'"
             (click)="setClosetCategory('accesorios')">
             <span>Accesorios</span>
           </button>
-          <button 
-            type="button" 
-            class="category-pill" 
+          <button
+            type="button"
+            class="category-pill"
             [class.category-active]="closetCategoryFilter === 'zapatos'"
             (click)="setClosetCategory('zapatos')">
             <span>Zapatos</span>
@@ -382,9 +382,9 @@
         <!-- Probador 360° y Render de Avatar (Estilo Mockup) -->
         <div class="dressing-room-card">
           <div class="angle-selector-row">
-            <button 
-              type="button" 
-              class="angle-btn" 
+            <button
+              type="button"
+              class="angle-btn"
               *ngFor="let ang of angulosVista"
               [class.angle-active]="avatarConfig.angle === ang"
               (click)="cambiarAngulo(ang)">
@@ -413,8 +413,8 @@
         <div class="section-block">
           <h4 class="step-label">Tus prendas desbloqueadas ({{ filteredClosetItems.length }}):</h4>
           <div class="closet-items-grid" *ngIf="filteredClosetItems.length > 0">
-            <div 
-              class="closet-item-card" 
+            <div
+              class="closet-item-card"
               *ngFor="let it of filteredClosetItems"
               [class.item-equipped-card]="it.equipped"
               (click)="equiparPrenda(it)">
@@ -435,9 +435,9 @@
         <div class="section-block">
           <label class="step-label">Expresión Facial:</label>
           <div class="expressions-row">
-            <button 
-              type="button" 
-              class="expression-pill" 
+            <button
+              type="button"
+              class="expression-pill"
               *ngFor="let exp of expresiones"
               [class.expression-active]="avatarConfig.expression === exp"
               (click)="cambiarExpresion(exp)">
@@ -450,9 +450,9 @@
         <div class="section-block">
           <label class="step-label">Tono de Piel y Fantasía Cósmica:</label>
           <div class="skin-tones-row">
-            <button 
-              type="button" 
-              class="skin-circle-btn" 
+            <button
+              type="button"
+              class="skin-circle-btn"
               *ngFor="let tono of tonosPiel"
               [style.background-color]="tono.color"
               [class.skin-selected]="avatarConfig.skinColor === tono.color"
@@ -475,7 +475,7 @@
       <!-- PANTALLA 5: CREAR JUEGO (MOCKUP SCREEN 9)      -->
       <!-- ============================================== -->
       <div class="screen-view view-crear-juego" *ngIf="activeTab === 'crear-juego'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -491,8 +491,8 @@
         <div class="section-block">
           <h4 class="step-label">Tipo de juego</h4>
           <div class="game-types-grid">
-            <div 
-              class="game-type-card" 
+            <div
+              class="game-type-card"
               *ngFor="let g of gameTypes"
               [class.game-type-selected]="selectedGameType === g.id"
               (click)="selectGameType(g.id)">
@@ -508,9 +508,9 @@
         <div class="section-block">
           <h4 class="step-label">Modo de participación</h4>
           <div class="mode-selector-column">
-            
-            <div 
-              class="mode-card" 
+
+            <div
+              class="mode-card"
               [class.mode-card-selected]="selectedParticipationMode === 'en-vivo'"
               (click)="setParticipationMode('en-vivo')">
               <div class="mode-radio-circle">
@@ -522,8 +522,8 @@
               </div>
             </div>
 
-            <div 
-              class="mode-card" 
+            <div
+              class="mode-card"
               [class.mode-card-selected]="selectedParticipationMode === 'individual'"
               (click)="setParticipationMode('individual')">
               <div class="mode-radio-circle">
@@ -542,9 +542,9 @@
         <div class="section-block">
           <h4 class="step-label">Título de la actividad</h4>
           <div class="input-form-box">
-            <input 
-              type="text" 
-              [(ngModel)]="editorTitulo" 
+            <input
+              type="text"
+              [(ngModel)]="editorTitulo"
               placeholder="Ej: La ruleta de la historia o Quiz de álgebra...">
           </div>
         </div>
@@ -562,7 +562,7 @@
       <!-- PANTALLA 6: CONFIGURAR RULETA (SCREEN 10)      -->
       <!-- ============================================== -->
       <div class="screen-view view-ruleta-config" *ngIf="activeTab === 'ruleta-config'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="selectTab('crear-juego')">
             <ion-icon name="arrow-back"></ion-icon>
@@ -577,7 +577,7 @@
         <div class="section-block">
           <h4 class="step-label">Título del juego</h4>
           <div class="input-form-box">
-            <input type="text" [(ngModel)]="editarTitulo" placeholder="La ruleta de la historia">
+            <input type="text" [(ngModel)]="editorTitulo" placeholder="La ruleta de la historia">
           </div>
         </div>
 
@@ -593,9 +593,9 @@
 
           <!-- Añadir nueva pregunta a la ruleta -->
           <div class="add-q-row">
-            <input 
-              type="text" 
-              [(ngModel)]="nuevaPreguntaRuletaInput" 
+            <input
+              type="text"
+              [(ngModel)]="nuevaPreguntaRuletaInput"
               placeholder="Escribe una nueva pregunta..."
               (keyup.enter)="agregarPreguntaRuletaEditor()">
             <button type="button" class="add-q-btn" (click)="agregarPreguntaRuletaEditor()">
@@ -617,7 +617,7 @@
       <!-- PANTALLA 7: MIS JUEGOS (MOCKUP SCREEN 11)      -->
       <!-- ============================================== -->
       <div class="screen-view view-mis-juegos" *ngIf="activeTab === 'mis-juegos'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -626,11 +626,11 @@
             <h2 class="screen-title">Mis juegos</h2>
             <p class="screen-desc">Biblioteca de actividades y dinámicas</p>
           </div>
-          <button 
-            type="button" 
-            class="back-circle-btn" 
+          <button
+            type="button"
+            class="back-circle-btn"
             *ngIf="currentUser?.role === 'teacher'"
-            (click)="abrirCrearJuego()" 
+            (click)="abrirCrearJuego()"
             title="Crear nuevo juego">
             <ion-icon name="add"></ion-icon>
           </button>
@@ -638,16 +638,16 @@
 
         <!-- Pestañas Mis Juegos / Compartidos -->
         <div class="tab-pill-bar">
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="juegosFiltroTab === 'mis-juegos'"
             (click)="juegosFiltroTab = 'mis-juegos'">
             Mis juegos
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="juegosFiltroTab === 'compartidos'"
             (click)="juegosFiltroTab = 'compartidos'">
             Compartidos
@@ -702,7 +702,7 @@
       <!-- PANTALLA 8: CLASES (MOCKUP SCREEN 12)          -->
       <!-- ============================================== -->
       <div class="screen-view view-clases" *ngIf="activeTab === 'clases'">
-        
+
         <div class="screen-header header-with-action">
           <div class="header-left-group">
             <button type="button" class="back-circle-btn" (click)="volverAInicio()">
@@ -711,18 +711,18 @@
             <h2 class="screen-title">Clases</h2>
           </div>
 
-          <button 
-            type="button" 
-            class="header-primary-btn" 
+          <button
+            type="button"
+            class="header-primary-btn"
             *ngIf="currentUser?.role === 'teacher'"
             (click)="crearNuevaClaseModal()">
             <ion-icon name="add"></ion-icon>
             <span>Crear clase</span>
           </button>
 
-          <button 
-            type="button" 
-            class="header-primary-btn" 
+          <button
+            type="button"
+            class="header-primary-btn"
             *ngIf="currentUser?.role !== 'teacher'"
             (click)="unirseAClaseModal()">
             <ion-icon name="enter-outline"></ion-icon>
@@ -758,7 +758,7 @@
       <!-- PANTALLA 9: DETALLE DE CLASE (SCREEN 13)       -->
       <!-- ============================================== -->
       <div class="screen-view view-clase-detalle" *ngIf="activeTab === 'clase-detalle' && claseSeleccionada">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="selectTab('clases')">
             <ion-icon name="arrow-back"></ion-icon>
@@ -774,23 +774,23 @@
 
         <!-- Tabs: Información, Estudiantes, Actividades -->
         <div class="tab-pill-bar">
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="claseDetalleTab === 'info'"
             (click)="claseDetalleTab = 'info'">
             Información
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="claseDetalleTab === 'estudiantes'"
             (click)="claseDetalleTab = 'estudiantes'">
             Estudiantes ({{ claseSeleccionada.estudiantesList.length }})
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="claseDetalleTab === 'actividades'"
             (click)="claseDetalleTab = 'actividades'">
             Actividades ({{ claseSeleccionada.actividades.length }})
@@ -882,7 +882,7 @@
       <!-- PANTALLA 10: MI PROGRESO (MOCKUP SCREEN 14)    -->
       <!-- ============================================== -->
       <div class="screen-view view-progreso" *ngIf="activeTab === 'progreso'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -896,23 +896,23 @@
 
         <!-- Tabs: General, Juegos, Clases -->
         <div class="tab-pill-bar">
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="progresoTab === 'general'"
             (click)="progresoTab = 'general'">
             General
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="progresoTab === 'juegos'"
             (click)="progresoTab = 'juegos'">
             Juegos
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="progresoTab === 'clases'"
             (click)="progresoTab = 'clases'">
             Clases
@@ -924,12 +924,12 @@
           <div class="donut-circle">
             <svg class="donut-svg" viewBox="0 0 120 120">
               <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"></circle>
-              <circle 
-                cx="60" 
-                cy="60" 
-                r="48" 
-                fill="none" 
-                stroke="#8b5cf6" 
+              <circle
+                cx="60"
+                cy="60"
+                r="48"
+                fill="none"
+                stroke="#8b5cf6"
                 stroke-width="12"
                 stroke-dasharray="301.59"
                 [attr.stroke-dashoffset]="301.59 * (1 - (statsEstudiante.porcentajePromedio / 100))"
@@ -964,8 +964,8 @@
         <div class="stats-formula-card">
           <h4 class="formula-title">📐 ¿Qué representan estas cifras?</h4>
           <p class="formula-explanation">
-            Has participado en <b>{{ statsEstudiante.totalPartidas }} actividades en total</b>: 
-            <b>{{ statsEstudiante.juegosCompletados }} completadas con éxito</b> y <b>{{ statsEstudiante.juegosFallados }} fallidas</b>. 
+            Has participado en <b>{{ statsEstudiante.totalPartidas }} actividades en total</b>:
+            <b>{{ statsEstudiante.juegosCompletados }} completadas con éxito</b> y <b>{{ statsEstudiante.juegosFallados }} fallidas</b>.
             El promedio general se calcula con la tasa real de efectividad <b>(10 ÷ 13) = {{ statsEstudiante.porcentajePromedio }}%</b>.
           </p>
         </div>
@@ -997,7 +997,7 @@
       <!-- PANTALLA 11: LOGROS Y MISIONES (SCREEN 15)     -->
       <!-- ============================================== -->
       <div class="screen-view view-logros" *ngIf="activeTab === 'logros'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -1011,16 +1011,16 @@
 
         <!-- Tabs: Logros / Misiones -->
         <div class="tab-pill-bar">
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="logrosTab === 'logros'"
             (click)="logrosTab = 'logros'">
             Logros
           </button>
-          <button 
-            type="button" 
-            class="tab-sub-pill" 
+          <button
+            type="button"
+            class="tab-sub-pill"
             [class.sub-pill-active]="logrosTab === 'misiones'"
             (click)="logrosTab = 'misiones'">
             Misiones
@@ -1044,9 +1044,9 @@
                   <p class="achievement-desc">{{ l.desc }}</p>
                   <span class="achievement-reward">+🪙 {{ l.recompensa }} Monedas</span>
                 </div>
-                <button 
-                  type="button" 
-                  class="claim-reward-btn" 
+                <button
+                  type="button"
+                  class="claim-reward-btn"
                   [disabled]="!l.completed || l.claimed"
                   (click)="reclamarLogro(l)">
                   {{ l.claimed ? 'Reclamado ✓' : (l.completed ? 'Reclamar' : 'En curso') }}
@@ -1076,9 +1076,9 @@
                   </div>
                   <span class="mission-reward-text">+🪙 {{ m.recompensa }} Monedas ({{ m.progreso }}/{{ m.meta }})</span>
                 </div>
-                <button 
-                  type="button" 
-                  class="claim-reward-btn" 
+                <button
+                  type="button"
+                  class="claim-reward-btn"
                   [disabled]="!m.completed || m.claimed"
                   (click)="reclamarMision(m)">
                   {{ m.claimed ? 'Reclamado ✓' : (m.completed ? 'Reclamar' : 'En curso') }}
@@ -1094,7 +1094,7 @@
       <!-- PANTALLA 12: PERFIL (MOCKUP SCREEN 16)         -->
       <!-- ============================================== -->
       <div class="screen-view view-perfil" *ngIf="activeTab === 'perfil'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -1116,7 +1116,6 @@
           <span class="profile-coins-badge">🪙 {{ userCoins | number }} Monedas</span>
         </div>
 
-        <!-- Formulario de Edición de Perfil (si está activo) -->
         <div class="edit-profile-box" *ngIf="perfilEditando">
           <h4 class="step-label">Editar Datos de Perfil</h4>
           <div class="input-form-box">
@@ -1125,7 +1124,6 @@
           <div class="input-form-box">
             <input type="text" [(ngModel)]="perfilBioInput" placeholder="Biografía o materia">
           </div>
-          <div class="input-form-box">
           <div class="two-col-grid" style="margin-top: 10px;">
             <button type="button" class="teacher-btn-secondary" (click)="perfilEditando = false">Cancelar</button>
             <button type="button" class="save-avatar-btn" (click)="guardarEdicionPerfil()">Guardar</button>
@@ -1134,7 +1132,7 @@
 
         <!-- Opciones de Configuración (Fieles al Mockup 16) -->
         <div class="profile-options-list">
-          
+
           <div class="profile-option-row" (click)="perfilEditando = !perfilEditando">
             <div class="option-icon-box">
               <ion-icon name="person-outline"></ion-icon>
@@ -1158,16 +1156,16 @@
             </div>
             <span class="option-label">Tema</span>
             <div class="theme-switch-pills">
-              <button 
-                type="button" 
-                class="theme-mini-btn" 
+              <button
+                type="button"
+                class="theme-mini-btn"
                 [class.theme-mini-active]="configTema === 'claro'"
                 (click)="setTema('claro')">
                 Claro
               </button>
-              <button 
-                type="button" 
-                class="theme-mini-btn" 
+              <button
+                type="button"
+                class="theme-mini-btn"
                 [class.theme-mini-active]="configTema === 'oscuro'"
                 (click)="setTema('oscuro')">
                 Oscuro
@@ -1207,7 +1205,7 @@
       <!-- PANTALLA 13: AYUDA Y ACCESIBILIDAD REAL (8.4)  -->
       <!-- ============================================== -->
       <div class="screen-view view-accesibilidad" *ngIf="activeTab === 'accesibilidad'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="abrirPerfil()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -1221,7 +1219,7 @@
 
         <!-- 4 Ayudas Reales Conectadas -->
         <div class="accessibility-cards-grid">
-          
+
           <!-- 1. Lector de pantalla / voz -->
           <div class="accessibility-card">
             <div class="acc-header-row">
@@ -1251,23 +1249,23 @@
               </div>
             </div>
             <div class="font-scale-pills-row">
-              <button 
-                type="button" 
-                class="font-pill" 
+              <button
+                type="button"
+                class="font-pill"
                 [class.font-pill-active]="accesibilidad.tamanoLetra === 'normal'"
                 (click)="setTamanoLetra('normal')">
                 Normal (A)
               </button>
-              <button 
-                type="button" 
-                class="font-pill" 
+              <button
+                type="button"
+                class="font-pill"
                 [class.font-pill-active]="accesibilidad.tamanoLetra === 'grande'"
                 (click)="setTamanoLetra('grande')">
                 Grande (A+)
               </button>
-              <button 
-                type="button" 
-                class="font-pill" 
+              <button
+                type="button"
+                class="font-pill"
                 [class.font-pill-active]="accesibilidad.tamanoLetra === 'muy-grande'"
                 (click)="setTamanoLetra('muy-grande')">
                 Muy grande (A++)
@@ -1317,7 +1315,7 @@
       <!-- PANTALLA 14: GUÍA Y TUTORIAL INTERACTIVO       -->
       <!-- ============================================== -->
       <div class="screen-view view-tutorial" *ngIf="activeTab === 'guia-tutorial'">
-        
+
         <div class="screen-header">
           <button type="button" class="back-circle-btn" (click)="volverAInicio()">
             <ion-icon name="arrow-back"></ion-icon>
@@ -1389,10 +1387,10 @@
 
         <div class="quiz-question-card" *ngIf="(juegoActivo?.preguntas || savedGames[0].preguntas)[quizIndexPregunta] as q">
           <h3 class="question-text">{{ q.pregunta }}</h3>
-          
+
           <div class="options-grid">
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="option-btn"
               *ngFor="let opt of q.opciones; let optIdx = index"
               [class.opt-selected]="quizOpcionElegida === optIdx"
@@ -1420,8 +1418,8 @@
 
         <div class="ruleta-game-stage">
           <div class="ruleta-pointer">▼</div>
-          <div 
-            class="ruleta-wheel" 
+          <div
+            class="ruleta-wheel"
             [style.transform]="'rotate(' + ruletaAngulo + 'deg)'">
             <div class="wheel-sector sector-1">Dominio</div>
             <div class="wheel-sector sector-2">Rango</div>
@@ -1440,9 +1438,9 @@
         </div>
 
         <div class="section-block">
-          <button 
-            type="button" 
-            class="save-avatar-btn" 
+          <button
+            type="button"
+            class="save-avatar-btn"
             [disabled]="ruletaGirando"
             (click)="girarRuletaFisica()">
             <span *ngIf="!ruletaGirando">GIRAR RULETA 🎲</span>
@@ -1466,7 +1464,7 @@
 
         <div class="quiz-question-card">
           <h3 class="question-text">Menciona un ejemplo cotidiano donde una variable dependa directamente de otra:</h3>
-          
+
           <div class="live-feed-box">
             <div class="feed-item" *ngFor="let item of abiertaFeedRespuestas">
               <span class="feed-author">{{ item.autor }}:</span>
@@ -1476,9 +1474,9 @@
           </div>
 
           <div class="add-q-row">
-            <input 
-              type="text" 
-              [(ngModel)]="abiertaRespuestaUsuario" 
+            <input
+              type="text"
+              [(ngModel)]="abiertaRespuestaUsuario"
               placeholder="Escribe tu respuesta aquí..."
               (keyup.enter)="enviarRespuestaAbierta()">
             <button type="button" class="add-q-btn" (click)="enviarRespuestaAbierta()">
@@ -1503,18 +1501,18 @@
 
         <div class="quiz-question-card">
           <h3 class="question-text">"Una función lineal f(x) = mx + b siempre genera una línea recta en el plano cartesiano."</h3>
-          
+
           <div class="vf-buttons-row">
-            <button 
-              type="button" 
-              class="vf-btn vf-v" 
+            <button
+              type="button"
+              class="vf-btn vf-v"
               [class.vf-chosen]="vfSeleccion === true"
               (click)="responderVF(true)">
               Verdadero ✓
             </button>
-            <button 
-              type="button" 
-              class="vf-btn vf-f" 
+            <button
+              type="button"
+              class="vf-btn vf-f"
               [class.vf-chosen]="vfSeleccion === false"
               (click)="responderVF(false)">
               Falso ✕
@@ -1543,14 +1541,14 @@
 
         <div class="quiz-question-card">
           <h3 class="question-text">
-            Un triángulo que tiene sus tres lados con la misma longitud se denomina triángulo 
+            Un triángulo que tiene sus tres lados con la misma longitud se denomina triángulo
             <span class="blank-highlight">{{ completarPalabraElegida || '________' }}</span>.
           </h3>
 
           <div class="options-grid">
-            <button 
-              type="button" 
-              class="option-btn" 
+            <button
+              type="button"
+              class="option-btn"
               *ngFor="let opt of ['equilátero', 'isósceles', 'escaleno', 'rectángulo']"
               [class.opt-selected]="completarPalabraElegida === opt"
               (click)="seleccionarPalabraCompletar(opt)">
@@ -1575,8 +1573,8 @@
 
         <!-- Palabras Objetivo -->
         <div class="sopa-targets-row">
-          <span 
-            class="sopa-target-pill" 
+          <span
+            class="sopa-target-pill"
             *ngFor="let p of sopaPalabrasObjetivo"
             [class.target-found]="p.encontrada">
             {{ p.palabra }} {{ p.encontrada ? '✓' : '' }}
@@ -1586,9 +1584,9 @@
         <!-- Cuadrícula 8x8 de Letras -->
         <div class="sopa-grid-container">
           <div class="sopa-row" *ngFor="let row of sopaGrid; let rIdx = index">
-            <button 
-              type="button" 
-              class="sopa-cell-btn" 
+            <button
+              type="button"
+              class="sopa-cell-btn"
               *ngFor="let cell of row; let cIdx = index"
               (click)="tocarLetraSopa(rIdx, cIdx, cell)">
               {{ cell }}
@@ -1610,14 +1608,14 @@
         </div>
       </div>
 
+    </div>
 
-  
     <div class="staile-floating-container">
-      
+
       <!-- Botón Flotante -->
-      <button 
-        type="button" 
-        class="staile-fab-btn" 
+      <button
+        type="button"
+        class="staile-fab-btn"
         (click)="toggleStaile()"
         title="Pregúntale a StAIle, tu tutor galáctico">
         <span class="staile-robot-icon">🤖</span>
@@ -1638,8 +1636,8 @@
         </div>
 
         <div class="staile-messages-body">
-          <div 
-            class="staile-msg-bubble" 
+          <div
+            class="staile-msg-bubble"
             *ngFor="let msg of staileMessages"
             [class.user-bubble]="msg.role === 'user'"
             [class.assistant-bubble]="msg.role === 'assistant'">
@@ -1655,9 +1653,9 @@
 
         <!-- Sugerencias Rápidas -->
         <div class="staile-chips-row">
-          <button 
-            type="button" 
-            class="staile-chip" 
+          <button
+            type="button"
+            class="staile-chip"
             *ngFor="let sug of staileSugerencias"
             (click)="enviarMensajeStaile(sug)">
             {{ sug }}
@@ -1665,8 +1663,8 @@
         </div>
 
         <div class="staile-input-bar">
-          <input 
-            type="text" 
+          <input
+            type="text"
             [(ngModel)]="staileInput"
             (keyup.enter)="enviarMensajeStaile()"
             placeholder="Pregúntale a StAIle...">
@@ -1686,11 +1684,11 @@
   <!-- ============================================== -->
   <ion-footer class="ion-no-border cosmic-footer-tabs">
     <div class="five-tabs-container">
-      
+
       <!-- 1. Inicio -->
-      <button 
-        type="button" 
-        class="tab-dest-btn" 
+      <button
+        type="button"
+        class="tab-dest-btn"
         [class.tab-active]="currentBottomNav === 'inicio'"
         (click)="selectBottomNav('inicio')">
         <ion-icon name="home-outline"></ion-icon>
@@ -1698,9 +1696,9 @@
       </button>
 
       <!-- 2. Clases -->
-      <button 
-        type="button" 
-        class="tab-dest-btn" 
+      <button
+        type="button"
+        class="tab-dest-btn"
         [class.tab-active]="currentBottomNav === 'clases'"
         (click)="selectBottomNav('clases')">
         <ion-icon name="book-outline"></ion-icon>
@@ -1708,9 +1706,9 @@
       </button>
 
       <!-- 3. Botón Central Prominente: Crear (Profesor) / Jugar (Estudiante) -->
-      <button 
-        type="button" 
-        class="tab-dest-btn tab-create-prominent" 
+      <button
+        type="button"
+        class="tab-dest-btn tab-create-prominent"
         [class.tab-active]="currentBottomNav === 'crear'"
         (click)="selectBottomNav('crear')">
         <div class="create-circle-glow">
@@ -1719,19 +1717,19 @@
         <span class="tab-label">{{ currentUser?.role === 'teacher' ? 'Crear' : 'Juegos' }}</span>
       </button>
 
-      <!-- 4. Tienda (Estudiante) / Biblioteca (Profesor) -->
-      <button 
-        type="button" 
-        class="tab-dest-btn" 
+      <!-- 4. Tienda -->
+      <button
+        type="button"
+        class="tab-dest-btn"
         [class.tab-active]="currentBottomNav === 'tienda'"
         (click)="selectBottomNav('tienda')">
         <ion-icon name="bag-handle-outline"></ion-icon>
         <span class="tab-label">Tienda</span>
       </button>
 
-      <button 
-        type="button" 
-        class="tab-dest-btn" 
+      <button
+        type="button"
+        class="tab-dest-btn"
         [class.tab-active]="currentBottomNav === 'stats'"
         (click)="selectBottomNav('stats')">
         <ion-icon name="stats-chart-outline"></ion-icon>
