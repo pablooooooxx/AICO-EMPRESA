@@ -1670,6 +1670,14 @@
             [(ngModel)]="staileInput"
             (keyup.enter)="enviarMensajeStaile()"
             placeholder="Pregúntale a StAIle...">
+          <button 
+            type="button" 
+            class="staile-clear-btn" 
+            *ngIf="staileInput.length > 0"
+            (click)="staileInput = ''"
+            title="Borrar">
+            <ion-icon name="close-circle"></ion-icon>
+          </button>
           <button type="button" class="staile-send-btn" (click)="enviarMensajeStaile()">
             <ion-icon name="send"></ion-icon>
           </button>

@@ -2508,6 +2508,26 @@
         outline: none;
       }
 
+      .staile-clear-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        font-size: 18px;
+        padding: 0;
+
+        &:hover {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+
       .staile-send-btn {
         width: 34px;
         height: 34px;

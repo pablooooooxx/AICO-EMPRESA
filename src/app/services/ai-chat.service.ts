@@ -22,6 +22,10 @@ export class AichatService {
     sendMessage(userMessage: string): Observable<Chatmessage> {
         const apiKey = environment.firebase.geminiApiKey;
 
+        if (!apiKey || apiKey === 'AIzaSyAbS3wycDoRjiH76gM9lDsl3NLTRS6LISQ') {
+            return this.getOfflineResponse(userMessage);
+        }
+
         const userMsg: Chatmessage = {
             id: 'msg_' + Date.now(),
             role: 'user',
@@ -98,7 +102,7 @@ export class AichatService {
         } else if (query.includes('clase') || query.includes('codigo') || query.includes('estudiante')) {
             response = '📖 Gestión de Clases: Puedes ingresar con el código de tu profesor (ej: `SABER-MAT11`) o, si eres docente, crear una clase y compartir el código directamente.';
         } else {
-            response = `✨ Entendido: *" ${userMessage} "*. Como tutor StAIle, te recomiendo repasar la lección correspondiente en tus clases activas o lanzar un minijuego de práctica para afianzar tus conocimientos.`;
+            response = `✨ Entendido: " ${userMessage} ". Como tutor StAIle, te recomiendo repasar la lección correspondiente en tus clases activas o lanzar un minijuego de práctica para afianzar tus conocimientos.`;
         }
 
         const assistantMsg: Chatmessage = {
