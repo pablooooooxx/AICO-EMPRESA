@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 
-/**
- * Validador personalizado para comprobar que ambas contraseñas coincidan
- */
+
 export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
@@ -23,7 +21,6 @@ export const passwordsMatchValidator: ValidatorFn = (control: AbstractControl): 
     confirmPassword.setErrors({ passwordMismatch: true });
     return { passwordMismatch: true };
   } else {
-    // Limpiar error si coincide
     if (confirmPassword.hasError('passwordMismatch')) {
       confirmPassword.setErrors(null);
     }
@@ -116,12 +113,12 @@ export class RegisterPage implements OnInit {
     setTimeout(async () => {
       try {
         const { name, email, password } = this.registerForm.value;
-        const result = this.authService.register({ 
+        const result = await this.authService.register({ 
           name, 
           email, 
           password, 
           role: this.selectedRole,
-          autoLogin: false // Permitir iniciar sesión explícitamente con la nueva cuenta
+          autoLogin: false
         });
 
         this.isSubmitting = false;

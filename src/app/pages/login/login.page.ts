@@ -71,11 +71,10 @@ export class LoginPage implements OnInit {
 
     this.isSubmitting = true;
 
-    // Ejecución inmediata sin overlays pesados para evitar congelamientos
     setTimeout(async () => {
       try {
         const { email, password } = this.loginForm.value;
-        const result = this.authService.login({ email, password });
+        const result = await this.authService.login({ email, password });
 
         this.isSubmitting = false;
 
