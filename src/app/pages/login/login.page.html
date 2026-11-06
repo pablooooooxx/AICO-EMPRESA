@@ -11,7 +11,7 @@
         <div class="brand-top-row">
           <span class="sparkle-icon">✦</span>
           <span class="app-brand-name">SaberStyle</span>
-          <span class="company-tag">Aico</span>
+          <span class="company-tag">InConic</span>
         </div>
         <p class="brand-slogan">Aprende · Juega · Crece</p>
         
@@ -108,40 +108,6 @@
             <span *ngIf="!isSubmitting">Iniciar sesión</span>
           </button>
 
-          <!-- Divider o continúa con -->
-          <div class="social-divider">
-            <span class="divider-line"></span>
-            <span class="divider-text">o continúa con</span>
-            <span class="divider-line"></span>
-          </div>
-
-          <!-- Social Buttons Row (Google, Apple, Gamepad) -->
-          <div class="social-buttons-row">
-            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Google')" title="Iniciar con Google">
-              <span class="social-logo-g">G</span>
-            </button>
-            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Apple')" title="Iniciar con Apple">
-              <ion-icon name="logo-apple"></ion-icon>
-            </button>
-            <button type="button" class="social-icon-btn" (click)="loginWithSocial('Gamepad')" title="Iniciar con Cuenta Gamer">
-              <ion-icon name="game-controller-outline"></ion-icon>
-            </button>
-          </div>
-
-          <!-- Quick Fill Demo Buttons -->
-          <div class="demo-fill-container">
-            <span class="demo-label">Acceso directo de prueba:</span>
-            <div class="demo-buttons-row">
-              <button type="button" class="demo-fill-btn student-demo-btn" (click)="fillStudentDemo()">
-                <ion-icon name="school-outline"></ion-icon>
-                <span>Demo Estudiante</span>
-              </button>
-              <button type="button" class="demo-fill-btn teacher-demo-btn" (click)="fillTeacherDemo()">
-                <ion-icon name="person-outline"></ion-icon>
-                <span>Demo Profesor</span>
-              </button>
-            </div>
-          </div>
 
         </form>
       </div>
